@@ -1,12 +1,12 @@
 /**
- * Provenance ledger entries , what actually happened in the substrate
- * (TEE, sandbox, storage, chain) for each cycle. The right-side hero
+ * Provenance ledger entries , what actually happened beneath each cycle
+ * (wallet, brain, memory, chain, comms, market). The right-side hero
  * canvas renders these as commentary on the left-side chat.
  *
  * The narration is the headline: a plain-English sentence a non-crypto
  * reader can grasp in 2 seconds. The proof is small mono evidence
- * underneath. Hashes are stylized to look like real 0G mainnet tx /
- * signers / storage roots.
+ * underneath. Hashes are stylized to look like real Arbitrum tx /
+ * signers / IPFS CIDs.
  */
 
 export type StampKind =
@@ -22,7 +22,7 @@ export type StampKind =
  * Tool-specific animated glyph kind. Each one renders a small SVG icon
  * inside the station node , the icon ANIMATES on station activation
  * (the line draws itself, the lock shackle closes, etc.) so the moment
- * of the substrate firing is visible.
+ * of the action firing is visible.
  */
 export type GlyphKind =
   | 'sign'
@@ -57,27 +57,26 @@ export type Provenance = {
   receipts: Receipt[]
 }
 
-// Real 0G mainnet contract addresses. Each `proofHref` points at the
-// chainscan /address/ page for the contract that actually settles the
-// station's action , clicking it shows real on-chain activity (recent
-// txs, balance, code), not a stylized fake hash.
-const CHAINSCAN_ADDR = 'https://chainscan.0g.ai/address/'
-const ANIMA_AGENT_NFT = '0x9e71d79f06f956d4d2666b5c93dafab721c84721'
-const ANIMA_INBOX = '0xcd92844cc0ec6Be0607B330D4BaCC707339f2589'
-const ANIMA_MARKET = '0x3ebD21f5dd67acDeF199fACF28388627212bA2aB'
-const JAINE_SWAP_ROUTER = '0x8B598A7C136215A95ba0282b4d832B9f9801f2e2'
-const GIMO_POOL = '0xac06d1df23a4fa00981afac0f33a5936bd2135af'
+// Real Promus contract addresses on Arbitrum Sepolia. Each `proofHref`
+// points at the arbiscan /address/ page for the contract that actually
+// settles the station's action , clicking it shows real on-chain
+// activity, not a stylized fake hash. Mirrors
+// packages/core/src/identity/deployments.ts.
+const ARBISCAN_ADDR = 'https://sepolia.arbiscan.io/address/'
+const PROMUS_AGENT_NFT = '0x74F838421A2dA38C20Fe9Fd5E87C8FA5c053DDa3'
+const PROMUS_INBOX = '0xF937b333978fd8B9A6798b90F5ce8C93e365540b'
+const PROMUS_MARKET = '0x37909ccF38303acc0538be61F4e38b8dB18D0685'
 
-const INTRO = 'every step above leaves a trail on 0G'
+const INTRO = 'every step above leaves a trail on Arbitrum'
 
 // ─── per-cycle provenance ──────────────────────────────────────────────
 //
 // All cycles follow a 5-station voyage synced to the left-side chat:
 //   1. You      , wallet signs the intent
-//   2. Brain    , TEE reasons + signs the plan
-//   3. [action] , the cycle's headline beat (sandbox / chain / comms+commerce)
-//   4. Memory   , receipt encrypted to 0G Storage
-//   5. Chain    , storage root sealed into iNFT (omitted for cycle 3, where
+//   2. Brain    , Claude reasons + drafts the plan
+//   3. [action] , the cycle's headline beat (limbs / chain / comms+market)
+//   4. Memory   , receipt encrypted client-side + pinned to IPFS
+//   5. Chain    , CID digest sealed into the iNFT (omitted for cycle 3, where
 //                 the gavel beat IS the chain finale)
 //
 // `delayMs` for each station is hand-tuned to fire just after the matching
@@ -91,14 +90,14 @@ export const PROVENANCE: Record<string, Provenance> = {
   // tool (memory.save, idx 5) at 6300, reply at 7600.
   research: {
     intro: INTRO,
-    outcome: 'Note saved to /user/learnings/0g-chain',
+    outcome: 'Note saved to /user/learned/erc-7857',
     receipts: [
       {
         id: 'r-sign',
         glyph: 'sign',
         stamp: 'wallet',
         layer: 'You',
-        narration: 'Your wallet signed the prompt before it left your laptop.',
+        narration: 'Your prompt stayed local; only the agent acts on chain on your behalf.',
         delayMs: 2700, // just after `you · …` row commits
       },
       {
@@ -107,16 +106,16 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'attestation',
         layer: 'Brain',
         narration:
-          'Reasoning ran inside a TEE. Every completion is signed by the enclave, not the host.',
+          'Claude reasoned over the task and chose which tools to call, one step at a time.',
         delayMs: 3100, // as "thinking…" appears
       },
       {
-        id: 'r-sandbox',
+        id: 'r-browser',
         glyph: 'browser',
         stamp: 'sandbox',
         layer: 'Limbs',
         narration:
-          "Browser and web tools ran inside a sandbox enclave so code can't touch the host.",
+          'Browser and web tools fetched the sources. The limbs only execute; the brain decides.',
         delayMs: 3500, // first tool block visible
       },
       {
@@ -124,7 +123,7 @@ export const PROVENANCE: Record<string, Provenance> = {
         glyph: 'lock',
         stamp: 'storage',
         layer: 'Memory',
-        narration: 'The note was encrypted with a wallet-derived key and written to 0G Storage.',
+        narration: 'The note was encrypted client-side and pinned to IPFS as a content-addressed blob.',
         delayMs: 6700, // memory.save tool block lands
       },
       {
@@ -133,27 +132,27 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'chain',
         layer: 'Chain',
         narration:
-          "The storage root was sealed into the agent's iNFT, so the proof survives operator handoff.",
-        proofHref: CHAINSCAN_ADDR + ANIMA_AGENT_NFT,
+          "The blob's CID digest was sealed into the agent's iNFT, so the proof survives operator handoff.",
+        proofHref: ARBISCAN_ADDR + PROMUS_AGENT_NFT,
         delayMs: 9000, // ~1.4s after reply lands
       },
     ],
   },
 
-  // ─── Cycle 2 , TG · swap ─────────────────────────────────────────────
+  // ─── Cycle 2 , TG · transfer ─────────────────────────────────────────
   // TgCanvas: greeting 200/800/1500, main user at 2400, think at 3000,
-  // tools at 3800 stagger 380ms each. chain.tx (idx 3) lands at 4940.
-  // memory.save (idx 4) at 5320. Reply at 6320.
-  swap: {
+  // tools at 3800 stagger 380ms each. chain.send (idx 2) lands at 4560.
+  // memory.save (idx 3) at 4940. Reply at 5940.
+  transfer: {
     intro: INTRO,
-    outcome: '5 0G → 4.93 USDC.e settled · receipt saved to /user/swaps',
+    outcome: '0.01 ETH sent · receipt saved to /user/treasury',
     receipts: [
       {
         id: 's-sign',
         glyph: 'sign',
         stamp: 'wallet',
         layer: 'You',
-        narration: 'Your wallet signed the swap intent before it left your laptop.',
+        narration: 'You asked once; the agent signs from its own sealed wallet, not yours.',
         delayMs: 2500, // main user prompt commits
       },
       {
@@ -161,25 +160,25 @@ export const PROVENANCE: Record<string, Provenance> = {
         glyph: 'brain',
         stamp: 'attestation',
         layer: 'Brain',
-        narration: 'A TEE picked the route (0G → W0G → USDC.e via JAINE) and signed the plan.',
+        narration: 'Claude resolved the recipient and confirmed the balance before drafting the send.',
         delayMs: 3100, // think bubble visible
       },
       {
-        id: 's-chain-swap',
+        id: 's-chain-send',
         glyph: 'swap',
         stamp: 'chain',
         layer: 'Chain',
         narration:
-          'The swap settled as a real on-chain transaction through the JAINE liquidity pool.',
-        proofHref: CHAINSCAN_ADDR + JAINE_SWAP_ROUTER,
-        delayMs: 5000, // chain.tx tool ✓ confirms
+          'The transfer settled as a real on-chain transaction from the agent EOA on Arbitrum.',
+        proofHref: ARBISCAN_ADDR + PROMUS_AGENT_NFT,
+        delayMs: 5000, // chain.send tool ✓ confirms
       },
       {
         id: 's-storage',
         glyph: 'lock',
         stamp: 'storage',
         layer: 'Memory',
-        narration: 'The receipt was encrypted with a wallet-derived key and filed for tax records.',
+        narration: 'The receipt was encrypted client-side and pinned to IPFS for your records.',
         delayMs: 6000, // memory.save tool ✓ confirms
       },
       {
@@ -188,8 +187,8 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'chain',
         layer: 'Chain',
         narration:
-          "The storage root was sealed into the agent's iNFT, so the receipt survives operator handoff.",
-        proofHref: CHAINSCAN_ADDR + ANIMA_AGENT_NFT,
+          "The CID digest was sealed into the agent's iNFT, so the receipt survives operator handoff.",
+        proofHref: ARBISCAN_ADDR + PROMUS_AGENT_NFT,
         delayMs: 7500, // ~1.2s after reply lands
       },
     ],
@@ -197,19 +196,19 @@ export const PROVENANCE: Record<string, Provenance> = {
 
   // ─── Cycle 3 , TUI · commerce ────────────────────────────────────────
   // TuiCanvas: commit at 2800, tools at 2800 stagger 700ms.
-  // agent.message (idx 2) at 4200. market.acceptResult (idx 4) at 5600.
-  // memory.save (idx 5) at 6300. Reply at 7600. No anchor station: the
+  // agent.message (idx 1) at 3500. market.acceptResult (idx 3) at 4900.
+  // memory.save (idx 4) at 5600. Reply at 7000. No anchor station: the
   // gavel IS the chain finale here (escrow released on chain).
   commerce: {
     intro: INTRO,
-    outcome: 'auditor.anima.0g hired · log saved to /user/audits',
+    outcome: 'auditor agent hired · log saved to /user/audits',
     receipts: [
       {
         id: 'c-sign',
         glyph: 'sign',
         stamp: 'wallet',
         layer: 'You',
-        narration: 'Your wallet signed the hire intent before it left your laptop.',
+        narration: 'You set the budget; the agent negotiates and pays from its own wallet.',
         delayMs: 2900, // just after commit
       },
       {
@@ -217,7 +216,7 @@ export const PROVENANCE: Record<string, Provenance> = {
         glyph: 'brain',
         stamp: 'attestation',
         layer: 'Brain',
-        narration: 'A TEE picked auditor.anima.0g from the market and drafted the bid.',
+        narration: 'Claude browsed the market, picked an auditor, and drafted the encrypted brief.',
         delayMs: 3300, // just before tools
       },
       {
@@ -226,8 +225,8 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'inbox',
         layer: 'Comms',
         narration:
-          'The bid traveled through PromusInbox as an ECIES envelope. Only the auditor could open it.',
-        proofHref: CHAINSCAN_ADDR + ANIMA_INBOX,
+          'The brief traveled through PromusInbox as an ECIES envelope. Only the auditor could open it.',
+        proofHref: ARBISCAN_ADDR + PROMUS_INBOX,
         delayMs: 4400, // agent.message tool ✓
       },
       {
@@ -237,7 +236,7 @@ export const PROVENANCE: Record<string, Provenance> = {
         layer: 'Commerce',
         narration:
           'PromusMarket released the escrow on chain the moment the audit report was accepted.',
-        proofHref: CHAINSCAN_ADDR + ANIMA_MARKET,
+        proofHref: ARBISCAN_ADDR + PROMUS_MARKET,
         delayMs: 5800, // market.acceptResult tool ✓
       },
       {
@@ -245,26 +244,26 @@ export const PROVENANCE: Record<string, Provenance> = {
         glyph: 'lock',
         stamp: 'storage',
         layer: 'Memory',
-        narration: "The audit log was encrypted and filed under the agent's history on 0G Storage.",
+        narration: "The audit log was encrypted and filed under the agent's memory on IPFS.",
         delayMs: 6700, // memory.save tool ✓
       },
     ],
   },
 
-  // ─── Cycle 4 , TG · stake ────────────────────────────────────────────
+  // ─── Cycle 4 , TG · memory ───────────────────────────────────────────
   // TgCanvas: greeting 200/800/1500, main user at 2400, think at 3000,
-  // tools at 3800 stagger 380ms. chain.tx (idx 2) at 4560. memory.save
-  // (idx 3) at 4940. Reply at 5940.
-  stake: {
+  // tools at 3800 stagger 380ms. chain.send (idx 2) at 4560. Reply at
+  // ~5180.
+  memory: {
     intro: INTRO,
-    outcome: '10 0G locked at 9.4% APR · position saved to /user/positions',
+    outcome: 'Preference saved to /user/feedback/style and anchored on chain',
     receipts: [
       {
         id: 'st-sign',
         glyph: 'sign',
         stamp: 'wallet',
         layer: 'You',
-        narration: 'Your wallet signed the stake intent before it left your laptop.',
+        narration: 'A plain request; the agent decides where the fact belongs in its memory.',
         delayMs: 2500, // main user prompt commits
       },
       {
@@ -273,26 +272,16 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'attestation',
         layer: 'Brain',
         narration:
-          'A TEE chose 0g-validator-1 against your existing positions and signed the plan.',
+          'Claude read its persona, then wrote the preference to the right memory partition.',
         delayMs: 3100, // think bubble visible
-      },
-      {
-        id: 'st-chain-stake',
-        glyph: 'stake',
-        stamp: 'chain',
-        layer: 'Chain',
-        narration:
-          'Stake locked on the validator network. The 14-day unlock is enforced by the validator contract.',
-        proofHref: CHAINSCAN_ADDR + GIMO_POOL,
-        delayMs: 4500, // chain.tx tool ✓
       },
       {
         id: 'st-storage',
         glyph: 'lock',
         stamp: 'storage',
         layer: 'Memory',
-        narration: "Position recorded against the agent's portfolio on 0G Storage.",
-        delayMs: 5500, // memory.save tool ✓
+        narration: 'The note was encrypted client-side and pinned to IPFS as a content-addressed blob.',
+        delayMs: 4200, // memory.save tool ✓
       },
       {
         id: 'st-anchor',
@@ -300,9 +289,9 @@ export const PROVENANCE: Record<string, Provenance> = {
         stamp: 'chain',
         layer: 'Chain',
         narration:
-          "The storage root was sealed into the agent's iNFT, so the portfolio survives operator handoff.",
-        proofHref: CHAINSCAN_ADDR + ANIMA_AGENT_NFT,
-        delayMs: 7000, // ~1.1s after reply lands
+          "The CID digest was sealed into the agent's iNFT memory slot, so the fact survives operator handoff.",
+        proofHref: ARBISCAN_ADDR + PROMUS_AGENT_NFT,
+        delayMs: 6500, // chain.send / iNFT.update tool ✓
       },
     ],
   },

@@ -309,7 +309,7 @@ function PromusAvatar({ size = 24 }: { size?: number }) {
           textShadow: '0 1px 2px rgba(0,0,0,.25)',
         }}
       >
-        A
+        P
       </span>
     </div>
   )
@@ -354,7 +354,7 @@ function ChatHeader({ typing }: { typing: boolean }) {
           className="text-[14px] font-semibold tracking-[-0.2px]"
           style={{ color: 'var(--tg-name)' }}
         >
-          Anima
+          Promus
         </span>
         <span
           className="text-[11px] font-medium"

@@ -1,22 +1,25 @@
-const CHAINSCAN_BASE = 'https://chainscan.0g.ai'
+// Block explorer links for the Promus contracts. Primary network is Arbitrum
+// Sepolia (chainId 421614); the same CREATE2 addresses are also live on
+// Robinhood Chain testnet (46630). Addresses mirror
+// packages/core/src/identity/deployments.ts.
+const EXPLORER_BASE = 'https://sepolia.arbiscan.io'
 
 export const CONTRACTS = {
-  PromusAgentNFT: '0x9e71d79f06f956d4d2666b5c93dafab721c84721',
-  PromusInbox: '0xcd9266b1cb31ad9d1a8c6a17a9fd0d9d3e7f2589',
-  PromusMarket: '0x3ebD21f5dd67acDeF199fACF28388627212bA2aB',
-  SubnameRegistrar: '0x33d92d6a1f4b88ad7b2c9c1f9b9b62fa8b4fdd98',
+  PromusAgentNFT: '0x74F838421A2dA38C20Fe9Fd5E87C8FA5c053DDa3',
+  PromusInbox: '0xF937b333978fd8B9A6798b90F5ce8C93e365540b',
+  PromusMarket: '0x37909ccF38303acc0538be61F4e38b8dB18D0685',
 } as const
 
 export function txUrl(hash: string) {
-  return `${CHAINSCAN_BASE}/tx/${hash}`
+  return `${EXPLORER_BASE}/tx/${hash}`
 }
 
 export function addressUrl(address: string) {
-  return `${CHAINSCAN_BASE}/address/${address}`
+  return `${EXPLORER_BASE}/address/${address}`
 }
 
 export function tokenUrl(contract: string, tokenId: string | number) {
-  return `${CHAINSCAN_BASE}/token/${contract}?tokenId=${tokenId}`
+  return `${EXPLORER_BASE}/token/${contract}?a=${tokenId}`
 }
 
 export function truncate(value: string, head = 6, tail = 4): string {

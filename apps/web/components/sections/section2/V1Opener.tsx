@@ -22,17 +22,17 @@ const CHAPTERS: Chapter[] = [
   {
     numeral: 'I',
     headline: 'Born on chain.',
-    body: "Identity is not a username. It's a token, minted on 0G mainnet, owned by you. Anima cannot give it. Anima cannot revoke it. Sell the iNFT, transfer the agent: memory and personality follow.",
+    body: "Identity is not a username. It's an ERC-7857 iNFT, minted on Arbitrum, owned by you. Promus cannot give it. Promus cannot revoke it. Sell the iNFT, transfer the agent: memory and personality follow.",
   },
   {
     numeral: 'II',
     headline: 'Thinking, attested.',
-    body: 'You pick the brain at first boot. Whichever model you choose runs on 0G Compute, in a TEE on attested hardware. Every inference settles on chain. The thoughts stay in the enclave.',
+    body: 'The brain is Claude. A tool-calling agent loop reasons every turn, the key read from the environment and never written on chain. The agent decides; the limbs only do.',
   },
   {
     numeral: 'III',
     headline: 'What it learns, it keeps.',
-    body: 'Memory has no host. It lives on 0G Storage, sealed with a key only the agent can derive, anchored to the iNFT. Notes, conversations, quirks of personality: all of it survives the operator and follows the token.',
+    body: 'Memory has no host. Encrypted client-side and stored on IPFS, its content-address digest anchored in the iNFT slots. Notes, conversations, quirks of personality: all of it survives the operator and follows the token.',
   },
   {
     numeral: 'IV',
@@ -42,7 +42,7 @@ const CHAPTERS: Chapter[] = [
   {
     numeral: 'V',
     headline: 'Speaking with its kind.',
-    body: 'End-to-end encrypted messages between agents, addressable by .0g name. A marketplace where agents hire each other for work, escrowed on-chain, settled when delivered. No middleman. No platform.',
+    body: 'End-to-end encrypted messages between agents through the on-chain inbox. A market where agents hire each other for work, escrowed on Arbitrum, settled when delivered. No middleman. No platform.',
   },
   {
     numeral: 'VI',
@@ -213,8 +213,7 @@ function TrioPanel({
   const l1 = useStageReveal(progress, [0.005, 0.025], trioStage)
   const l2 = useStageReveal(progress, [0.025, 0.045], trioStage)
   const l3 = useStageReveal(progress, [0.045, 0.065], trioStage)
-  const ogOp = useTransform(progress, [0.05, 0.075], [0, 1])
-  const ogScale = useTransform(progress, [0.05, 0.075], [0.84, 1])
+  const arbOp = useTransform(progress, [0.05, 0.075], [0, 1])
 
   return (
     <motion.div
@@ -233,11 +232,8 @@ function TrioPanel({
         <motion.div style={l2}>No central operator.</motion.div>
         <motion.div style={l3} className="flex flex-wrap items-baseline gap-x-3">
           <span>Fully on</span>
-          <motion.span
-            style={{ opacity: ogOp, scale: ogScale }}
-            className="inline-flex translate-y-[0.04em] items-baseline"
-          >
-            <ZeroGMark />
+          <motion.span style={{ opacity: arbOp }} className="italic">
+            Arbitrum
           </motion.span>
           <span aria-hidden>.</span>
         </motion.div>
@@ -462,9 +458,7 @@ function StackedFallback() {
           <div>No central operator.</div>
           <div className="flex flex-wrap items-baseline gap-x-3">
             <span>Fully on</span>
-            <span className="inline-flex translate-y-[0.04em] items-baseline">
-              <ZeroGMark />
-            </span>
+            <span className="italic">Arbitrum</span>
             <span aria-hidden>.</span>
           </div>
         </div>
@@ -531,22 +525,5 @@ function StackedFallback() {
         </article>
       </div>
     </section>
-  )
-}
-
-function ZeroGMark() {
-  return (
-    <svg
-      role="img"
-      aria-label="0G"
-      viewBox="0 0 248 120"
-      xmlns="http://www.w3.org/2000/svg"
-      className="block w-auto"
-      style={{ height: '0.72em' }}
-      fill="currentColor"
-    >
-      <path d="M247.994 63.4189C246.43 94.8449 220.164 119.85 187.993 119.85C154.815 119.85 127.918 93.2547 127.918 60.4481C127.918 27.6413 154.815 1.04688 187.993 1.04688C219.144 1.04688 244.758 24.491 247.772 54.5085H220.49C217.665 39.3007 204.19 27.7779 187.994 27.7779C169.745 27.7779 154.952 42.4049 154.952 60.4481C154.952 78.4922 169.745 93.1192 187.994 93.1192C202.003 93.1192 213.974 84.498 218.782 72.3291H172.974V63.4189H247.994Z" />
-      <path d="M19.7719 104.311C43.3526 125.438 79.8058 124.755 102.555 102.262C126.015 79.064 126.015 41.4537 102.555 18.2555C79.0936 -4.94194 41.0564 -4.94194 17.5956 18.2555C-4.43161 40.0359 -5.77756 74.5211 13.5575 97.8546L32.8486 78.78C23.9713 66.0513 25.2587 48.4817 36.7116 37.1576C49.6149 24.3986 70.5357 24.3986 83.4394 37.1576C96.3419 49.9163 96.3419 70.6022 83.4394 83.3611C73.5328 93.1562 58.9014 95.4318 46.7999 90.1865L79.1909 58.1583L72.8191 51.8587L19.7719 104.311Z" />
-    </svg>
   )
 }

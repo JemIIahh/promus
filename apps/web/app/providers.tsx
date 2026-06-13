@@ -1,45 +1,12 @@
 'use client'
 
-import { RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useMemo, useState, type ReactNode } from 'react'
-import { WagmiProvider } from 'wagmi'
-import { wagmiConfig } from '@/lib/wagmi'
-import { SiweProvider } from '@/components/SiweContext'
-import { useTheme } from '@/components/theme/ThemeProvider'
+import type { ReactNode } from 'react'
 
-import '@rainbow-me/rainbowkit/styles.css'
-
+// The landing + docs site has no wallet, SIWE, or data-fetching needs — those
+// belonged to the operator console, which has been retired. This is kept as a
+// thin passthrough so app/layout.tsx can keep wrapping children in <Providers>
+// without churn if client-side providers are reintroduced later. The theme
+// provider lives in app/layout.tsx (ThemeProvider), one level up.
 export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
-  const { resolved } = useTheme()
-
-  const rkTheme = useMemo(() => {
-    if (resolved === 'dark') {
-      return darkTheme({
-        accentColor: '#efece3',
-        accentColorForeground: '#0e0d0a',
-        borderRadius: 'medium',
-        fontStack: 'system',
-        overlayBlur: 'small',
-      })
-    }
-    return lightTheme({
-      accentColor: '#100f09',
-      accentColorForeground: '#f9f8f6',
-      borderRadius: 'medium',
-      fontStack: 'system',
-      overlayBlur: 'small',
-    })
-  }, [resolved])
-
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={rkTheme} modalSize="compact">
-          <SiweProvider>{children}</SiweProvider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  )
+  return <>{children}</>
 }

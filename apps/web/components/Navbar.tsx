@@ -283,9 +283,9 @@ function Brand({ size = 'default' }: { size?: 'default' | 'large' }) {
     <Link
       href="/"
       className={`font-wordmark inline-flex shrink-0 items-center leading-none text-[var(--color-ink)] transition-opacity hover:opacity-75 ${cls}`}
-      aria-label="anima home"
+      aria-label="Promus home"
     >
-      anima
+      Promus
     </Link>
   )
 }
@@ -294,11 +294,13 @@ function PrimaryCta() {
   // Compact text at < md so the pill + hamburger + wordmark all fit on phone.
   return (
     <Link
-      href="/console"
+      href="https://github.com/JemIIahh/promus"
+      target="_blank"
+      rel="noreferrer"
       className="group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--color-ink)] px-3 py-1.5 text-[12.5px] font-medium tracking-tight text-[var(--color-cream)] shadow-[0_10px_24px_-14px_rgba(16,15,9,0.6)] transition-transform hover:-translate-y-[1px] active:translate-y-0 md:px-5 md:py-2.5 md:text-[13.5px]"
     >
-      <span className="md:hidden">Console</span>
-      <span className="hidden md:inline">Open console</span>
+      <span className="md:hidden">GitHub</span>
+      <span className="hidden md:inline">View on GitHub</span>
       <span
         aria-hidden
         className="hidden transition-transform group-hover:translate-x-0.5 md:inline"

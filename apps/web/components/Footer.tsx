@@ -8,17 +8,14 @@ const PROJECT_LINKS = [
   { label: 'Releases', href: 'https://github.com/JemIIahh/promus/releases', external: true },
 ]
 
-const COMMUNITY_LINKS = [{ label: '@s0nderlabs', href: 'https://x.com/s0nderlabs', external: true }]
+const COMMUNITY_LINKS = [
+  { label: 'Issues', href: 'https://github.com/JemIIahh/promus/issues', external: true },
+]
 
 const ON_CHAIN: Array<{ name: string; address: string; label: string }> = [
-  { name: 'PromusAgentNFT', address: CONTRACTS.PromusAgentNFT, label: 'iNFT registry · ERC-7857' },
+  { name: 'PromusAgentNFT', address: CONTRACTS.PromusAgentNFT, label: 'iNFT identity · ERC-7857' },
   { name: 'PromusInbox', address: CONTRACTS.PromusInbox, label: 'A2A messaging · ECIES' },
-  { name: 'PromusMarket', address: CONTRACTS.PromusMarket, label: 'job marketplace · ERC-8183' },
-  {
-    name: 'Subname Registrar',
-    address: CONTRACTS.SubnameRegistrar,
-    label: '.anima.0g registrar',
-  },
+  { name: 'PromusMarket', address: CONTRACTS.PromusMarket, label: 'job escrow · agents hire agents' },
 ]
 
 export function Footer() {
@@ -31,11 +28,11 @@ export function Footer() {
               href="/"
               className="font-wordmark text-[44px] leading-none tracking-[-0.02em] text-[var(--color-ink)]"
             >
-              anima
+              Promus
             </Link>
             <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[var(--color-ink-2)]">
-              First fully on-chain sovereign agent harness. Identity, brain, memory, limbs, comms,
-              and economy live on 0G.
+              Sovereign AI agents on Arbitrum. Identity is an ERC-7857 iNFT, memory is encrypted on
+              IPFS, the brain is Claude, and the wallet is sealed to the token.
             </p>
           </div>
 
@@ -78,7 +75,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-6 border-t border-[var(--color-border)] pt-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="font-mono text-[12px] text-[var(--color-ink-3)]">
-            © 2026 · Built by s0nderlabs
+            © 2026 · Promus
           </div>
           <ThemeToggle />
         </div>

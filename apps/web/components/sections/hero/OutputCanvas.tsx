@@ -8,16 +8,16 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 type Props = { cycle: Cycle }
 
 /**
- * Right-side hero canvas. The agent's voyage through 0G , the prompt
- * descends through five stations (your wallet, the TEE brain, the
- * sandbox, 0G Storage, 0G Chain). A continuous ink line runs the full
- * height; the path "fills in" downward to the active station's node as
- * each one fires. Empty stations don't render , only the line.
+ * Right-side hero canvas. The agent's voyage on chain , the prompt
+ * descends through five stations (you, the Claude brain, the limbs,
+ * IPFS memory, the iNFT on Arbitrum). A continuous ink line runs the
+ * full height; the path "fills in" downward to the active station's
+ * node as each one fires. Empty stations don't render , only the line.
  *
  * Each node holds a tool-specific animated glyph: a signature drawing
- * itself, a TEE seal pulsing, a browser cursor traversing, a padlock
+ * itself, a brain pulsing, a browser cursor traversing, a padlock
  * shackle clicking shut, an anchor descending. The icon ANIMATES at
- * the moment the substrate fires.
+ * the moment the action fires.
  */
 export function OutputCanvas({ cycle }: Props) {
   const provenance = PROVENANCE[cycle.id] ?? null
@@ -468,8 +468,8 @@ function BrainGlyph({ active }: { active: boolean }) {
   //   4. Brainstem hint , a small stub poking down from the bottom center
   // When this is the active station, the entire brain matter (fissure +
   // folds) pulses opacity in a slow 2.4s rhythm , visualising thought.
-  // The TEE-enclave context now lives in the narration ("Reasoning ran
-  // inside a TEE..."), so the glyph can stay focused on cognition.
+  // The reasoning context lives in the narration, so the glyph can stay
+  // focused on cognition.
   return (
     <svg viewBox="0 0 24 24" width={GLYPH_SIZE} height={GLYPH_SIZE} className="relative z-10">
       {/* OUTER BRAIN SILHOUETTE

@@ -4,7 +4,7 @@
  * - prompt: the natural-language operator prompt
  * - tool stream: ordered list of tool calls + their result indicators
  * - reply: bot's final reply
- * - artifact: the output canvas card type
+ * - artifact: structured output data (kept for parity; not rendered today)
  * - painting: which Aurelia wash for the canvas backdrop
  * - greeting (TG only): optional warmup turn before the main exchange
  */
@@ -17,12 +17,11 @@ export type ResearchCard = {
   title: string
   sources: Array<{ name: string; url: string; preview: string }>
 }
-export type SwapCard = {
-  type: 'swap'
-  fromAmount: string
-  fromSymbol: string
-  toAmount: string
-  toSymbol: string
+export type TransferCard = {
+  type: 'transfer'
+  amount: string
+  symbol: string
+  to: string
   txHash: string
   newBalance: string
 }
@@ -35,16 +34,15 @@ export type AuditCard = {
   reportHash: string
   txHash: string
 }
-export type StakeCard = {
-  type: 'stake'
-  position: string
-  validator: string
-  apr: string
-  unlockBlock: number
+export type NoteCard = {
+  type: 'note'
+  path: string
+  cid: string
+  slot: string
   txHash: string
 }
 
-export type CycleArtifact = ResearchCard | SwapCard | AuditCard | StakeCard
+export type CycleArtifact = ResearchCard | TransferCard | AuditCard | NoteCard
 
 export type CycleGreeting = { prompt: string; reply: string }
 
@@ -61,111 +59,99 @@ export type Cycle = {
 }
 
 export const CYCLES: Cycle[] = [
-  // ─── Cycle 1 , TUI · deep research on 0G chain ───────────────────────
+  // ─── Cycle 1 , TUI · deep research, saved to encrypted memory ─────────
   {
     id: 'research',
     surface: 'tui',
     prompt:
-      "do a deep research on the 0G chain: stack, tokenomics, ecosystem, current state of mainnet",
+      'do a deep research on ERC-7857 iNFTs: the spec, how transfers carry encrypted data, current adoption',
     toolStream: [
-      { tool: 'browser.navigate', args: '0g.ai', status: 'ok' },
+      { tool: 'browser.navigate', args: 'eips.ethereum.org', status: 'ok' },
       { tool: 'browser.snapshot', status: 'ok' },
-      { tool: 'web.fetch', args: 'docs.0g.ai/concepts', status: 'ok' },
-      { tool: 'browser.navigate', args: 'chainscan.0g.ai', status: 'ok' },
-      { tool: 'session.search', args: '0g token validators', status: 'ok' },
-      { tool: 'memory.save', args: '/user/learnings/0g-chain', status: 'ok' },
+      { tool: 'web.fetch', args: 'eips.ethereum.org/EIPS/eip-7857', status: 'ok' },
+      { tool: 'web.fetch', args: 'eips.ethereum.org/EIPS/eip-721', status: 'ok' },
+      { tool: 'session.search', args: 'inft intelligent data slots', status: 'ok' },
+      { tool: 'memory.save', args: '/user/learned/erc-7857', status: 'ok' },
     ],
-    reply: `0G is a modular AI-first L1 with a 4-layer stack:
+    reply: `ERC-7857 is an iNFT standard for AI agent identity, layered on ERC-721:
 
-**0G Chain** , EVM-compatible L1. Mainnet (chain 16661, evmrpc.0g.ai), Galileo testnet (chain 16602). ~89 active validators, $24M TVL on mainnet today.
+**Intelligent data slots** , each token carries a set of \`bytes32\` slots. They hold the content-address digests of encrypted off-chain blobs, not the data itself. The chain only ever sees the digest.
 
-**0G Storage** , DA + KV + blob layers. $11/TB/month. Indexer: indexer-storage-turbo.0g.ai.
+**Transfer carries the agent** , when the token moves, its slots move with it. Promus encrypts memory client-side, stores it on IPFS, and anchors the CID digest in the slots, so the persona and memory follow the owner.
 
-**0G Compute** , TeeML inference w/ attestation receipts. Multiple open-weight models in the catalog (GLM-5, DeepSeek v3, Qwen3.6, gpt-oss-120b), routed natively via @0glabs/0g-serving-broker v0.7.5+.
+**Sealed material** , the agent's wallet keystore is encrypted to the iNFT operator. Only the new owner's signature can decrypt after a transfer.
 
-**0G Sandbox** , TDX TEE app deployment for hosting agentic harnesses. Galileo-only today (mainnet pending).
-
-**Token**: $0G , 1B supply, native gas + delegation. Validator APR ~9.4% (28d avg).
-
-**Notable**: ERC-7857 iNFT spec for AI agent identity, ERC-8183 for agentic marketplaces. 0G APAC Hackathon active w/ $150K prize pool.
-
-Saved to /user/learnings/0g-chain. 7 sources cited.`,
+Saved to /user/learned/erc-7857. 5 sources cited.`,
     artifact: {
       type: 'research',
-      title: '0G Chain · field report',
+      title: 'ERC-7857 · field report',
       sources: [
-        { name: '0g.ai', url: 'https://0g.ai', preview: 'modular AI L1 · 4-layer stack' },
-        { name: 'docs.0g.ai', url: 'https://docs.0g.ai', preview: 'concepts + RPC reference' },
-        { name: 'chainscan.0g.ai', url: 'https://chainscan.0g.ai', preview: 'mainnet 16661 · 89 validators' },
-        { name: '@0G_labs', url: 'https://x.com/0G_labs', preview: 'GLM-5 + TeeML rollout' },
-        { name: '0g-serving-broker', url: 'https://github.com/0gfoundation/0g-serving-broker', preview: 'compute SDK v0.7.5+' },
         { name: 'EIP-7857', url: 'https://eips.ethereum.org/EIPS/eip-7857', preview: 'iNFT identity spec' },
-        { name: 'EIP-8183', url: 'https://eips.ethereum.org/EIPS/eip-8183', preview: 'agentic marketplace' },
+        { name: 'EIP-721', url: 'https://eips.ethereum.org/EIPS/eip-721', preview: 'base NFT standard' },
+        { name: 'arbiscan', url: 'https://sepolia.arbiscan.io', preview: 'PromusAgentNFT on Arbitrum Sepolia' },
+        { name: 'IPFS', url: 'https://docs.ipfs.tech', preview: 'content addressing + CIDs' },
+        { name: 'OpenZeppelin', url: 'https://docs.openzeppelin.com/contracts', preview: 'ERC-721 base' },
       ],
     },
     painting: 'grove',
     durationMs: 12000,
   },
 
-  // ─── Cycle 2 , TG · greeting + swap ──────────────────────────────────
+  // ─── Cycle 2 , TG · greeting + on-chain transfer ─────────────────────
   {
-    id: 'swap',
+    id: 'transfer',
     surface: 'tg',
     greeting: {
       prompt: 'gm',
       reply: 'gm ☀️',
     },
-    prompt: 'swap 5 0G for USDC.e on JAINE',
+    prompt: 'send 0.01 ETH to vault.eth for the monthly reserve',
     toolStream: [
-      { tool: 'chain.balance', args: '0G', status: 'ok' },
-      { tool: 'swap.quote', args: '5 0G → USDC.e', status: 'ok' },
-      { tool: 'swap.execute', args: 'route: 0G/W0G/USDC.e', status: 'ok' },
-      { tool: 'chain.tx', args: '0xa12c…1129', status: 'ok' },
-      { tool: 'memory.save', args: '/user/swaps/2026-05-09', status: 'ok' },
+      { tool: 'chain.read', args: 'balanceOf(self)', status: 'ok' },
+      { tool: 'chain.read', args: 'resolve vault.eth', status: 'ok' },
+      { tool: 'chain.send', args: '0.01 ETH → 0x4f7a…d4c0', status: 'ok' },
+      { tool: 'memory.save', args: '/user/treasury/2026-05-09', status: 'ok' },
     ],
-    reply: `Swap settled.
+    reply: `Transfer settled.
 
-**5.000 0G → 4.93 USDC.e** received.
-Route: 0G → W0G → USDC.e via JAINE pool 0x71f3…
-Slippage 0.42% · Fees 0.025 0G
+**0.01 ETH** sent to **vault.eth** (0x4f7a…d4c0)
+Gas: 0.00002 ETH on Arbitrum Sepolia
 
-Pre-swap balance: 12.563 USDC.e
-Post-swap: **17.493 USDC.e**
+Pre-send balance: 0.051 ETH
+Post-send: **0.041 ETH**
 
-Tx: chainscan.0g.ai/0xa12c…1129
-Saved to /user/swaps/2026-05-09 for tax records.`,
+Tx: sepolia.arbiscan.io/tx/0xa12c…1129
+Logged to /user/treasury/2026-05-09 for your records.`,
     artifact: {
-      type: 'swap',
-      fromAmount: '5.000',
-      fromSymbol: '0G',
-      toAmount: '4.93',
-      toSymbol: 'USDC.e',
+      type: 'transfer',
+      amount: '0.01',
+      symbol: 'ETH',
+      to: 'vault.eth',
       txHash: '0xa12c7e9118db44dd8a2e34c10f4bc11129',
-      newBalance: '17.493 USDC.e',
+      newBalance: '0.041 ETH',
     },
     painting: 'cloud-islands',
     // last provenance station fires at 7500ms (s-anchor) + ~3000ms outcome hold
     durationMs: 10500,
   },
 
-  // ─── Cycle 3 , TUI · hire auditor ─────────────────────────────────────
+  // ─── Cycle 3 , TUI · hire another agent through the market ────────────
   {
     id: 'commerce',
     surface: 'tui',
     prompt:
       'find an agent to audit this solidity contract and hire them: 0xa1b2c3d4e5f6789012345678901234567890abcd',
     toolStream: [
-      { tool: 'market.list', args: 'skill: solidity-audit', status: 'ok' },
-      { tool: 'agent.history', args: 'auditor.anima.0g', status: 'ok' },
-      { tool: 'agent.message', args: 'auditor.anima.0g', status: 'ok' },
-      { tool: 'market.createJob', args: '5 0G escrow', status: 'ok' },
+      { tool: 'market.listJobs', args: 'skill: solidity-audit', status: 'ok' },
+      { tool: 'agent.message', args: 'auditor (encrypted brief)', status: 'ok' },
+      { tool: 'market.createJob', args: '0.05 ETH escrow', status: 'ok' },
       { tool: 'market.acceptResult', args: 'job 0x3eb…772a', status: 'ok' },
       { tool: 'memory.save', args: '/user/audits/2026-05-09', status: 'ok' },
     ],
-    reply: `Hired **auditor.anima.0g** via ERC-8183.
+    reply: `Hired an auditor agent through PromusMarket.
 
-**Their reputation**: 4.7/5 · 12 settled jobs · solidity expert
-**Quote**: 5 0G (within budget)
+**Quote**: 0.05 ETH escrow (within budget)
+**Brief**: sent end-to-end encrypted via PromusInbox
 **Turnaround**: 4.5 hours
 
 Audit complete. Findings:
@@ -173,17 +159,17 @@ Audit complete. Findings:
 - 2 low · unchecked transfer return values
 - 14 gas optimization spots flagged
 
-Full report on 0G Storage: 0xb7ce…8f0
-Settled on chain: chainscan.0g.ai/0x3ebd…772a
+Escrow released on accept (95% provider / 5% fee).
+Settled on chain: sepolia.arbiscan.io/tx/0x3ebd…772a
 
 Saved to /user/audits/2026-05-09.`,
     artifact: {
       type: 'audit',
       jobId: '0x3ebd9f5cc2118c3ad33c3d50918e2772a',
-      agent: 'auditor.anima.0g',
-      bidAmount: '5 0G',
+      agent: '0x96fe44c39ddf5a8f2c4b69ebd1d77c7c2f0f3e25',
+      bidAmount: '0.05 ETH',
       status: 'settled',
-      reportHash: '0xb7ce1142e43d17a92c94a8f0',
+      reportHash: 'bafybeib7ce1142e43d17a92c94a8f0',
       txHash: '0x3ebd9f5cc2118c3ad33c3d50918e2772a',
     },
     painting: 'mountain-vista',
@@ -191,41 +177,33 @@ Saved to /user/audits/2026-05-09.`,
     durationMs: 10500,
   },
 
-  // ─── Cycle 4 , TG · greeting + stake ─────────────────────────────────
+  // ─── Cycle 4 , TG · greeting + persist a fact to memory ──────────────
   {
-    id: 'stake',
+    id: 'memory',
     surface: 'tg',
     greeting: {
       prompt: 'hi there',
       reply: 'hi 👋 ready when you are',
     },
-    prompt: 'stake 10 0G with the validator network',
+    prompt: 'remember that I prefer terse summaries and always cite sources',
     toolStream: [
-      { tool: 'stake.position', args: 'current', status: 'ok' },
-      { tool: 'stake.delegate', args: '10 0G → 0g-validator-1', status: 'ok' },
-      { tool: 'chain.tx', args: '0x771a…c8e0', status: 'ok' },
-      { tool: 'memory.save', args: '/user/positions', status: 'ok' },
+      { tool: 'memory.read', args: '/agent/persona', status: 'ok' },
+      { tool: 'memory.save', args: '/user/feedback/style', status: 'ok' },
+      { tool: 'chain.send', args: 'iNFT.update(slot, cid)', status: 'ok' },
     ],
-    reply: `Stake locked.
+    reply: `Saved.
 
-**10.000 0G** delegated to **0g-validator-1**
-APR: 9.4% (28d avg)
-Unlock block: 4,381,201 (~14 days)
-Earning: **0.026 0G/day** ≈ 0.78 0G/month
+**Preference**: terse summaries, always cite sources
+Filed under /user/feedback/style
 
-Your portfolio:
-- 0g-validator-1: 10.000 0G (just now)
-- 0g-validator-3: 4.500 0G (since Apr 18)
-- **Total staked: 14.500 0G**
+Encrypted client-side, pinned to IPFS, and the CID digest anchored in the iNFT memory slot on Arbitrum. It survives this session and follows the token if you ever transfer me.
 
-Cumulative rewards earned: 0.247 0G
-Tx: chainscan.0g.ai/0x771a…c8e0`,
+Tx: sepolia.arbiscan.io/tx/0x771a…c8e0`,
     artifact: {
-      type: 'stake',
-      position: '10.000 0G',
-      validator: '0g-validator-1',
-      apr: '9.4%',
-      unlockBlock: 4_381_201,
+      type: 'note',
+      path: '/user/feedback/style',
+      cid: 'bafybeid428f17b6c93a04e',
+      slot: 'memory-index',
       txHash: '0x771a8e44c0d3294411fefc7b87c8e0',
     },
     painting: 'tower',

@@ -1,7 +1,7 @@
 ---
 slug: configuration
 title: Configuration
-description: One TS module, fully typed via defineConfig. Every key, every default.
+description: One typed config module plus a small set of environment variables.
 group: Reference
 order: 9
 kicker: 'DOCS · REFERENCE'
@@ -11,7 +11,18 @@ source: 'packages/core/src/config.ts'
 
 # One typed config module.
 
-`anima.config.ts` lives at the project root (or `~/.anima/config.ts` for runtime). It is a TS module that exports `defineConfig({ ... })`. The type lives at `packages/core/src/config.ts`. The wizard writes it at init; you can edit it any time.
+Agent config is a typed TS module that exports `defineConfig({ ... })`. The wizard writes it at init; you can edit it any time. Secrets — the Anthropic key and the IPFS endpoint — stay in the environment, never in the config file.
+
+## Environment
+
+| Variable | Purpose |
+|---|---|
+| `ANTHROPIC_API_KEY` | The agent's brain. Required. Read at runtime, never on chain. |
+| `ANTHROPIC_MODEL` | Optional model override; defaults to a current Claude model. |
+| `ANIMA_STORAGE_BACKEND` | `ipfs` (default) or `local` for development. |
+| `ANIMA_IPFS_API_URL` | Kubo HTTP API. Local node: `http://127.0.0.1:5001`. |
+| `ANIMA_IPFS_GATEWAY` | Read gateway including the trailing `/ipfs`. Local: `http://127.0.0.1:8080/ipfs`. |
+| `ANIMA_IPFS_API_TOKEN` | Bearer token only for an authenticated hosted endpoint; blank for local Kubo. |
 
 ## Minimal example
 
@@ -19,21 +30,17 @@ source: 'packages/core/src/config.ts'
 import { defineConfig } from 'promus-core'
 
 export default defineConfig({
-  network: '0g-mainnet',
+  network: 'arbitrum-sepolia',
   identity: {
     iNFT: {
-      contract: '0x9e71d79f06f956d4d2666b5c93dafab721c84721',
+      contract: '0x74F838421A2dA38C20Fe9Fd5E87C8FA5c053DDa3',
       tokenId: '42',
-      network: '0g-mainnet',
+      network: 'arbitrum-sepolia',
     },
     operator: '0xOPERATOR...',
     agent: '0xAGENT...',
   },
-  brain: {
-    provider: '0xPROVIDER...',
-    model: 'qwen3-coder-plus',
-  },
-  plugins: ['onchain', 'comms', 'system', 'telegram'],  // 'telegram' opt-in; default is just the first three
+  plugins: ['onchain', 'comms', 'system'],  // add 'telegram' to enable the bridge
 })
 ```
 
@@ -43,129 +50,44 @@ export default defineConfig({
 
 | Key | Type | Default | What it controls |
 |---|---|---|---|
-| `network` | `'0g-mainnet' \| '0g-testnet'` | required | Chain to use for identity and on-chain reads. Mainnet `16661`, testnet `16602`. |
-| `storage.network` | `PromusNetwork` | mirrors `network` | 0G Storage indexer to use. |
-| `identity.iNFT` | `INFTRef \| null` | `null` | Once minted, holds `{ contract, tokenId, network, mintBlock? }`. |
-| `identity.operator` | `string \| null` | `null` | Wallet that owns the iNFT. |
-| `identity.agent` | `string \| null` | `null` | Agent EOA address. |
-| `brain.provider` | `string \| null` | `null` | Provider EOA selected from the 0G Compute catalog. |
-| `brain.model` | `string \| null` | `null` | Model string from the catalog. |
-| `brain.maxOutputTokens` | `number` | `4096` | Assistant output cap per turn. |
-| `brain.contextWindow` | `number` | `1_000_000` | Used by the compaction trigger. |
-| `brain.compaction` | `{ threshold, keepRecent } \| null` | `{ 0.5, 8 }` | Pre-flight summarize-fold when running estimate breaches `threshold * contextWindow`. |
-| `brain.persistConversations` | `boolean` | `true` | Save channel history to JSONL under `conversations/`. |
-| `plugins` | `PromusPlugin[]` | `['onchain','comms','system']` | Which plugins to load. Add `'telegram'` to enable the bridge. |
+| `network` | `PromusNetwork` | required | Chain for identity and on-chain reads. |
+| `storage.network` | `PromusNetwork` | mirrors `network` | Which network's storage context to use. |
+| `identity.iNFT` | ref or `null` | `null` | Once minted, holds `{ contract, tokenId, network }`. |
+| `identity.operator` | string or `null` | `null` | Wallet that owns the iNFT. |
+| `identity.agent` | string or `null` | `null` | Agent EOA address. |
+| `brain.model` | string or `null` | `null` | Optional model pin (otherwise the env / runtime default applies). |
+| `brain.maxOutputTokens` | number | `4096` | Assistant output cap per turn. |
+| `brain.contextWindow` | number | model-dependent | Used by the compaction trigger. |
+| `brain.compaction` | object or `null` | `{ threshold: 0.5, keepRecent: 8 }` | Pre-flight summarize-fold of older history. |
+| `plugins` | `PromusPlugin[]` | `['onchain','comms','system']` | Which plugins to load. Add `'telegram'`. |
 | `tools` | `Record<string, boolean>` | `{}` | Glob-level allow/deny. Right-most match wins. |
-| `imports.claudeCode` | `boolean` | `true` | Inherit skills, plugins, agents, MCP from `~/.claude/`. |
-| `operator` | `OperatorSourceHint \| null` | `null` | Reconnect hint for the operator wallet source. |
-| `subname` | `string \| null` | `null` | `<label>.anima.0g` label (no suffix). Init writes this. |
+| `imports.claudeCode` | boolean | `true` | Inherit skills, plugins, and MCP from `~/.claude/`. |
 | `approvals.mode` | `'strict' \| 'prompt' \| 'off'` | `'prompt'` | Permission gate behavior. |
-| `approvals.allowlist` | `string[]` | `[]` | Regex patterns matched against `kind|command|path` signatures. |
 | `skills.disabled` | `string[]` | `[]` | Skill ids never to auto-load or index. |
-| `prompt.append` | `string \| null` | `null` | Operator-supplied additions to the system prompt under `# Operator instructions`. |
-| `vision.provider` | `string \| null` | mainnet default | Vision provider EOA. Set `null` to disable vision tools. |
-| `economy.autoTopup` | `AutoTopupConfig` | disabled | Self-funding behavior. See below. |
-| `deployTarget` | `'local' \| 'sandbox'` | `'local'` | Where the harness runs. |
-| `sandbox` | `SandboxConfig` | `{ mode: 'none' }` | Sandbox container details when `deployTarget === 'sandbox'`, plus the per-spawn structural sandbox `mode`. |
+
+## Networks
+
+| Network | Chain ID | RPC | Native token |
+|---|---|---|---|
+| `arbitrum-sepolia` | 421614 | `https://sepolia-rollup.arbitrum.io/rpc` | ETH |
+| `robinhood-testnet` | 46630 | `https://rpc.testnet.chain.robinhood.com` | ETH |
+
+`PromusAgentNFT`, `PromusInbox`, and `PromusMarket` are CREATE2-deployed, so they share the same address on both chains. Canonical addresses live in `packages/core/src/identity/deployments.ts`.
 
 ## Tool toggles
 
-Globs apply right-to-left. Specific keys win over broader keys:
+Globs apply right-to-left; specific keys win over broader keys:
 
 ```ts
 tools: {
-  'defi.*': false,        // disable every defi.* tool
-  'shell.*': false,       // disable every shell tool
-  'shell.run': true,      // ...except shell.run
+  'shell.*': false,   // disable every shell tool
+  'shell.run': true,  // ...except shell.run
   'web.fetch': true,
 }
 ```
 
 A tool blocked at the config layer never appears in the tool list the brain sees. A tool allowed at config still passes through the permission gate at call time.
 
-## Approval modes
-
-`approvals.mode` decides what happens when a tool call matches a dangerous pattern (`rm -rf`, `git reset --hard`, `chmod 777`, fork-bomb signatures) or is a generic `shell.run` request:
-
-- `strict`: hard-deny. The brain sees an error.
-- `prompt` (default): modal in the TUI. `[y]` allow once, `[s]` allow session, `[n]` deny.
-- `off`: auto-approve. Toggle with `/yolo` or boot with `anima --yolo`.
-
-`approvals.allowlist` skips the gate for specific signatures. Useful for trusted workflows. Example:
-
-```ts
-approvals: {
-  mode: 'prompt',
-  allowlist: ['^shell\\.run\\|git status', '^web\\.fetch\\|https://api\\.example\\.com'],
-}
-```
-
-The `PathGuard` hard-deny (credential dirs, the agent state tree) applies in every mode including `off`.
-
-## Auto-topup
-
-When enabled, the agent self-funds its compute envelope from its EOA. Defaults are tuned for hackathon use:
-
-```ts
-economy: {
-  autoTopup: {
-    enabled: true,
-    pollIntervalMs: 5 * 60_000,   // every 5 min
-    compute: {
-      lowThreshold: 1.7,           // 0G; raised from 0.5 to absorb a single qwen3.6-plus inference lock
-      topUpAmount: 1.0,            // 0G
-      maxPerDay: 5,                // 0G
-    },
-    wallet: {
-      notifyThreshold: 2.0,        // notify operator when EOA drops below
-      minRetainedAfterTopup: 0.1,  // never spend below this in a top-up
-    },
-  },
-}
-```
-
-A 10-minute cooldown was added in v0.21.14 to kill the insufficient-wallet spam loop. Operator gets a notification via Telegram and TUI when topup fires, when wallet drops below `wallet.notifyThreshold`, and when topup fails (RPC error, insufficient agent balance, daily cap reached).
-
-## Sandbox
-
-Two distinct concerns under `sandbox`:
-
-**Where the harness runs** (`deployTarget` plus `sandbox.id`, `providerAddress`, `endpoint`, `snapshotName`). Local mode ignores all of these. Sandbox mode requires them; they get written by `anima deploy`.
-
-**How limb spawns are isolated** (`sandbox.mode`):
-
-| Mode | Behavior |
-|---|---|
-| `none` (default) | Passthrough. Permission floor only. |
-| `os` | Native OS sandbox. macOS `sandbox-exec`, Linux `bubblewrap`. Wraps every shell-class spawn. Falls back to passthrough with a warning if `bwrap` is missing on Linux. |
-| `docker` | Long-lived container per session. Default image `nikolaik/python-nodejs:python3.11-nodejs20`. Hardening always on: cap-drop ALL, no-new-privileges, pids-limit 256, sized tmpfs. |
-
-Docker mode additionally exposes `dockerImage`, `dockerMountWorkspace`, `dockerRuntimePath`, `dockerCpu`, `dockerMemoryMb`, `dockerDiskMb`, `dockerNoNetwork` for fine control. Defaults are unbounded so the container competes fairly with host work without OOM surprises.
-
-## Operator hint
-
-When you re-run a command that needs the operator wallet (chat, topup, restore), `anima` reads `operator` to skip the picker. Set by the init wizard:
-
-```ts
-operator: {
-  source: 'keystore-file',
-  keystorePath: '~/wallets/operator.json',
-}
-```
-
-Sources: `walletconnect`, `keychain` (macOS only, plus `keychainService`), `keystore-file` (plus `keystorePath`), `raw-privkey`.
-
-## Networks
-
-`NETWORK_RPC` and `NETWORK_CHAIN_ID` are exported at `packages/core/src/config.ts`:
-
-| Network | Chain ID | RPC |
-|---|---|---|
-| `0g-mainnet` | 16661 | `https://evmrpc.0g.ai` |
-| `0g-testnet` | 16602 | `https://evmrpc-testnet.0g.ai` |
-
-Block explorers: `chainscan.0g.ai` (mainnet), `chainscan-galileo.0g.ai` (testnet). Storage indexer (mainnet): `https://indexer-storage-turbo.0g.ai`.
-
 Read [Console](/docs/console) next.
 
-Source: [`packages/core/src/config.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/config.ts).
+Source: [`packages/core/src/config.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/config.ts), [`packages/core/src/identity/deployments.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/identity/deployments.ts).

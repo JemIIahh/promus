@@ -3,8 +3,8 @@ import { getNavTree } from '@/lib/docs'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'docs · anima',
-  description: 'How anima works, end to end. Install, architecture, every layer.',
+  title: 'docs · Promus',
+  description: 'How Promus works, end to end. Install, architecture, every layer.',
 }
 
 export default async function DocsOverviewPage() {
@@ -17,11 +17,12 @@ export default async function DocsOverviewPage() {
           className="font-display text-[clamp(40px,5vw,72px)] font-light leading-[1.04] tracking-[-0.018em] text-[var(--color-ink)]"
           style={{ fontVariationSettings: '"opsz" 96, "SOFT" 30, "WONK" 0' }}
         >
-          Run a sovereign agent on 0G.
+          Run a sovereign agent on Arbitrum.
         </h1>
         <p className="max-w-[60ch] text-[15.5px] leading-relaxed text-[var(--color-ink-2)]">
           Two commands take you from install to a live chat. The chapters that follow walk each
-          layer of the harness, the CLI and config reference, and the operator console at /console.
+          layer of the harness — identity, memory, brain, wallet, market, inbox — plus the CLI and
+          config reference.
         </p>
       </header>
 

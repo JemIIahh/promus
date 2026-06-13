@@ -45,35 +45,38 @@ const calSans = localFont({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://anima.s0nderlabs.xyz'),
-  title: 'anima · a fully sovereign agentic harness',
+  // TODO: real domain — promus.dev is a placeholder; the domain is not yet owned.
+  metadataBase: new URL('https://promus.dev'),
+  title: 'Promus · sovereign AI agents on Arbitrum',
   description:
-    'No host. No central operator. Fully on 0G. Identity, brain, memory, limbs, comms, and economy live on decentralized infrastructure. Mint once. Anima keeps running.',
-  applicationName: 'anima',
-  authors: [{ name: 's0nderlabs', url: 'https://x.com/s0nderlabs' }],
+    'A CLI-hosted agent runtime where identity, memory, reasoning, wallet, and economic life are an on-chain entity. Identity is an ERC-7857 iNFT on Arbitrum, memory is encrypted on IPFS, the brain is Claude. Run promus init once; close the laptop, the agent survives.',
+  applicationName: 'Promus',
+  authors: [{ name: 'Promus', url: 'https://github.com/JemIIahh/promus' }],
   keywords: [
-    'anima',
-    's0nderlabs',
-    '0G',
+    'Promus',
+    'Arbitrum',
     'sovereign agent',
     'AI agent',
+    'Claude',
+    'IPFS',
     'iNFT',
     'ERC-7857',
-    'TEE',
     'on-chain agent',
     'agentic harness',
   ],
   openGraph: {
     type: 'website',
-    title: 'anima · a fully sovereign agentic harness',
-    description: 'No host. No central operator. Fully on 0G. Mint once. Anima keeps running.',
-    siteName: 'anima',
+    title: 'Promus · sovereign AI agents on Arbitrum',
+    description:
+      'Identity on Arbitrum (ERC-7857 iNFT), memory encrypted on IPFS, brain on Claude. Run promus init once; the agent survives the operator.',
+    siteName: 'Promus',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'anima · a fully sovereign agentic harness',
-    description: 'No host. No central operator. Fully on 0G. Mint once. Anima keeps running.',
-    creator: '@s0nderlabs',
+    title: 'Promus · sovereign AI agents on Arbitrum',
+    description:
+      'Identity on Arbitrum (ERC-7857 iNFT), memory encrypted on IPFS, brain on Claude. Run promus init once; the agent survives the operator.',
+    creator: '@promus',
   },
   alternates: {
     types: {

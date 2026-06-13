@@ -34,15 +34,15 @@ export function ClosingCta() {
         Run a <span className="font-italic-serif italic">sovereign</span> agent.
       </h2>
       <p className="mt-5 max-w-md mx-auto text-[16px] leading-relaxed text-[var(--color-ink-2)]">
-        Mint once. Anima keeps running.
+        Mint once. The agent persists.
       </p>
 
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
         <Link
-          href="/console"
+          href="/docs"
           className="group inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] px-7 py-3.5 text-[15px] font-medium tracking-tight text-[var(--color-cream)] shadow-[0_18px_40px_-22px_rgba(26,20,16,0.7)] transition-transform hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]"
         >
-          <span>Run an agent</span>
+          <span>Read the docs</span>
           <span aria-hidden className="transition-transform group-hover:translate-x-1">
             →
           </span>
