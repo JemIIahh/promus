@@ -1,5 +1,5 @@
 import { cancel, confirm, intro, isCancel, note, outro } from '@clack/prompts'
-import { iNFTAgentId } from '@s0nderlabs/promus-core'
+import { iNFTAgentId } from 'promus-core'
 import { getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'

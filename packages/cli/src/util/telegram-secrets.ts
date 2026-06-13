@@ -32,7 +32,7 @@ import {
   encodeOperatorBlobBytes,
   encryptOperatorBlob,
   iNFTAgentId,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import type { Address } from 'viem'
 
 export interface TelegramSecretsPlaintext {

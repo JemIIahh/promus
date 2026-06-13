@@ -1,4 +1,4 @@
-import type { PairingStore } from '@s0nderlabs/promus-core'
+import type { PairingStore } from 'promus-core'
 import type { TelegramInboundEvent } from './types'
 
 /**

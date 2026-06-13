@@ -1,17 +1,17 @@
 {
-  "name": "@s0nderlabs/promus-gateway",
+  "name": "promus-gateway",
   "version": "0.24.17",
   "type": "module",
   "description": "Anima gateway daemon: long-running brain runtime, listeners, tool registry, memory sync. Runs locally (laptop) or remotely (0G Sandbox TDX TEE).",
   "license": "MIT",
-  "homepage": "https://github.com/s0nderlabs/anima",
+  "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s0nderlabs/anima.git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
     "directory": "packages/gateway"
   },
   "bugs": {
-    "url": "https://github.com/s0nderlabs/anima/issues"
+    "url": "https://github.com/JemIIahh/promus/issues"
   },
   "keywords": ["0g", "anima", "agent", "ai", "gateway", "daemon", "sandbox", "tee", "0g-sandbox"],
   "publishConfig": {
@@ -32,11 +32,11 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@s0nderlabs/promus-core": "workspace:*",
-    "@s0nderlabs/promus-plugin-comms": "workspace:*",
-    "@s0nderlabs/promus-plugin-onchain": "workspace:*",
-    "@s0nderlabs/promus-plugin-system": "workspace:*",
-    "@s0nderlabs/promus-plugin-telegram": "workspace:*",
+    "promus-core": "workspace:*",
+    "promus-plugin-comms": "workspace:*",
+    "promus-plugin-onchain": "workspace:*",
+    "promus-plugin-system": "workspace:*",
+    "promus-plugin-telegram": "workspace:*",
     "viem": "^2.21.55",
     "zod": "^3.24.1"
   }

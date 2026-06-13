@@ -44,4 +44,4 @@ If you want to deploy an autonomous agent that you do not have to run on your la
 
 Four groups, ten pages. Get started covers install and a first chat. Concepts walks each of the six layers and the tool model. Reference is the CLI surface and the config shape. Operate covers the operator console at `/console`.
 
-Source for everything in this section: [`README.md`](https://github.com/s0nderlabs/anima/blob/main/README.md), [`packages/core/src/index.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/index.ts).
+Source for everything in this section: [`README.md`](https://github.com/JemIIahh/promus/blob/main/README.md), [`packages/core/src/index.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/index.ts).

@@ -32,7 +32,7 @@ import {
   tryDecryptKeystoreWithKey,
   tryDecryptOperatorBlobWithKey,
   writeOperatorSession,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { spawnGatewayDaemon } from '../util/gateway-spawn'
@@ -60,7 +60,7 @@ export async function runGatewayStart(opts: GatewayStartOpts): Promise<void> {
   // v0.23.2: if the socket exists, check for version drift. If the running
   // daemon's version differs from the on-disk CLI binary, auto-restart so
   // operators don't have to remember `anima gateway restart` after every
-  // `bun add -g @s0nderlabs/promus@N`. If versions match, bail with the
+  // `bun add -g promus@N`. If versions match, bail with the
   // legacy "already running" error.
   if (existsSync(socketPath)) {
     const { createHash } = await import('node:crypto')

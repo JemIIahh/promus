@@ -2,8 +2,8 @@
  * `chain.send` — native or ERC-20 transfer.
  */
 
-import type { ToolDef } from '@s0nderlabs/promus-core'
-import { SANN_SUFFIX, getGasPriceWithFloor, resolveSubnameAddress } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
+import { SANN_SUFFIX, getGasPriceWithFloor, resolveSubnameAddress } from 'promus-core'
 import {
   type Address,
   type PublicClient,

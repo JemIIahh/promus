@@ -3,8 +3,8 @@ import type {
   PermissionMode,
   PermissionRequest,
   SlashCommand,
-} from '@s0nderlabs/promus-core'
-import { type JobEvent, isJobTerminalKind } from '@s0nderlabs/promus-plugin-comms'
+} from 'promus-core'
+import { type JobEvent, isJobTerminalKind } from 'promus-plugin-comms'
 import { createSignal } from 'solid-js'
 
 export type TurnRole =

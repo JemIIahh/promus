@@ -16,7 +16,7 @@ export async function generateStaticParams() {
 }
 
 const SITE_ORIGIN = 'https://anima.s0nderlabs.xyz'
-const REPO_BASE = 'https://github.com/s0nderlabs/anima/blob/main/'
+const REPO_BASE = 'https://github.com/JemIIahh/promus/blob/main/'
 
 const TEXT_HEADERS = {
   'Content-Type': 'text/plain; charset=utf-8',
@@ -88,11 +88,11 @@ bun is REQUIRED. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` put
 
 \`\`\`
 curl -fsSL https://bun.sh/install | bash
-bun add -g @s0nderlabs/promus
+bun add -g promus
 anima init
 \`\`\`
 
-Current version: 0.24.17. Requires bun >=1.1. Published as \`@s0nderlabs/promus\` on npm; binary name is \`anima\`.
+Current version: 0.24.17. Requires bun >=1.1. Published as \`promus\` on npm; binary name is \`anima\`.
 
 ## For AI agents
 
@@ -107,9 +107,9 @@ ${docBullets}
 
 ## Reference
 
-- README: https://github.com/s0nderlabs/anima#readme
+- README: https://github.com/JemIIahh/promus#readme
 - Console: ${SITE_ORIGIN}/console
-- Releases: https://github.com/s0nderlabs/anima/releases
+- Releases: https://github.com/JemIIahh/promus/releases
 - Networks: mainnet chainId 16661 (https://evmrpc.0g.ai), testnet Galileo chainId 16602 (https://evmrpc-testnet.0g.ai)
 - PromusAgentNFT (ERC-7857): 0x9e71d79f06f956d4d2666b5c93dafab721c84721 (mainnet + Galileo testnet via CREATE2)
 - PromusSubnameRegistrar: 0x33d9f4ec2bd7e7cb4e288c3bbc3a76be472fdd98 (mainnet)
@@ -126,7 +126,7 @@ async function renderLlmsFull(): Promise<string> {
 
 > First fully on-chain sovereign agent harness on 0G. This file inlines every documentation page plus the repo README. Sections separated by horizontal rules. Each doc body is preceded by a source pointer when frontmatter declares one.
 
-> Single most common install failure: bun must be installed FIRST. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` succeeds and the binary lands on PATH, but it exits at runtime with \`env: bun: No such file or directory\`. Always run \`curl -fsSL https://bun.sh/install | bash\` then \`bun add -g @s0nderlabs/promus\`.
+> Single most common install failure: bun must be installed FIRST. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` succeeds and the binary lands on PATH, but it exits at runtime with \`env: bun: No such file or directory\`. Always run \`curl -fsSL https://bun.sh/install | bash\` then \`bun add -g promus\`.
 
 > \`anima init\` is interactive. Eight blocking @clack/prompts selects with no env-var bypass (except \`ANIMA_OPERATOR_PRIVKEY\`). Two completion paths from an agent: guide the human, or puppet the TUI with \`tmux send-keys\` if you have shell access. Naive stdin piping fails because @clack checks for a real TTY.
 
@@ -170,6 +170,6 @@ async function readReadme(): Promise<string> {
   try {
     return await fs.readFile(readmePath, 'utf8')
   } catch {
-    return '# anima\n\nREADME not bundled in this build. Read it at https://github.com/s0nderlabs/anima#readme'
+    return '# anima\n\nREADME not bundled in this build. Read it at https://github.com/JemIIahh/promus#readme'
   }
 }

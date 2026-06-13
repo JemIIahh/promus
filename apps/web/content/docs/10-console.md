@@ -25,7 +25,7 @@ The console at [anima.s0nderlabs.xyz/console](https://anima.s0nderlabs.xyz/conso
 
 The memory key never leaves the browser tab. The agent private key never leaves the browser tab. Refresh the page and you unlock again.
 
-Source: [`apps/web/app/console`](https://github.com/s0nderlabs/anima/tree/main/apps/web/app/console).
+Source: [`apps/web/app/console`](https://github.com/JemIIahh/promus/tree/main/apps/web/app/console).
 
 ## What you can do
 
@@ -37,7 +37,7 @@ Source: [`apps/web/app/console`](https://github.com/s0nderlabs/anima/tree/main/a
 
 **Wallet.** Agent EOA balance on 0G Mainnet. (Top-up flows are CLI-only today; the console is read-only on the wallet tab.)
 
-Source: [`apps/web/components/console`](https://github.com/s0nderlabs/anima/tree/main/apps/web/components/console).
+Source: [`apps/web/components/console`](https://github.com/JemIIahh/promus/tree/main/apps/web/components/console).
 
 ## SIWE and sessions
 
@@ -45,7 +45,7 @@ Source: [`apps/web/components/console`](https://github.com/s0nderlabs/anima/tree
 
 No server-held key material. The cookie is signed (HMAC) but contains only the address and chainId; the seal secret protects against forgery.
 
-Source: [`apps/web/app/api/auth`](https://github.com/s0nderlabs/anima/tree/main/apps/web/app/api/auth).
+Source: [`apps/web/app/api/auth`](https://github.com/JemIIahh/promus/tree/main/apps/web/app/api/auth).
 
 ## How the keystore unlock works
 
@@ -63,7 +63,7 @@ EIP-712 domain includes the iNFT contract address, the token id, and (for v0.6+ 
 
 `agentPrivkey` and `memoryKey` are placed into a React context. The unlock component defensively calls wagmi's `useConnect({ connector })` when `useAccount.address` is null after a hard navigation, because kura and some wallets return `[]` from `eth_accounts` after a hard nav (`feedback-kura-no-persistent-auth-across-hard-nav`).
 
-Source: [`apps/web/components/console/UnlockKeystore.tsx`](https://github.com/s0nderlabs/anima/blob/main/apps/web/components/console/UnlockKeystore.tsx).
+Source: [`apps/web/components/console/UnlockKeystore.tsx`](https://github.com/JemIIahh/promus/blob/main/apps/web/components/console/UnlockKeystore.tsx).
 
 ## What is not in the console (yet)
 
@@ -75,4 +75,4 @@ The console is the audit and observability surface. The CLI is the command surfa
 
 Read the [Quickstart](/docs/quickstart) or jump back to [Introduction](/docs/introduction) for the framing.
 
-Source: [`apps/web/app/console`](https://github.com/s0nderlabs/anima/tree/main/apps/web/app/console).
+Source: [`apps/web/app/console`](https://github.com/JemIIahh/promus/tree/main/apps/web/app/console).

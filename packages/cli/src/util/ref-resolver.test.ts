@@ -14,7 +14,7 @@ const latestFetch = (tagName: string) =>
       jsonResponse(200, {
         tag_name: tagName,
         published_at: '2026-05-03T04:00:00Z',
-        html_url: `https://github.com/s0nderlabs/anima/releases/tag/${tagName}`,
+        html_url: `https://github.com/JemIIahh/promus/releases/tag/${tagName}`,
       }),
     )) as unknown as typeof fetch
 

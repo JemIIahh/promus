@@ -1,17 +1,17 @@
 {
-  "name": "@s0nderlabs/promus-plugin-system",
+  "name": "promus-plugin-system",
   "version": "0.24.17",
   "type": "module",
   "description": "Filesystem + shell + browser + skills tools plugin for anima",
   "license": "MIT",
-  "homepage": "https://github.com/s0nderlabs/anima",
+  "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s0nderlabs/anima.git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
     "directory": "packages/plugin-system"
   },
   "bugs": {
-    "url": "https://github.com/s0nderlabs/anima/issues"
+    "url": "https://github.com/JemIIahh/promus/issues"
   },
   "keywords": ["0g", "anima", "agent", "fs", "shell", "browser", "tools", "plugin"],
   "publishConfig": {
@@ -28,7 +28,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@s0nderlabs/promus-core": "workspace:*",
+    "promus-core": "workspace:*",
     "agent-browser": "^0.26.0",
     "zod": "^3.24.1"
   }

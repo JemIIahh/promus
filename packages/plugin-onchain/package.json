@@ -1,17 +1,17 @@
 {
-  "name": "@s0nderlabs/promus-plugin-onchain",
+  "name": "promus-plugin-onchain",
   "version": "0.24.17",
   "type": "module",
   "description": "On-chain wallet + chain ops plugin for anima (JAINE swap, Gimo LST, Multicall3 discovery)",
   "license": "MIT",
-  "homepage": "https://github.com/s0nderlabs/anima",
+  "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s0nderlabs/anima.git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
     "directory": "packages/plugin-onchain"
   },
   "bugs": {
-    "url": "https://github.com/s0nderlabs/anima/issues"
+    "url": "https://github.com/JemIIahh/promus/issues"
   },
   "keywords": ["0g", "anima", "agent", "wallet", "defi", "swap", "jaine", "gimo", "plugin"],
   "publishConfig": {
@@ -28,7 +28,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@s0nderlabs/promus-core": "workspace:*",
+    "promus-core": "workspace:*",
     "viem": "^2.21.55",
     "zod": "^3.23.8"
   }

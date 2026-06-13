@@ -45,15 +45,15 @@ import {
   readIndexFile,
   runEscalation,
   scanSkills,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import {
   type CommsRuntimeContext,
   type DeliveredMessage,
   type JobEvent,
   MARKETPLACE_GUIDANCE,
   type OperatorNotice,
-} from '@s0nderlabs/promus-plugin-comms'
-import { ONCHAIN_GUIDANCE, type OnchainRuntimeContext } from '@s0nderlabs/promus-plugin-onchain'
+} from 'promus-plugin-comms'
+import { ONCHAIN_GUIDANCE, type OnchainRuntimeContext } from 'promus-plugin-onchain'
 import {
   type ApprovalChoiceKind,
   type ParsedBypass,
@@ -66,7 +66,7 @@ import {
   makeApprovalIdFactory,
   parseBypassCommand,
   stripTelegramChannelEnvelope,
-} from '@s0nderlabs/promus-plugin-telegram'
+} from 'promus-plugin-telegram'
 import type { Address, Hex } from 'viem'
 import type { ApprovalRelay } from './approval-relay'
 import type { EventHub } from './events'
@@ -538,7 +538,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
   // are visible to `anima pairing approve` running on the operator's machine.
   // The daemon's tmp-scratch agentDir (under TMPDIR/anima-gateway) is NOT
   // the right location; it diverges from where the CLI reads from.
-  const { PairingStore, agentPaths } = await import('@s0nderlabs/promus-core')
+  const { PairingStore, agentPaths } = await import('promus-core')
   const pairingStore = new PairingStore({ dir: agentPaths.agent(agentId).pairingDir })
 
   let telegram: TelegramRuntimeContext | undefined
@@ -599,7 +599,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
   // OGComputeBrain on the same provider/model with a custom system prompt
   // and the requested tool subset. Without this the delegate.task tool
   // never registers (the plugin gates registration on ctx.delegateFactory).
-  const delegateFactory: import('@s0nderlabs/promus-core').DelegateBrainFactory = async ({
+  const delegateFactory: import('promus-core').DelegateBrainFactory = async ({
     systemPrompt,
     tools: subTools,
   }) => {
@@ -622,7 +622,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
           prefix: subPrefix,
         })
     await subBrain.init()
-    return subBrain as unknown as import('@s0nderlabs/promus-core').DelegateBrainHandle
+    return subBrain as unknown as import('promus-core').DelegateBrainHandle
   }
 
   // Resolver imports plugin packages directly (workspace deps; cycle-free).
@@ -649,13 +649,13 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
     resolve: async name => {
       switch (name) {
         case 'system':
-          return await import('@s0nderlabs/promus-plugin-system')
+          return await import('promus-plugin-system')
         case 'comms':
-          return await import('@s0nderlabs/promus-plugin-comms')
+          return await import('promus-plugin-comms')
         case 'onchain':
-          return await import('@s0nderlabs/promus-plugin-onchain')
+          return await import('promus-plugin-onchain')
         case 'telegram':
-          return await import('@s0nderlabs/promus-plugin-telegram')
+          return await import('promus-plugin-telegram')
         default:
           throw new Error(`unknown first-party plugin: ${name}`)
       }

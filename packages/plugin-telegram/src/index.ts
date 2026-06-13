@@ -1,5 +1,5 @@
 /**
- * @s0nderlabs/promus-plugin-telegram
+ * promus-plugin-telegram
  *
  * Long-poll Telegram bot listener. Operator DMs `@anima_<name>_bot` from any
  * phone; the agent (running in 0G Sandbox or local) replies via the same
@@ -15,7 +15,7 @@
  * Without `ctx.telegram`, the plugin registers nothing (graceful no-op for
  * unit-test loaders).
  */
-import type { NativePlugin } from '@s0nderlabs/promus-core'
+import type { NativePlugin } from 'promus-core'
 import { TelegramListener } from './listener'
 import type { TelegramRuntimeContext } from './types'
 

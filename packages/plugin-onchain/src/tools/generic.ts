@@ -9,8 +9,8 @@
  * the interface friendly for the LLM. Hex strings stay as-is.
  */
 
-import type { ToolDef } from '@s0nderlabs/promus-core'
-import { getGasPriceWithFloor } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
+import { getGasPriceWithFloor } from 'promus-core'
 import {
   type Address,
   decodeAbiParameters,

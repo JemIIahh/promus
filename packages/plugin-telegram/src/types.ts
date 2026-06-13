@@ -1,4 +1,4 @@
-import type { PairingStore } from '@s0nderlabs/promus-core'
+import type { PairingStore } from 'promus-core'
 
 /**
  * Side-band runtime context for plugin-telegram. The CLI (chat.tsx, local

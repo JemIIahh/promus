@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { LocalBackend, type SandboxBackend, type ToolDef, redactEnv } from '@s0nderlabs/promus-core'
+import { LocalBackend, type SandboxBackend, type ToolDef, redactEnv } from 'promus-core'
 import { z } from 'zod'
 import { type WorkingDirState, resolveCwd } from './cwd-state'
 

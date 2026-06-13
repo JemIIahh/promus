@@ -7,7 +7,7 @@ import {
   fetchAndDecryptKeystore,
   iNFTAgentId,
   openComputeLedger,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import type { Address, Hex } from 'viem'
 import { loadOrPickOperatorSigner } from './operator-picker'
 import { readWizardState, updateWizardState } from './wizard-state'

@@ -34,7 +34,7 @@ Each slot stores a `bytes32` root hash that resolves to an encrypted blob on 0G 
 
 Slots 0 to 3 form the agent partition. Slot 4 is the keystore. Slot 5 is the rolling activity log. User-partition files (`/user/*`) are anchored to 0G Storage but never to the iNFT, so they purge cleanly on transfer.
 
-Source: [`packages/core/src/identity/intelligent-data.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/identity/intelligent-data.ts).
+Source: [`packages/core/src/identity/intelligent-data.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/identity/intelligent-data.ts).
 
 ## The agent ID
 
@@ -46,7 +46,7 @@ agentId = keccak256(`${contractAddress.toLowerCase()}:${tokenId}`).slice(2, 18)
 
 So `~/.anima/agents/<agentId>/` is unambiguous. Two agents on two different contracts cannot collide.
 
-Source: [`packages/core/src/identity/mint.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/identity/mint.ts).
+Source: [`packages/core/src/identity/mint.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/identity/mint.ts).
 
 ## The two wallets
 
@@ -56,7 +56,7 @@ Source: [`packages/core/src/identity/mint.ts`](https://github.com/s0nderlabs/ani
 
 `anima restore <iNFT-ref>` on a new machine: read slot 4, download the ciphertext, prompt the operator wallet for a sign, derive the key, decrypt the keystore, rehydrate the agent.
 
-Source: [`packages/core/src/wallet`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/wallet), [`packages/cli/src/commands/restore.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/cli/src/commands/restore.ts).
+Source: [`packages/core/src/wallet`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/wallet), [`packages/cli/src/commands/restore.ts`](https://github.com/JemIIahh/promus/blob/main/packages/cli/src/commands/restore.ts).
 
 ## Subnames under .anima.0g
 
@@ -66,7 +66,7 @@ The pubkey record is the gossip plane for A2A messaging. To DM `alice.anima.0g`,
 
 Filtering by operator returns zero claims because the contract emits `SubnameClaimed(claimer == owner == agentEOA)`. Scan all events globally if you need a roster.
 
-Source: [`packages/core/src/naming`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/naming).
+Source: [`packages/core/src/naming`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/naming).
 
 ## Inspect what is anchored
 
@@ -74,7 +74,7 @@ Source: [`packages/core/src/naming`](https://github.com/s0nderlabs/anima/tree/ma
 
 Foreign iNFTs are auditable in raw mode. Pass a positional ref: `anima inspect 0g-mainnet:0xCONTRACT:tokenId` and you see the slot layout and sizes without needing the decryption key.
 
-Source: [`packages/core/src/identity/inspect.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/identity/inspect.ts).
+Source: [`packages/core/src/identity/inspect.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/identity/inspect.ts).
 
 ## Transfer semantics
 
@@ -84,4 +84,4 @@ The agent on the new machine has the same name, the same persona, the same long-
 
 Read [Memory](/docs/memory) next.
 
-Source: [`packages/core/src/identity/contract.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/identity/contract.ts), [`contracts/src/PromusAgentNFT.sol`](https://github.com/s0nderlabs/anima/blob/main/contracts/src/PromusAgentNFT.sol).
+Source: [`packages/core/src/identity/contract.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/identity/contract.ts), [`contracts/src/PromusAgentNFT.sol`](https://github.com/JemIIahh/promus/blob/main/contracts/src/PromusAgentNFT.sol).

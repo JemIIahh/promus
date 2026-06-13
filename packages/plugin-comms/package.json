@@ -1,17 +1,17 @@
 {
-  "name": "@s0nderlabs/promus-plugin-comms",
+  "name": "promus-plugin-comms",
   "version": "0.24.17",
   "type": "module",
   "description": "A2A messaging (PromusInbox) + ERC-8183 marketplace plugin for anima",
   "license": "MIT",
-  "homepage": "https://github.com/s0nderlabs/anima",
+  "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s0nderlabs/anima.git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
     "directory": "packages/plugin-comms"
   },
   "bugs": {
-    "url": "https://github.com/s0nderlabs/anima/issues"
+    "url": "https://github.com/JemIIahh/promus/issues"
   },
   "keywords": ["0g", "anima", "agent", "a2a", "ecies", "marketplace", "erc-8183", "plugin"],
   "publishConfig": {
@@ -28,7 +28,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@s0nderlabs/promus-core": "workspace:*",
+    "promus-core": "workspace:*",
     "eth-crypto": "^4.0.0",
     "viem": "^2.21.55",
     "zod": "^3.23.8"

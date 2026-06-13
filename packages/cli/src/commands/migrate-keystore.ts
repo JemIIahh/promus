@@ -7,7 +7,7 @@ import {
   defineConfig,
   iNFTAgentId,
   uploadKeystore,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { type Address, bytesToHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { findAndLoadConfig } from '../config/load'

@@ -13,7 +13,7 @@ import {
   iNFTAgentId,
   transferFundToProvider,
   waitForReceiptResilient,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { type Address, formatEther, getAddress, parseEther } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { withSilencedConsole } from '../util/silence-console'

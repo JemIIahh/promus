@@ -1,4 +1,4 @@
-import { type PromusNetwork, NETWORK_CHAIN_ID, networkFromChainId } from '@s0nderlabs/promus-core'
+import { type PromusNetwork, NETWORK_CHAIN_ID, networkFromChainId } from 'promus-core'
 import type { Address } from 'viem'
 
 /**

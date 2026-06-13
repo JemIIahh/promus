@@ -1,5 +1,5 @@
 import { cancel, intro, isCancel, note, outro, select, spinner } from '@clack/prompts'
-import { NETWORK_CHAIN_ID, iNFTAgentId } from '@s0nderlabs/promus-core'
+import { NETWORK_CHAIN_ID, iNFTAgentId } from 'promus-core'
 import type { Address, Hex } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'

@@ -8,7 +8,7 @@ import {
   explorerTxUrl,
   fetchAndDecryptKeystore,
   iNFTAgentId,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import type { Address, Hex } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { withSilencedConsole } from '../util/silence-console'

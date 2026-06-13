@@ -1,5 +1,5 @@
 /**
- * @s0nderlabs/promus-plugin-onchain
+ * promus-plugin-onchain
  *
  * 19 brain limbs for on-chain operations on 0G mainnet:
  *
@@ -18,7 +18,7 @@
  * nothing — graceful no-op for unit-test loaders.
  */
 
-import type { NativePlugin, ToolDef } from '@s0nderlabs/promus-core'
+import type { NativePlugin, ToolDef } from 'promus-core'
 import { makeAccountInfo } from './tools/account'
 import { makeAccountBalance } from './tools/account-balance'
 import { makeChainActivity, makeChainContract, makeChainTx } from './tools/analysis'

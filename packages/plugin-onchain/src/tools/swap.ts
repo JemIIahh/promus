@@ -5,8 +5,8 @@
  * matches what was quoted (re-quote at exec for slippage protection).
  */
 
-import type { ToolDef } from '@s0nderlabs/promus-core'
-import { getGasPriceWithFloor } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
+import { getGasPriceWithFloor } from 'promus-core'
 import { type Address, formatUnits, parseUnits } from 'viem'
 import { z } from 'zod'
 import { ensureAllowance } from '../allowance'

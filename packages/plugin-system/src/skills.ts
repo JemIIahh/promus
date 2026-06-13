@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { type SkillRef, type ToolDef, coerceInt, scanSkills } from '@s0nderlabs/promus-core'
+import { type SkillRef, type ToolDef, coerceInt, scanSkills } from 'promus-core'
 import { z } from 'zod'
 
 /**

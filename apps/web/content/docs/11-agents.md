@@ -17,22 +17,22 @@ If you only read one line: **bun is required, `npm install -g` succeeds but the 
 
 ## The install gotcha that bites every agent
 
-The CLI ships with the shebang `#!/usr/bin/env bun`. When a user runs `npm install -g @s0nderlabs/promus`, the install step succeeds and a working `anima` binary lands on `PATH`. The next time the binary runs, the OS resolves the shebang and exits with `env: bun: No such file or directory`. Most agents see the install succeed and assume the next failure is unrelated.
+The CLI ships with the shebang `#!/usr/bin/env bun`. When a user runs `npm install -g promus`, the install step succeeds and a working `anima` binary lands on `PATH`. The next time the binary runs, the OS resolves the shebang and exits with `env: bun: No such file or directory`. Most agents see the install succeed and assume the next failure is unrelated.
 
 Install bun first. Always.
 
 ```
 curl -fsSL https://bun.sh/install | bash
-bun add -g @s0nderlabs/promus
+bun add -g promus
 anima init
 ```
 
-The published package is [`@s0nderlabs/promus`](https://www.npmjs.com/package/@s0nderlabs/promus). The bin name is `anima`. Requires bun >=1.1. Current release is v0.24.17, pre-alpha. Always have the user run `anima --version` so you know exactly what surface you are working against.
+The published package is [`promus`](https://www.npmjs.com/package/promus). The bin name is `anima`. Requires bun >=1.1. Current release is v0.24.17, pre-alpha. Always have the user run `anima --version` so you know exactly what surface you are working against.
 
 ## What you can do for the user
 
-- Install the package (`bun add -g @s0nderlabs/promus`) and dependencies (`bun` itself, if missing).
-- Read and write `anima.config.ts` in the user's project directory. The type is exported as `defineConfig` from `@s0nderlabs/promus-core`. See [Configuration](/docs/configuration).
+- Install the package (`bun add -g promus`) and dependencies (`bun` itself, if missing).
+- Read and write `anima.config.ts` in the user's project directory. The type is exported as `defineConfig` from `promus-core`. See [Configuration](/docs/configuration).
 - Explain commands. The CLI surface is documented at [CLI](/docs/cli). The five commands the user will run most often are `anima init`, `anima` (drops into TUI), `anima status`, `anima balance`, `anima logs --tail N`.
 - Debug errors. Run `anima status` and `anima logs --tail 50` and read the output. Activity log paths are documented below.
 - Inspect on-chain state. `anima inspect [ref]` decodes the IntelligentData slots for any iNFT, including foreign ones with `--raw`. See [Identity](/docs/identity).

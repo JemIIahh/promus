@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import type { PromusConfig } from '@s0nderlabs/promus-core'
+import type { PromusConfig } from 'promus-core'
 import { renderConfigTs } from './render'
 
 const baseConfig: PromusConfig = {

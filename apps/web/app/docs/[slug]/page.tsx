@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-const SOURCE_BASE = 'https://github.com/s0nderlabs/anima/blob/main/'
+const SOURCE_BASE = 'https://github.com/JemIIahh/promus/blob/main/'
 
 export default async function DocPage({ params }: PageProps) {
   const { slug } = await params

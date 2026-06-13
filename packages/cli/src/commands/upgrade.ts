@@ -6,7 +6,7 @@ import {
   SANDBOX_PROVIDER_URL_GALILEO,
   SandboxProviderClient,
   iNFTAgentId,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import {
   type BootstrapMode,
   UPGRADE_DONE_MARKER,
@@ -15,7 +15,7 @@ import {
   UPGRADE_PROGRESS_LOG,
   UPGRADE_SUCCESS_MARKER_PREFIX,
   buildUpgradeScript,
-} from '@s0nderlabs/promus-gateway'
+} from 'promus-gateway'
 import type { Address, Hex } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'
@@ -384,7 +384,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
   if (expected !== null) {
     const verifyPath =
       probedMode === 'npm'
-        ? '$HOME/.bun/install/global/node_modules/@s0nderlabs/promus-gateway/package.json'
+        ? '$HOME/.bun/install/global/node_modules/promus-gateway/package.json'
         : '$HOME/anima/packages/gateway/package.json'
     const verifyOut = await execRead(`grep '"version"' ${verifyPath} | head -1`)
     const m = verifyOut.match(/"version"\s*:\s*"([^"]+)"/)
@@ -403,7 +403,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
     if (actual !== expected) {
       // v0.24.4: when npm `latest` is newer than the github release `latest`
       // tag (common during a ship window where the tag was published seconds
-      // before the github release was cut), `npm install @s0nderlabs/promus-cli@latest`
+      // before the github release was cut), `npm install promus-cli@latest`
       // pulls a NEWER version than `expected`. Treat newer-than-requested as
       // a soft pass: print a note, continue handoff, don't bail out.
       const cmpNewer = isSemverNewer(actual, expected)

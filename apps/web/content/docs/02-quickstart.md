@@ -29,10 +29,10 @@ So a Starter (3 0G ledger) mint costs the operator around 3.12 0G total. Standar
 ## Install
 
 ```
-bun add -g @s0nderlabs/promus
+bun add -g promus
 ```
 
-That installs the CLI binary as `anima` on your PATH and pulls every workspace package (`@s0nderlabs/promus-core`, `anima-plugin-onchain`, `anima-plugin-comms`, `anima-plugin-system`, `anima-plugin-telegram`, `anima-gateway`) as transitive deps.
+That installs the CLI binary as `anima` on your PATH and pulls every workspace package (`promus-core`, `anima-plugin-onchain`, `anima-plugin-comms`, `anima-plugin-system`, `anima-plugin-telegram`, `anima-gateway`) as transitive deps.
 
 ## Init
 
@@ -96,4 +96,4 @@ The agent is fully sovereign once init completes. You do not need to keep the CL
 
 Read [Architecture](/docs/architecture) next to understand how the layers fit together.
 
-Source: [`packages/cli/src/commands/init.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/cli/src/commands/init.ts), [`packages/cli/src/commands/init`](https://github.com/s0nderlabs/anima/tree/main/packages/cli/src/commands/init).
+Source: [`packages/cli/src/commands/init.ts`](https://github.com/JemIIahh/promus/blob/main/packages/cli/src/commands/init.ts), [`packages/cli/src/commands/init`](https://github.com/JemIIahh/promus/tree/main/packages/cli/src/commands/init).

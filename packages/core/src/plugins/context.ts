@@ -155,7 +155,7 @@ export interface PluginLoaderDeps {
   telegram?: unknown
   /**
    * Resolver for `name` → ESM module path. Defaults to dynamic import of
-   * `@s0nderlabs/promus-plugin-<name>`. Tests pass a stub.
+   * `promus-plugin-<name>`. Tests pass a stub.
    */
   resolve?: (name: string) => Promise<{ default?: NativePlugin } & Partial<NativePlugin>>
 }
@@ -192,7 +192,7 @@ export async function loadPlugins(
     try {
       const mod = deps.resolve
         ? await deps.resolve(name)
-        : ((await import(`@s0nderlabs/promus-plugin-${name}`)) as {
+        : ((await import(`promus-plugin-${name}`)) as {
             default?: NativePlugin
           } & Partial<NativePlugin>)
       const plugin: NativePlugin | undefined =

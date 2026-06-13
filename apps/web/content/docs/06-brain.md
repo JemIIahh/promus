@@ -19,7 +19,7 @@ The brain runs entirely on 0G Compute via the `@0glabs/0g-serving-broker` SDK. T
 
 The default flagship is whatever model 0G Compute features at the top. GLM-5 was first-class through Q1. Qwen3.6 took over. There is no hardcoded default in anima; the wizard pulls live every time.
 
-Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/og-compute.ts).
+Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/og-compute.ts).
 
 ## How a turn happens
 
@@ -42,7 +42,7 @@ The serving-broker maintains a per-agent ledger that prepays for inference. `bro
 
 `anima balance` shows the full position in one read-only call: main ledger total, per-provider available, per-provider locked, plus EOA balance and sandbox billing reserve. Use this before topping up so you know what is already locked versus available.
 
-Source: [`packages/core/src/brain/ledger.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/ledger.ts), [`packages/cli/src/commands/balance.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/cli/src/commands/balance.ts).
+Source: [`packages/core/src/brain/ledger.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/ledger.ts), [`packages/cli/src/commands/balance.ts`](https://github.com/JemIIahh/promus/blob/main/packages/cli/src/commands/balance.ts).
 
 ## Auto-topup
 
@@ -50,7 +50,7 @@ Source: [`packages/core/src/brain/ledger.ts`](https://github.com/s0nderlabs/anim
 
 A 10-minute cooldown was added in v0.21.14 to kill the "insufficient wallet" spam loop that happened when the agent EOA ran dry mid-poll. Operator can override the polling interval via config.
 
-Source: [`packages/core/src/economy/auto-topup.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/economy/auto-topup.ts).
+Source: [`packages/core/src/economy/auto-topup.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/economy/auto-topup.ts).
 
 ## Vision
 
@@ -58,13 +58,13 @@ The `vision.analyze` tool routes screenshots and image files through a separate 
 
 `browser.vision` is a convenience: screenshot the active agent-browser tab plus route through the same provider in one tool call.
 
-Source: [`packages/core/src/brain/broker-pool.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/broker-pool.ts).
+Source: [`packages/core/src/brain/broker-pool.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/broker-pool.ts).
 
 ## Compaction
 
 When estimated token count breaches `compaction.threshold * contextWindow`, the brain folds the oldest portion of conversation history into a summary. The summary is generated via a separate broker call with `SUMMARY_SYSTEM_PROMPT` and `max_tokens: 1024`. Older turns are replaced by the summary in subsequent inferences. The frozen prefix never compacts.
 
-Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/og-compute.ts).
+Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/og-compute.ts).
 
 ## Fail loud
 
@@ -74,4 +74,4 @@ Post-MVP, a user-local relay limb is on the roadmap: the user runs `anima-limb` 
 
 Read [Tools](/docs/tools) next.
 
-Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/og-compute.ts), [`packages/core/src/brain/ledger.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/brain/ledger.ts).
+Source: [`packages/core/src/brain/og-compute.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/og-compute.ts), [`packages/core/src/brain/ledger.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/brain/ledger.ts).

@@ -1,7 +1,7 @@
 /**
  * `anima gateway run` — foreground daemon (blocks; Ctrl+C to stop).
  *
- * Spawns `anima-gateway-local` (the bin in @s0nderlabs/promus-gateway) with
+ * Spawns `anima-gateway-local` (the bin in promus-gateway) with
  * inherit stdio so the user sees logs live. Reads operator-session for the
  * cached AES keys; fails loud if no session exists ("run anima gateway start
  * first").

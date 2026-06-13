@@ -11,7 +11,7 @@
  *
  * Two modes (mirror bootstrap.ts):
  *  - 'git' (default): cd $HOME/anima && git fetch + checkout + bun install
- *  - 'npm': bun add -g @s0nderlabs/promus@<version> (overwrites global install)
+ *  - 'npm': bun add -g promus@<version> (overwrites global install)
  *
  * Mode is set by the caller, NOT auto-detected (would push the script over
  * Daytona's 5KB request-size cap). The CLI probes the container filesystem
@@ -155,7 +155,7 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
 }
 
 function buildGitInnerScript(opts: BuildUpgradeScriptOpts): string {
-  const repoUrl = opts.repoUrl ?? 'https://github.com/s0nderlabs/anima.git'
+  const repoUrl = opts.repoUrl ?? 'https://github.com/JemIIahh/promus.git'
   const preamble = buildPreambleLines(opts, 'git')
   const installLines = [
     `cd "$HOME/anima" || { echo "anima-dir-missing" > ${FAIL_MARKER}; exit 20; }`,
@@ -183,9 +183,9 @@ function buildNpmInnerScript(opts: BuildUpgradeScriptOpts): string {
   }
   const preamble = buildPreambleLines(opts, 'npm')
   const installLines = [
-    `echo "  package=@s0nderlabs/promus@${opts.packageVersion}"`,
+    `echo "  package=promus@${opts.packageVersion}"`,
     // Idempotent: same version twice = no-op; new version = clean swap.
-    `retry 'anima install' bun add -g ${shQuote(`@s0nderlabs/promus@${opts.packageVersion}`)} || { echo "anima-install-failed" > ${FAIL_MARKER}; exit 21; }`,
+    `retry 'anima install' bun add -g ${shQuote(`promus@${opts.packageVersion}`)} || { echo "anima-install-failed" > ${FAIL_MARKER}; exit 21; }`,
     `export PATH="${BUN_GLOBAL_BIN_SHELL}:$PATH"`,
     '',
     'echo "[browser deps]"',

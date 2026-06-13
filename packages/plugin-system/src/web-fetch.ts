@@ -1,4 +1,4 @@
-import type { ToolDef } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
 import { z } from 'zod'
 
 /**

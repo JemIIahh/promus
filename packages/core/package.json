@@ -1,17 +1,17 @@
 {
-  "name": "@s0nderlabs/promus-core",
+  "name": "promus-core",
   "version": "0.24.17",
   "type": "module",
   "description": "Always-on infrastructure for anima, the sovereign agent gateway on 0G (runtime, brain, identity, memory, storage, wallet, tool registry)",
   "license": "MIT",
-  "homepage": "https://github.com/s0nderlabs/anima",
+  "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s0nderlabs/anima.git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/s0nderlabs/anima/issues"
+    "url": "https://github.com/JemIIahh/promus/issues"
   },
   "keywords": ["0g", "anima", "agent", "ai", "sovereign", "gateway", "inft", "erc-7857"],
   "publishConfig": {

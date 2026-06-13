@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { agentPaths, iNFTAgentId, placeholderAgentId } from '@s0nderlabs/promus-core'
+import { agentPaths, iNFTAgentId, placeholderAgentId } from 'promus-core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { SandboxClient } from '../sandbox/client'

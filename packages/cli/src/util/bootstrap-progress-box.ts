@@ -18,7 +18,7 @@
  * when stdout is not a TTY (CI, piped output).
  */
 
-import { BOOTSTRAP_STAGE_MARKERS } from '@s0nderlabs/promus-gateway'
+import { BOOTSTRAP_STAGE_MARKERS } from 'promus-gateway'
 
 const TIME_SLOT_WIDTH = 7
 const LABEL_WIDTH = 32

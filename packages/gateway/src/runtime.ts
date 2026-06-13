@@ -1,4 +1,4 @@
-import type { PromusNetwork } from '@s0nderlabs/promus-core'
+import type { PromusNetwork } from 'promus-core'
 import type { Address, Hex } from 'viem'
 import type { EventHub } from './events'
 

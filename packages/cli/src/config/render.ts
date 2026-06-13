@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import type { PromusConfig } from '@s0nderlabs/promus-core'
+import type { PromusConfig } from 'promus-core'
 
 export interface RenderConfigOpts {
   header?: string
@@ -11,7 +11,7 @@ export interface RenderConfigOpts {
  * Serialize an PromusConfig into a `~/.anima/config.ts` file body.
  *
  * Phase 6.6: the config lives at `~/.anima/config.ts` which is outside any
- * workspace, so it MUST NOT import `@s0nderlabs/promus-core` (the import won't
+ * workspace, so it MUST NOT import `promus-core` (the import won't
  * resolve from `~/.anima/`). We emit a plain `export default { ... }` object;
  * the runtime loader treats it as `PromusConfig` directly.
  */

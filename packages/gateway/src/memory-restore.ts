@@ -15,7 +15,7 @@ import {
   restoreProfile,
   writeAgentPack,
   writeUserPack,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import type { Address, Hex } from 'viem'
 
 /**

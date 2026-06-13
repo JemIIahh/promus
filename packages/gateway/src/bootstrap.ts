@@ -6,7 +6,7 @@
  * Two modes:
  *  - 'git': clones the monorepo + bun install. ~5-8 min cold start. Pins to
  *    any branch/SHA.
- *  - 'npm': `bun add -g @s0nderlabs/promus@<version>`. ~30-60 sec cold start.
+ *  - 'npm': `bun add -g promus@<version>`. ~30-60 sec cold start.
  *    Only published versions.
  *
  * Design constraint: the Daytona toolbox `process/execute` endpoint caps each
@@ -25,7 +25,7 @@
  *    address or sandbox id (validated upstream, defense-in-depth).
  *  - Git mode: always-clone fresh. Daytona occasionally re-uses post-delete
  *    volumes whose stale git credential helpers break re-fetch.
- *  - Npm mode: `bun add -g @s0nderlabs/promus@<exact-version>` is idempotent
+ *  - Npm mode: `bun add -g promus@<exact-version>` is idempotent
  *    and overwrites. Same version twice = no-op. Different version = clean
  *    swap. Lower risk than git's stale-credential failure mode.
  */
@@ -223,7 +223,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
 }
 
 function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): string {
-  const repoUrl = opts.repoUrl ?? 'https://github.com/s0nderlabs/anima.git'
+  const repoUrl = opts.repoUrl ?? 'https://github.com/JemIIahh/promus.git'
   const cloneUrl = opts.githubToken
     ? repoUrl.replace(
         'https://github.com/',
@@ -268,12 +268,12 @@ function buildNpmInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
   }
   const preamble = buildPreambleLines(opts, 'npm', aptList)
   const installLines = [
-    `echo "  package=@s0nderlabs/promus@${opts.packageVersion}"`,
+    `echo "  package=promus@${opts.packageVersion}"`,
     `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.animaInstall} (${opts.packageVersion})"`,
     // Install anima from npm. `bun add -g <pkg>@<exact-version>` is idempotent
     // and overwrites whatever is in the global store. Atomic on success; on
     // failure the prior version remains (which may be empty on a fresh container).
-    `retry 'anima install' bun add -g ${shQuote(`@s0nderlabs/promus@${opts.packageVersion}`)} || { echo "anima-install-failed" > ${FAIL_MARKER}; exit 14; }`,
+    `retry 'anima install' bun add -g ${shQuote(`promus@${opts.packageVersion}`)} || { echo "anima-install-failed" > ${FAIL_MARKER}; exit 14; }`,
     // Add Bun's global package binaries to PATH so anima-gateway + agent-browser
     // resolve. ~/.bun/bin only contains bun's own binary, NOT third-party global
     // package bins (those live at ~/.bun/install/global/node_modules/.bin/).

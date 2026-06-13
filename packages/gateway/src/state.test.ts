@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { generateBootstrapKeypair } from '@s0nderlabs/promus-core'
+import { generateBootstrapKeypair } from 'promus-core'
 import { ApprovalRelay } from './approval-relay'
 import { EventHub } from './events'
 import type { RuntimeConfig } from './runtime'

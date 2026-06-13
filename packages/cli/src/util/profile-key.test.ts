@@ -7,7 +7,7 @@ import {
   agentPaths,
   buildOperatorSession,
   writeOperatorSession,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { loadProfileScopeKeyHex } from './profile-key'
 
 const FAKE_AGENT = '0xaabbccddeeff00112233445566778899aabbccdd'.toLowerCase() as `0x${string}`

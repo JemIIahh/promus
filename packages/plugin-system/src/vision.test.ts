@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 import { writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { ChatCompletionResult, VisionInferFn, VisionInferInput } from '@s0nderlabs/promus-core'
+import type { ChatCompletionResult, VisionInferFn, VisionInferInput } from 'promus-core'
 import { makeVisionAnalyze, sniffMimeFromBytes } from './vision'
 
 function fakeVisionInfer(): {

@@ -1,4 +1,4 @@
-import { PairingStore, agentPaths, iNFTAgentId } from '@s0nderlabs/promus-core'
+import { PairingStore, agentPaths, iNFTAgentId } from 'promus-core'
 import { getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 

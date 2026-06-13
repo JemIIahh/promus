@@ -3,7 +3,7 @@ import {
   type DelegateBrainFactory,
   type ToolDef,
   coerceInt,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { z } from 'zod'
 
 /**

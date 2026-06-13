@@ -274,7 +274,7 @@ async function main(): Promise<void> {
         process.exit(1)
       }
       const slotFlag = flags.slot
-      let slotName: import('@s0nderlabs/promus-core').IntelligentDataSlot | undefined
+      let slotName: import('promus-core').IntelligentDataSlot | undefined
       if (typeof slotFlag === 'string') {
         if (!isValidSlot(slotFlag)) {
           console.error(

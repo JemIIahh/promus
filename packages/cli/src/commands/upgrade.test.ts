@@ -3,7 +3,7 @@ import type {
   SandboxProviderClient,
   ToolboxExecBody,
   ToolboxExecResponse,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { parseUpgradeArgs, probeContainerBootstrapMode } from './upgrade'
 
 // Minimal mock for SandboxProviderClient that lets us assert what `command`

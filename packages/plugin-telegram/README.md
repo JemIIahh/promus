@@ -1,4 +1,4 @@
-# @s0nderlabs/promus-plugin-telegram
+# promus-plugin-telegram
 
 Telegram gateway for anima. Operator DMs `@anima_<name>_bot` from any phone; the agent (running in 0G Sandbox or local) replies.
 

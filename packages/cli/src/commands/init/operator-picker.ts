@@ -9,7 +9,7 @@ import {
   type OperatorSourceKind,
   RawPrivkeyOperatorSigner,
   WalletConnectOperatorSigner,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 
 interface PickerOptions {
   network: PromusNetwork

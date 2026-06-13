@@ -17,7 +17,7 @@ import {
   coerceBool,
   coerceInt,
   redactEnv,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { z } from 'zod'
 import { sniffMimeFromBytes } from './vision'
 
@@ -122,7 +122,7 @@ function findAgentBrowser(override?: string, cwdOverride?: string): string | nul
   }
 
   // Bun global install layout (npm-bootstrapped sandbox containers + any
-  // `bun add -g @s0nderlabs/promus` install). Bun symlinks third-party bins
+  // `bun add -g promus` install). Bun symlinks third-party bins
   // here but does NOT add this dir to $PATH automatically, so the PATH walk
   // below would miss it. Probe explicitly.
   const homeDir = process.env.HOME

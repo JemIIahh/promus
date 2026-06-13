@@ -3,9 +3,9 @@ import { CONTRACTS, addressUrl, truncate } from '@/lib/chainscan'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 const PROJECT_LINKS = [
-  { label: 'GitHub', href: 'https://github.com/s0nderlabs/anima', external: true },
-  { label: 'README', href: 'https://github.com/s0nderlabs/anima#readme', external: true },
-  { label: 'Releases', href: 'https://github.com/s0nderlabs/anima/releases', external: true },
+  { label: 'GitHub', href: 'https://github.com/JemIIahh/promus', external: true },
+  { label: 'README', href: 'https://github.com/JemIIahh/promus#readme', external: true },
+  { label: 'Releases', href: 'https://github.com/JemIIahh/promus/releases', external: true },
 ]
 
 const COMMUNITY_LINKS = [{ label: '@s0nderlabs', href: 'https://x.com/s0nderlabs', external: true }]

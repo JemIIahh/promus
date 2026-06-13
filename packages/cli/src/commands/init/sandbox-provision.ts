@@ -21,7 +21,7 @@ import {
   iNFTAgentId,
   subnameNode,
   waitForReceiptResilient,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import {
   BOOTSTRAP_DONE_MARKER,
   BOOTSTRAP_FAIL_KEYWORDS,
@@ -33,7 +33,7 @@ import {
   RELAUNCH_PROGRESS_LOG,
   buildBootstrapScript,
   buildGatewayRelaunchScript,
-} from '@s0nderlabs/promus-gateway'
+} from 'promus-gateway'
 import { type Address, type Hex, formatEther, hexToBytes, parseEther } from 'viem'
 import type { LocalAccount } from 'viem/accounts'
 import { SandboxClient } from '../../sandbox/client'
@@ -90,13 +90,13 @@ export interface SandboxProvisionOpts {
   repoUrl?: string
   /**
    * Bootstrap mode: 'git' clones monorepo from GitHub; 'npm' installs
-   * @s0nderlabs/promus via `bun add -g`. Defaults to npm (since v0.21.20)
+   * promus via `bun add -g`. Defaults to npm (since v0.21.20)
    * because it's ~10x faster (~30-60 sec vs 5-8 min cold start). Falls back
    * to git when ANIMA_BOOTSTRAP_REF is set or ANIMA_BOOTSTRAP_MODE=git
    * (unreleased-code testing). See `resolveBootstrapMode` in
    * `cli/src/util/bootstrap-mode.ts` for the full env resolution.
    */
-  mode?: import('@s0nderlabs/promus-gateway').BootstrapMode
+  mode?: import('promus-gateway').BootstrapMode
   /**
    * Npm mode: exact published version to install (e.g. '0.21.15'). Defaults
    * to the CLI package's own version (so a v0.21.15 CLI deploys a v0.21.15
@@ -162,7 +162,7 @@ export async function runSandboxProvision(
   const stageEvent = opts.onStageEvent
   const tick = opts.onTick
   const snapshotName = opts.snapshotName ?? 'daytonaio/sandbox:0.5.0-slim'
-  const repoUrl = opts.repoUrl ?? 'https://github.com/s0nderlabs/anima.git'
+  const repoUrl = opts.repoUrl ?? 'https://github.com/JemIIahh/promus.git'
   const depositWei = parseEther(String(opts.depositOg ?? SANDBOX_DEFAULT_INITIAL_DEPOSIT_OG))
 
   const operatorAddress = await opts.operator.address()
@@ -474,7 +474,7 @@ export async function handoffAgentToGateway(
     recipientPubkey: pubkeyRes.pubkeyHex,
     plaintext: agentPrivkeyBytes,
   })
-  let secretsEnvelope: import('@s0nderlabs/promus-core').Option3Envelope | undefined
+  let secretsEnvelope: import('promus-core').Option3Envelope | undefined
   if (opts.telegramSecrets || opts.profileScopeKeyHex) {
     const secretsPayload: Record<string, unknown> = {}
     if (opts.telegramSecrets) secretsPayload.telegram = opts.telegramSecrets

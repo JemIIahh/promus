@@ -16,7 +16,7 @@ source: 'packages/core/src/config.ts'
 ## Minimal example
 
 ```ts
-import { defineConfig } from '@s0nderlabs/promus-core'
+import { defineConfig } from 'promus-core'
 
 export default defineConfig({
   network: '0g-mainnet',
@@ -168,4 +168,4 @@ Block explorers: `chainscan.0g.ai` (mainnet), `chainscan-galileo.0g.ai` (testnet
 
 Read [Console](/docs/console) next.
 
-Source: [`packages/core/src/config.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/config.ts).
+Source: [`packages/core/src/config.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/config.ts).

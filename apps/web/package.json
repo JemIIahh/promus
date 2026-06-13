@@ -1,5 +1,5 @@
 {
-  "name": "@s0nderlabs/promus-web",
+  "name": "promus-web",
   "version": "0.0.1",
   "private": true,
   "type": "module",

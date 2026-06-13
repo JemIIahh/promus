@@ -4,7 +4,7 @@
  * txs; see memory `phase-10-design-locked.md` for the cast verifications.
  */
 
-import type { PromusNetwork } from '@s0nderlabs/promus-core'
+import type { PromusNetwork } from 'promus-core'
 import type { Address } from 'viem'
 
 /** Multicall3 universal address — same on every EVM chain that has it. */

@@ -2,7 +2,7 @@
  * `chain.tx` + `chain.contract` + `chain.activity` — read-only analysis tools.
  */
 
-import type { ToolDef } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
 import {
   type Address,
   decodeFunctionResult,

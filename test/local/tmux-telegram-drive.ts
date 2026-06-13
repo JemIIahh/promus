@@ -64,7 +64,7 @@ if (!inftMatch) {
 const [, contract, tokenId] = inftMatch
 
 // Compute agentId via the same iNFTAgentId helper the runtime uses.
-const { iNFTAgentId } = await import('@s0nderlabs/promus-core')
+const { iNFTAgentId } = await import('promus-core')
 const agentId = iNFTAgentId({ contractAddress: contract as `0x${string}`, tokenId: BigInt(tokenId!) })
 const activityLogPath = join(homedir(), '.anima', 'agents', agentId, 'activity.jsonl')
 

@@ -41,12 +41,12 @@ Anima is six layers wired into one runtime. Identity on 0G Chain, memory on 0G S
 
 | Layer | Implementation | Files |
 |---|---|---|
-| Identity | ERC-7857 iNFT on 0G Chain | [`packages/core/src/identity`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/identity) |
-| Brain | 0G Compute via the serving-broker SDK, TeeML attested | [`packages/core/src/brain`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/brain) |
-| Memory | Typed markdown files, encrypted, anchored to 0G Storage and the iNFT | [`packages/core/src/memory`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/memory) |
-| Limbs | Dumb tools, no LLM inside them, brain decides everything | [`packages/plugin-system`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-system) |
-| Comms | A2A messaging (ECIES, no ZK), ERC-8183 marketplace pattern | [`packages/plugin-comms`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-comms) |
-| Economy | Agent wallet, infrastructure self-funding, AutoTopupManager | [`packages/core/src/economy`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/economy) |
+| Identity | ERC-7857 iNFT on 0G Chain | [`packages/core/src/identity`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/identity) |
+| Brain | 0G Compute via the serving-broker SDK, TeeML attested | [`packages/core/src/brain`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/brain) |
+| Memory | Typed markdown files, encrypted, anchored to 0G Storage and the iNFT | [`packages/core/src/memory`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/memory) |
+| Limbs | Dumb tools, no LLM inside them, brain decides everything | [`packages/plugin-system`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-system) |
+| Comms | A2A messaging (ECIES, no ZK), ERC-8183 marketplace pattern | [`packages/plugin-comms`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-comms) |
+| Economy | Agent wallet, infrastructure self-funding, AutoTopupManager | [`packages/core/src/economy`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/economy) |
 
 ## The runtime
 
@@ -113,4 +113,4 @@ A 30-minute self-ping (`packages/gateway/src/heartbeat.ts`) prevents Daytona's i
 
 Read [Identity](/docs/identity) next.
 
-Source: [`packages/core/src/index.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/index.ts), [`packages/gateway/src/server.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/gateway/src/server.ts), [`packages/gateway/src/build-runtime.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/gateway/src/build-runtime.ts).
+Source: [`packages/core/src/index.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/index.ts), [`packages/gateway/src/server.ts`](https://github.com/JemIIahh/promus/blob/main/packages/gateway/src/server.ts), [`packages/gateway/src/build-runtime.ts`](https://github.com/JemIIahh/promus/blob/main/packages/gateway/src/build-runtime.ts).

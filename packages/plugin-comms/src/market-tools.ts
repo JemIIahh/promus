@@ -1,4 +1,4 @@
-import type { ToolDef } from '@s0nderlabs/promus-core'
+import type { ToolDef } from 'promus-core'
 import { type Address, formatEther, keccak256, parseEther, toHex } from 'viem'
 import { z } from 'zod'
 import type { ContactStore } from './contacts'

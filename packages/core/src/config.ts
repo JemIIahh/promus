@@ -3,7 +3,7 @@
  *
  * Example:
  *
- *   import { defineConfig } from '@s0nderlabs/promus-core'
+ *   import { defineConfig } from 'promus-core'
  *
  *   export default defineConfig({
  *     identity: { iNFT: null },               // iNFT token id once minted

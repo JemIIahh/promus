@@ -27,8 +27,8 @@ import type {
   PermissionPrompter,
   PermissionRequest,
   PermissionService,
-} from '@s0nderlabs/promus-core'
-import { applyPerms, applyYolo, newEventId } from '@s0nderlabs/promus-core'
+} from 'promus-core'
+import { applyPerms, applyYolo, newEventId } from 'promus-core'
 import {
   ActiveSessionTracker,
   type ApprovalChoice,
@@ -39,7 +39,7 @@ import {
   type TelegramRuntimeContext,
   makeApprovalIdFactory,
   parseBypassCommand,
-} from '@s0nderlabs/promus-plugin-telegram'
+} from 'promus-plugin-telegram'
 import { summarizeApprovalSubject } from '../ui/approval-summary'
 
 export type DispatchUserMessage = (input: TelegramDispatchInput) => Promise<TelegramDispatchResult>

@@ -4,7 +4,7 @@ import {
   format0G,
   getLedgerDetailReadOnly,
   getSandboxBillingReserve,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { http, type Address, createPublicClient } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 

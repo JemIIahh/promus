@@ -48,7 +48,7 @@ export function ClosingCta() {
           </span>
         </Link>
         <Link
-          href="https://github.com/s0nderlabs/anima"
+          href="https://github.com/JemIIahh/promus"
           target="_blank"
           rel="noreferrer"
           className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--color-ink-2)] underline-offset-4 hover:underline"

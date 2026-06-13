@@ -91,4 +91,4 @@ In sandbox mode the laptop CLI is a thin client over HTTP and SSE. Tool indicato
 
 Read [Configuration](/docs/configuration) next.
 
-Source: [`packages/cli/src/commands`](https://github.com/s0nderlabs/anima/tree/main/packages/cli/src/commands).
+Source: [`packages/cli/src/commands`](https://github.com/JemIIahh/promus/tree/main/packages/cli/src/commands).

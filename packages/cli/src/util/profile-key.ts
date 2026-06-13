@@ -13,7 +13,7 @@
  * next upgrade.
  */
 
-import { OPERATOR_BLOB_SCOPES, getSessionKey } from '@s0nderlabs/promus-core'
+import { OPERATOR_BLOB_SCOPES, getSessionKey } from 'promus-core'
 
 export function loadProfileScopeKeyHex(agentId: string): `0x${string}` | undefined {
   try {

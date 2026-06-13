@@ -5,7 +5,7 @@ import {
   SANDBOX_PROVIDER_URL_GALILEO,
   SandboxProviderClient,
   agentPaths,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { http, createPublicClient } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { SandboxClient } from '../sandbox/client'

@@ -44,7 +44,7 @@ import {
   validateSubnameLabel,
   waitForReceiptResilient,
   writeOperatorSession,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { type Address, type Hex, formatEther, hexToBytes, parseEther } from 'viem'
 import { writeConfigTs } from '../config/render'
 import { BootstrapProgressController } from '../util/bootstrap-progress-box'

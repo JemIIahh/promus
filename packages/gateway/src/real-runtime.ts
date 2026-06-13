@@ -1,8 +1,8 @@
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { type PromusNetwork, applyPerms, applyYolo, explorerTxUrl, newEventId } from '@s0nderlabs/promus-core'
-import { type ParsedBypass, parseBypassCommand } from '@s0nderlabs/promus-plugin-telegram'
+import { type PromusNetwork, applyPerms, applyYolo, explorerTxUrl, newEventId } from 'promus-core'
+import { type ParsedBypass, parseBypassCommand } from 'promus-plugin-telegram'
 import type { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import type { ApprovalRelay } from './approval-relay'
@@ -540,7 +540,7 @@ export class RealRuntime implements RuntimeAdapter {
   }
 
   async #agentIdFromConfig(config: RuntimeConfig): Promise<string> {
-    const { iNFTAgentId } = await import('@s0nderlabs/promus-core')
+    const { iNFTAgentId } = await import('promus-core')
     return iNFTAgentId({
       contractAddress: config.identity.iNFT.contract,
       tokenId: BigInt(config.identity.iNFT.tokenId),

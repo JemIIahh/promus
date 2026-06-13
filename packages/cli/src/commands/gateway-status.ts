@@ -12,7 +12,7 @@ import {
   iNFTAgentId,
   isOperatorSessionFresh,
   readOperatorSession,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 

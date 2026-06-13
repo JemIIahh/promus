@@ -5,7 +5,7 @@ import {
   type ToolDef,
   coerceBool,
   redactEnv,
-} from '@s0nderlabs/promus-core'
+} from 'promus-core'
 import { z } from 'zod'
 import { type WorkingDirState, resolveCwd } from './cwd-state'
 

@@ -38,7 +38,7 @@ Filesystem, shell, web, vision, browser, skills, code, delegation. The bulk of t
 | `session.search` | Search the session history. |
 | `todo` / `clarify` | In-session task list and operator-question prompt. |
 
-Source: [`packages/plugin-system`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-system).
+Source: [`packages/plugin-system`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-system).
 
 ### plugin-onchain
 
@@ -54,7 +54,7 @@ Source: [`packages/plugin-system`](https://github.com/s0nderlabs/anima/tree/main
 | `chain.block` / `chain.gas` / `chain.tx` / `chain.activity` | Read-only chain explorers. |
 | `chain.contract` / `chain.read` / `chain.write` | Arbitrary contract ABI calls. |
 
-Source: [`packages/plugin-onchain`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-onchain).
+Source: [`packages/plugin-onchain`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-onchain).
 
 ### plugin-comms
 
@@ -72,13 +72,13 @@ A2A messaging plus the ERC-8183 marketplace. Active when `CommsRuntimeContext` i
 | `market.proposeSplit` | Co-signed dispute resolution. Both parties post matching `(buyerAmount, providerAmount)`; contract settles when hashes match. |
 | `market.getJob` / `listMyJobs` | Read-only inspectors. The `/jobs` slash command shows active escrows. |
 
-Source: [`packages/plugin-comms`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-comms).
+Source: [`packages/plugin-comms`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-comms).
 
 ### plugin-telegram
 
 One listener (`telegram-bot`) plus the inbound dispatch flow. The brain sees a Telegram message as a regular event. Approval prompts arrive as inline-keyboard buttons.
 
-Source: [`packages/plugin-telegram`](https://github.com/s0nderlabs/anima/tree/main/packages/plugin-telegram).
+Source: [`packages/plugin-telegram`](https://github.com/JemIIahh/promus/tree/main/packages/plugin-telegram).
 
 ### Always-on
 
@@ -96,7 +96,7 @@ Source: [`packages/plugin-telegram`](https://github.com/s0nderlabs/anima/tree/ma
 
 The hard-deny `PathGuard` (credential dirs and the agent's own state tree) applies in every mode, including off. Set patterns at `packages/core/src/permission/path-guard.ts`. The danger pattern list is at `packages/core/src/permission/dangerous-patterns.ts`.
 
-Source: [`packages/core/src/permission`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/permission).
+Source: [`packages/core/src/permission`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/permission).
 
 ## Sandbox isolation
 
@@ -110,15 +110,15 @@ Set `sandbox.mode` in config:
 
 Belt-and-suspenders: permission floor stays on regardless of `sandbox.mode`. Container crashes self-heal via a 30s-TTL inspect probe in `wrapSpawn`.
 
-Source: [`packages/core/src/sandbox`](https://github.com/s0nderlabs/anima/tree/main/packages/core/src/sandbox).
+Source: [`packages/core/src/sandbox`](https://github.com/JemIIahh/promus/tree/main/packages/core/src/sandbox).
 
 ## Plugin loading
 
-`loadPlugins(names, deps)` in `packages/core/src/plugins/context.ts` reads the `plugins` array from `anima.config.ts` (built-in default `['onchain', 'comms', 'system']`; `'telegram'` is appended by `anima init` when the operator pastes a bot token) and dynamically imports `@s0nderlabs/promus-plugin-<name>`. Each module exports `default.register(ctx)` or a top-level `register(ctx)`. The `PluginContext` gives plugins `registerTool`, `registerListener`, `addHook`, and side-band contexts like `comms`, `onchain`, `telegram`.
+`loadPlugins(names, deps)` in `packages/core/src/plugins/context.ts` reads the `plugins` array from `anima.config.ts` (built-in default `['onchain', 'comms', 'system']`; `'telegram'` is appended by `anima init` when the operator pastes a bot token) and dynamically imports `promus-plugin-<name>`. Each module exports `default.register(ctx)` or a top-level `register(ctx)`. The `PluginContext` gives plugins `registerTool`, `registerListener`, `addHook`, and side-band contexts like `comms`, `onchain`, `telegram`.
 
 A glob-level toggle in config lets you disable individual tools without unloading the whole plugin: `tools: { 'defi.*': false, 'shell.run': false, 'web.fetch': true }`.
 
-Source: [`packages/core/src/plugins/context.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/plugins/context.ts).
+Source: [`packages/core/src/plugins/context.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/plugins/context.ts).
 
 ## Skills and Claude Code compatibility
 
@@ -131,6 +131,6 @@ Skills are markdown plus YAML frontmatter at four discovery roots:
 
 Claude Code commands and sub-agent definitions from `~/.claude/plugins/cache/.../commands/` and `.../agents/` get surfaced as `delegate.task` targets. MCP servers are discovered from three places: `~/.claude/.mcp.json`, `~/.anima/.mcp.json`, and the per-plugin `mcp.json` files inside each Claude Code plugin cache dir. Anima inherits the entire Claude Code plugin ecosystem on day one.
 
-Source: [`packages/core/src/skills/scanner.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/skills/scanner.ts), [`packages/core/src/claude-plugins/discovery.ts`](https://github.com/s0nderlabs/anima/blob/main/packages/core/src/claude-plugins/discovery.ts).
+Source: [`packages/core/src/skills/scanner.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/skills/scanner.ts), [`packages/core/src/claude-plugins/discovery.ts`](https://github.com/JemIIahh/promus/blob/main/packages/core/src/claude-plugins/discovery.ts).
 
 Read [CLI](/docs/cli) next.

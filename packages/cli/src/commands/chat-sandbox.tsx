@@ -11,8 +11,8 @@ import {
   getLedgerDetailReadOnly,
   getSandboxBillingReserve,
   iNFTAgentId,
-} from '@s0nderlabs/promus-core'
-import type { GatewayEventKind } from '@s0nderlabs/promus-gateway'
+} from 'promus-core'
+import type { GatewayEventKind } from 'promus-gateway'
 import { http, type Address, createPublicClient, formatEther } from 'viem'
 import { SandboxClient } from '../sandbox/client'
 import { summarizeApprovalSubject } from '../ui/approval-summary'
