@@ -24,19 +24,29 @@ export async function runGatewayForeground(opts: GatewayRunOpts): Promise<void> 
   }
 
   const localBin = resolveLocalBin()
-  const proc = spawn('bun', [localBin], {
-    env,
-    stdio: 'inherit',
+  // AWAIT the child for the lifetime of the foreground daemon. Returning early
+  // lets the CLI's top-level `main().then(() => process.exit(0))` fire and kill
+  // the daemon the instant it spawns (the "silent immediate exit" bug). Use the
+  // current bun binary (process.execPath) instead of `bun` on PATH, which the
+  // user's shell may not include (~/.bun/bin).
+  await new Promise<void>(resolve => {
+    const proc = spawn(process.execPath, [localBin], {
+      env,
+      stdio: 'inherit',
+    })
+    const forwardSignal = (sig: NodeJS.Signals): void => {
+      if (!proc.killed) proc.kill(sig)
+    }
+    process.on('SIGINT', () => forwardSignal('SIGINT'))
+    process.on('SIGTERM', () => forwardSignal('SIGTERM'))
+    proc.on('exit', code => {
+      process.exitCode = code ?? 0
+      resolve()
+    })
+    proc.on('error', err => {
+      console.error(`promus gateway run: spawn failed — ${err.message}`)
+      process.exitCode = 1
+      resolve()
+    })
   })
-  proc.on('exit', code => process.exit(code ?? 0))
-  proc.on('error', err => {
-    console.error(`anima gateway run: spawn failed — ${err.message}`)
-    process.exit(1)
-  })
-
-  const forwardSignal = (sig: NodeJS.Signals): void => {
-    if (!proc.killed) proc.kill(sig)
-  }
-  process.on('SIGINT', () => forwardSignal('SIGINT'))
-  process.on('SIGTERM', () => forwardSignal('SIGTERM'))
 }

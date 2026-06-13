@@ -95,7 +95,10 @@ export async function spawnGatewayDaemon(
 
   let proc: ChildProcess
   try {
-    proc = spawn('bun', [bin], {
+    // Use the current bun binary (absolute) rather than relying on `bun` being
+    // on PATH — the launcher invokes us via an absolute bun path and the user's
+    // shell PATH may not include ~/.bun/bin, which would ENOENT the spawn.
+    proc = spawn(process.execPath, [bin], {
       env,
       detached: true,
       stdio: stdioCfg,
