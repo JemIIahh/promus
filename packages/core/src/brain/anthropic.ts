@@ -289,11 +289,19 @@ export class AnthropicBrain implements Brain {
       .join('\n\n')
     const convo = toAnthropicMessages(messages.filter(m => m.role !== 'system'))
 
-    const tools: Anthropic.Tool[] = this.opts.tools.map(t => ({
-      name: t.function.name,
-      description: t.function.description,
-      input_schema: t.function.parameters as Anthropic.Tool.InputSchema,
-    }))
+    // Anthropic tool names must match ^[a-zA-Z0-9_-]{1,128}$ (no dots); anima
+    // tools are `namespace.method` (memory.save). Sanitize for the API and keep
+    // a reverse map so tool_use names in the response map back to real names.
+    const toolNameMap = new Map<string, string>() // sanitized -> original
+    const tools: Anthropic.Tool[] = this.opts.tools.map(t => {
+      const apiName = sanitizeToolName(t.function.name)
+      toolNameMap.set(apiName, t.function.name)
+      return {
+        name: apiName,
+        description: t.function.description,
+        input_schema: t.function.parameters as Anthropic.Tool.InputSchema,
+      }
+    })
 
     const resp = await this.client.messages.create(
       {
@@ -308,7 +316,7 @@ export class AnthropicBrain implements Brain {
 
     const toolCalls = resp.content
       .filter((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use')
-      .map(b => ({ id: b.id, name: b.name, args: b.input }))
+      .map(b => ({ id: b.id, name: toolNameMap.get(b.name) ?? b.name, args: b.input }))
 
     return {
       content: extractText(resp.content) || null,
@@ -322,6 +330,15 @@ export class AnthropicBrain implements Brain {
       },
     }
   }
+}
+
+/**
+ * Anthropic tool names must match ^[a-zA-Z0-9_-]{1,128}$ (no dots). anima tool
+ * names are `namespace.method` (memory.save), so map every illegal char to '_'
+ * for the API. Deterministic; callers keep a sanitized->original map to map back.
+ */
+function sanitizeToolName(name: string): string {
+  return name.replace(/[^a-zA-Z0-9_-]/g, '_')
 }
 
 /**
@@ -356,7 +373,7 @@ function toAnthropicMessages(rows: BrainMessage[]): Anthropic.MessageParam[] {
           blocks.push({
             type: 'tool_use',
             id: tc.id,
-            name: tc.name,
+            name: sanitizeToolName(tc.name),
             input: (typeof tc.args === 'string' ? safeParseJson(tc.args) : tc.args) ?? {},
           })
         }
