@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { LedgerInsufficientError, parseLedgerInsufficientError } from './og-compute'
+import { LedgerInsufficientError, parseLedgerInsufficientError } from './compute'
 
 const PROVIDER = '0x992e6396157Dc4f22E74F2231235D7DE62696db5'
 

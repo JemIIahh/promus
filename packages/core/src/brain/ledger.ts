@@ -10,7 +10,7 @@ import { type PromusNetwork, NETWORK_RPC } from '../config'
  *
  * Contract minimum deposit is 3 0G. Calls here use `ethers` because the
  * upstream broker SDK demands an ethers Signer, matching the same quarantine
- * pattern as `brain/og-compute.ts` and `storage/og.ts`.
+ * pattern as `brain/compute.ts` and `storage/og.ts`.
  */
 
 export interface OpenLedgerOpts {

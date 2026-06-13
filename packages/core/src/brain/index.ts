@@ -38,7 +38,7 @@ export {
   parseLedgerInsufficientError,
   previewToolArgs,
   inferToolOk,
-} from './og-compute'
+} from './compute'
 export {
   AnthropicBrain,
   type AnthropicBrainOpts,

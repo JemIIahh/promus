@@ -17,7 +17,7 @@
  *
  * Tool emoji mapping is a small allowlist; everything else gets the wrench.
  * Args preview is provided by the brain via `BrainToolEvent.argsPreview`
- * (see `previewToolArgs` in og-compute.ts).
+ * (see `previewToolArgs` in compute.ts).
  */
 import type { Bot } from 'grammy'
 import { escapeMarkdownV2, isMarkdownParseError, stripMarkdownV2 } from './markdown'

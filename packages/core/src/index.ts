@@ -485,7 +485,7 @@ export {
   type SettlementClientOpts,
   SandboxSettlementClient,
   getSandboxBillingReserve,
-} from './og-sandbox'
+} from './sandbox/provider'
 
 export {
   AutoTopupManager,

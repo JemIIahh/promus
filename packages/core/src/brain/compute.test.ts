@@ -6,7 +6,7 @@ import {
   detectBlockedToolError,
   looksLikeValidJsonString,
   stripThinkBlocks,
-} from './og-compute'
+} from './compute'
 import type { BrainMessage } from './types'
 
 const TEST_PK = '0x1111111111111111111111111111111111111111111111111111111111111111'
