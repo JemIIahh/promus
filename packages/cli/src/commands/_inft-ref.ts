@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 
 /**
  * Parse a CAIP-style or 0G-flavor iNFT ref string into its parts. Used by
- * `anima restore` and `anima inspect` to take a single positional argument
+ * `promus restore` and `promus inspect` to take a single positional argument
  * pointing at any iNFT on either 0G network.
  *
  * Accepted forms:

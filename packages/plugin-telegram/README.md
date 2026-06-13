@@ -1,6 +1,6 @@
 # promus-plugin-telegram
 
-Telegram gateway for anima. Operator DMs `@anima_<name>_bot` from any phone; the agent (running in 0G Sandbox or local) replies.
+Telegram gateway for promus. Operator DMs `@anima_<name>_bot` from any phone; the agent (running in 0G Sandbox or local) replies.
 
 ## Highlights
 
@@ -15,8 +15,8 @@ Telegram gateway for anima. Operator DMs `@anima_<name>_bot` from any phone; the
 ## Quickstart
 
 ```
-anima telegram setup    # one-time interactive: bot token + allowed user IDs
-anima                   # start the TUI; listener boots automatically
+promus telegram setup    # one-time interactive: bot token + allowed user IDs
+promus                   # start the TUI; listener boots automatically
 # DM @anima_<name>_bot from your phone, agent replies
 ```
 

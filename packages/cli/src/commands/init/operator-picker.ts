@@ -23,7 +23,7 @@ export interface OperatorPickResult {
 /**
  * Prompt the user for their operator wallet source and return both the
  * connected `OperatorSigner` and the metadata needed to reconstruct it
- * later (`OperatorSourceHint`). The hint is saved to `anima.config.ts` by
+ * later (`OperatorSourceHint`). The hint is saved to `promus.config.ts` by
  * the wizard so subsequent commands (chat, topup, restore) can re-attach
  * to the same source without re-prompting.
  *
@@ -78,7 +78,7 @@ export async function pickOperatorSigner(opts: PickerOptions): Promise<OperatorP
     case 'keychain': {
       const service = await text({
         message: 'Keychain service name',
-        placeholder: 'anima.operator',
+        placeholder: 'promus.operator',
         validate: v => {
           if (!v || v.length === 0) return 'Required.'
           if (!/^[a-zA-Z0-9._-]{1,128}$/.test(v))
@@ -159,7 +159,7 @@ export async function pickOperatorSigner(opts: PickerOptions): Promise<OperatorP
 
 /**
  * Reload an `OperatorSigner` from a previously persisted hint in
- * `anima.config.ts`. Used by chat / topup / restore / resume so the user
+ * `promus.config.ts`. Used by chat / topup / restore / resume so the user
  * doesn't re-pick a source every session — they only re-supply per-session
  * secrets (passphrases / QR scans / env vars).
  *

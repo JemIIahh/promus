@@ -1,5 +1,5 @@
 /**
- * Resolve the CLI package's own version. Used by `anima --version` and to pin
+ * Resolve the CLI package's own version. Used by `promus --version` and to pin
  * the gateway version installed in sandbox containers (mode=npm) so the
  * gateway matches the CLI.
  *

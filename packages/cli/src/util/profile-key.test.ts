@@ -21,7 +21,7 @@ describe('loadProfileScopeKeyHex', () => {
   let tmpHome: string
 
   beforeAll(() => {
-    tmpHome = mkdtempSync(join(tmpdir(), 'anima-profile-key-'))
+    tmpHome = mkdtempSync(join(tmpdir(), 'promus-profile-key-'))
     process.env.HOME = tmpHome
     mkdirSync(agentPaths.agent(FAKE_AGENT_ID).dir, { recursive: true })
     mkdirSync(agentPaths.agent(FAKE_AGENT_ID_NO_PROFILE).dir, { recursive: true })

@@ -13,7 +13,7 @@ import {
 } from './init/sandbox-provision'
 
 /**
- * `anima deploy` — migrate an existing local-mode agent into 0G Sandbox via
+ * `promus deploy` — migrate an existing local-mode agent into 0G Sandbox via
  * Option 3 ECIES handoff.
  *
  * Pre-conditions:
@@ -32,32 +32,32 @@ import {
  *   8. Rewrite config with deployTarget=sandbox + sandbox.id/endpoint/etc
  *
  * Local mode keystore + mainnet iNFT + agent EOA all stay valid; if the
- * sandbox container is later deleted, operator can re-`anima deploy`.
+ * sandbox container is later deleted, operator can re-`promus deploy`.
  */
 export async function runDeploy(): Promise<void> {
-  intro('anima deploy')
+  intro('promus deploy')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   let { config } = loaded
 
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
   if (config.deployTarget === 'sandbox' && config.sandbox?.id) {
     note(
-      `Already deployed: sandbox=${config.sandbox.id}\nEndpoint: ${config.sandbox.endpoint}\nTo move to a new container, run \`anima upgrade\` instead.`,
+      `Already deployed: sandbox=${config.sandbox.id}\nEndpoint: ${config.sandbox.endpoint}\nTo move to a new container, run \`promus upgrade\` instead.`,
       'sandbox already attached',
     )
     cancel('No-op.')
     return
   }
   if (!config.brain.provider) {
-    cancel('Brain provider not configured. Run `anima model` first.')
+    cancel('Brain provider not configured. Run `promus model` first.')
     return
   }
 
@@ -133,7 +133,7 @@ export async function runDeploy(): Promise<void> {
         model: config.brain.model ?? '',
       },
       iNFTNetwork: config.network,
-      name: config.subname || 'anima',
+      name: config.subname || 'promus',
       ref: process.env.PROMUS_BOOTSTRAP_REF ?? 'main',
       subname: config.subname,
       telegramSecrets: telegramSecretsPlain,
@@ -151,7 +151,7 @@ export async function runDeploy(): Promise<void> {
         '  - provider 504 / Daytona upstream timeout',
         '  - npm mode (default): bun add -g failed (registry transient or missing version)',
         '  - git mode: bootstrap script git clone failed (pin a different ref via PROMUS_BOOTSTRAP_REF)',
-        '  - try forcing the other mode: PROMUS_BOOTSTRAP_MODE=git anima deploy (for unreleased commits)',
+        '  - try forcing the other mode: PROMUS_BOOTSTRAP_MODE=git promus deploy (for unreleased commits)',
       ].join('\n'),
       'recoverable',
     )
@@ -161,7 +161,7 @@ export async function runDeploy(): Promise<void> {
 
   if (config.subname) {
     const sEp = spinner()
-    sEp.start(`Updating agent:endpoint on ${config.subname}.anima.0g`)
+    sEp.start(`Updating agent:endpoint on ${config.subname}.promus.0g`)
     try {
       await publishSandboxEndpoint({
         subname: config.subname,
@@ -197,8 +197,8 @@ export async function runDeploy(): Promise<void> {
       `  agent (in TEE) ${agentAddress}`,
       `  iNFT          #${tokenId.toString()} on chain ${NETWORK_CHAIN_ID[config.network]}`,
       '',
-      'Next: `anima` to chat (now routes through the sandbox harness)',
-      '      `anima upgrade` to swap the container while preserving identity',
+      'Next: `promus` to chat (now routes through the sandbox harness)',
+      '      `promus upgrade` to swap the container while preserving identity',
     ].join('\n'),
   )
 }

@@ -19,7 +19,7 @@ const SF_STACK =
   '-apple-system, "SF Pro Text", "SF Pro", system-ui, "Segoe UI", Roboto, sans-serif'
 
 // Subset of `packages/plugin-telegram/src/progress.ts:29` , the tool→emoji
-// map that real anima TG uses. Anything not listed defaults to 🔧.
+// map that real promus TG uses. Anything not listed defaults to 🔧.
 const TOOL_EMOJI: Record<string, string> = {
   'shell.run': '💻',
   'shell.cd': '📁',
@@ -234,7 +234,7 @@ function ChatWallpaper() {
     >
       <defs>
         <pattern
-          id="anima-tg-doodle"
+          id="promus-tg-doodle"
           x="0"
           y="0"
           width="240"
@@ -266,12 +266,12 @@ function ChatWallpaper() {
           </g>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#anima-tg-doodle)" />
+      <rect width="100%" height="100%" fill="url(#promus-tg-doodle)" />
     </svg>
   )
 }
 
-// ─────────── conic-gradient Anima avatar ───────────
+// ─────────── conic-gradient Promus avatar ───────────
 
 function PromusAvatar({ size = 24 }: { size?: number }) {
   return (

@@ -13,10 +13,10 @@ import type { SkillFrontmatter, SkillRef, SkillSource } from './types'
 export interface SkillScannerOptions {
   /** Whether to scan ~/.claude/skills/ + ~/.claude/plugins/cache/. Default true. */
   importsClaudeCode?: boolean
-  /** Override for ~/.anima/skills/ (test seam). Defaults to agentPaths.skills. */
-  animaSkillsRoot?: string
-  /** Override for ~/.anima/plugins/ (test seam). Defaults to agentPaths.plugins. */
-  animaPluginsRoot?: string
+  /** Override for ~/.promus/skills/ (test seam). Defaults to agentPaths.skills. */
+  promusSkillsRoot?: string
+  /** Override for ~/.promus/plugins/ (test seam). Defaults to agentPaths.plugins. */
+  promusPluginsRoot?: string
   /** Override for ~/.claude/skills/ (test seam). Defaults to ~/.claude/skills. */
   claudeSkillsRoot?: string
   /** Override for ~/.claude/plugins/cache/ (test seam). Defaults to ~/.claude/plugins/cache. */
@@ -25,15 +25,15 @@ export interface SkillScannerOptions {
 
 export async function scanSkills(opts: SkillScannerOptions = {}): Promise<SkillRef[]> {
   const importsClaudeCode = opts.importsClaudeCode ?? true
-  const animaSkillsRoot = opts.animaSkillsRoot ?? agentPaths.skills
-  const animaPluginsRoot = opts.animaPluginsRoot ?? agentPaths.plugins
+  const promusSkillsRoot = opts.promusSkillsRoot ?? agentPaths.skills
+  const promusPluginsRoot = opts.promusPluginsRoot ?? agentPaths.plugins
   const claudeSkillsRoot = opts.claudeSkillsRoot ?? join(homedir(), '.claude', 'skills')
   const claudePluginsCacheRoot =
     opts.claudePluginsCacheRoot ?? join(homedir(), '.claude', 'plugins', 'cache')
 
   const refs: SkillRef[] = []
-  await collectSimple(animaSkillsRoot, 'anima', refs)
-  await collectPromusPluginSkills(animaPluginsRoot, refs)
+  await collectSimple(promusSkillsRoot, 'promus', refs)
+  await collectPromusPluginSkills(promusPluginsRoot, refs)
   if (importsClaudeCode) {
     await collectSimple(claudeSkillsRoot, 'claude-code', refs)
     await collectClaudePluginCacheSkills(claudePluginsCacheRoot, refs)
@@ -66,7 +66,7 @@ async function fileExists(path: string): Promise<boolean> {
 
 async function collectSimple(
   root: string,
-  source: Extract<SkillSource, 'anima' | 'claude-code'>,
+  source: Extract<SkillSource, 'promus' | 'claude-code'>,
   out: SkillRef[],
 ): Promise<void> {
   const entries = await dirEntries(root)
@@ -92,7 +92,7 @@ async function collectPromusPluginSkills(pluginsRoot: string, out: SkillRef[]): 
       if (!skill.isDirectory()) continue
       const skillPath = join(skillsRoot, skill.name, 'SKILL.md')
       if (!(await fileExists(skillPath))) continue
-      const ref = await loadSkill(skillPath, `${plugin.name}:${skill.name}`, 'anima-plugin')
+      const ref = await loadSkill(skillPath, `${plugin.name}:${skill.name}`, 'promus-plugin')
       if (ref) out.push(ref)
     }
   }

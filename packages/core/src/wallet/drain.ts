@@ -8,8 +8,8 @@ import { waitForReceiptResilient } from '../identity/receipt'
  * for the sweep tx itself (21000 gas at the live max-fee), so the resulting
  * balance is "as close to 0 as the gas reserve allows" without underpaying.
  *
- * Used by `anima drain` for fund recovery on a retiring agent. Does not
- * touch the compute ledger; that's `anima ledger refund`.
+ * Used by `promus drain` for fund recovery on a retiring agent. Does not
+ * touch the compute ledger; that's `promus ledger refund`.
  */
 
 export interface DrainAgentResult {

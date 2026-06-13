@@ -31,7 +31,7 @@ describe('buildBootstrapScript', () => {
     expect(script.startsWith("bash -c '")).toBe(true)
     expect(script.endsWith("'")).toBe(true)
     expect(script).toContain('base64 -d')
-    expect(script).toContain('nohup bash /tmp/anima-bootstrap-inner.sh')
+    expect(script).toContain('nohup bash /tmp/promus-bootstrap-inner.sh')
     expect(script).toContain('echo bootstrap-launched')
     expect(doneMarkerPath).toBe(BOOTSTRAP_DONE_MARKER)
     expect(progressLogPath).toBe(BOOTSTRAP_PROGRESS_LOG)
@@ -50,8 +50,8 @@ describe('buildBootstrapScript', () => {
     expect(inner).toContain('curl -fsSL https://bun.sh/install')
     expect(inner).toContain('git clone --depth 1 --branch')
     expect(inner).toContain('bun install --frozen-lockfile')
-    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
-    expect(inner).toContain(`echo "anima-gateway-pid=$HARNESS_PID" > ${BOOTSTRAP_DONE_MARKER}`)
+    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
+    expect(inner).toContain(`echo "promus-gateway-pid=$HARNESS_PID" > ${BOOTSTRAP_DONE_MARKER}`)
   })
 
   test('frees port 8080 via fuser before harness launch (Daytona snapshot guard)', () => {
@@ -197,7 +197,7 @@ describe('buildBootstrapScript', () => {
   })
 
   test('exposes BOOTSTRAP_SUCCESS_MARKER_PREFIX for callers that grep done file', () => {
-    expect(BOOTSTRAP_SUCCESS_MARKER_PREFIX).toBe('anima-gateway-pid=')
+    expect(BOOTSTRAP_SUCCESS_MARKER_PREFIX).toBe('promus-gateway-pid=')
   })
 
   test('outer script stays under Daytona request-size ceiling (v0.16.5 was 5340 OK, v0.16.6 was 6136 BROKEN)', () => {
@@ -209,10 +209,10 @@ describe('buildBootstrapScript', () => {
     expect(script.length).toBeLessThan(5000)
   })
 
-  test('clones to $HOME/anima (not /opt/anima — daytona user has no sudo for /opt)', () => {
+  test('clones to $HOME/promus (not /opt/promus — daytona user has no sudo for /opt)', () => {
     const inner = decodeInner()
-    expect(inner).toContain('PROMUS_DIR="$HOME/anima"')
-    expect(inner).not.toContain('/opt/anima')
+    expect(inner).toContain('PROMUS_DIR="$HOME/promus"')
+    expect(inner).not.toContain('/opt/promus')
     expect(inner).toContain('rm -rf "$PROMUS_DIR"')
   })
 
@@ -230,15 +230,15 @@ describe('buildBootstrapScript', () => {
       expect(inner).not.toContain('bun install --frozen-lockfile')
     })
 
-    test('inner subshell exports bun global bin to PATH so anima-gateway resolves', () => {
+    test('inner subshell exports bun global bin to PATH so promus-gateway resolves', () => {
       const inner = decodeInner(npmOpts)
       expect(inner).toContain('export PATH="$HOME/.bun/install/global/node_modules/.bin:$PATH"')
     })
 
     test('inner subshell launches gateway from global bin (not via bun monorepo path)', () => {
       const inner = decodeInner(npmOpts)
-      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/anima-gateway')
-      expect(inner).not.toContain('bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
+      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/promus-gateway')
+      expect(inner).not.toContain('bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
     })
 
     test('browser deps install uses global bin path', () => {
@@ -268,9 +268,9 @@ describe('buildBootstrapScript', () => {
       expect(inner).toContain(BOOTSTRAP_DONE_MARKER)
     })
 
-    test('writes anima-install-failed marker on bun add failure', () => {
+    test('writes promus-install-failed marker on bun add failure', () => {
       const inner = decodeInner(npmOpts)
-      expect(inner).toContain('anima-install-failed')
+      expect(inner).toContain('promus-install-failed')
     })
 
     test('mode label is reported in bootstrap-start log', () => {

@@ -39,7 +39,7 @@ type Broker = Awaited<ReturnType<typeof createZGComputeNetworkBroker>>
 
 /**
  * Cache brokers keyed on `${network}:${privkey}` so back-to-back calls (e.g.
- * `getLedgerBalance` then `depositToLedger` in `anima topup --compute`) don't
+ * `getLedgerBalance` then `depositToLedger` in `promus topup --compute`) don't
  * each pay the ~100-200ms SDK handshake cost. Cleared on process exit.
  */
 const brokerCache = new Map<string, Broker>()
@@ -141,7 +141,7 @@ export async function getLedgerBalance(opts: {
 /**
  * Top up the existing ledger by `amount` 0G. Agent EOA pays gas and the
  * deposit moves from its wallet to the settlement contract. Used by
- * `anima topup --compute N`. Requires the ledger to exist; caller should
+ * `promus topup --compute N`. Requires the ledger to exist; caller should
  * fall back to `openComputeLedger` if it doesn't.
  */
 export async function depositToLedger(opts: {
@@ -297,7 +297,7 @@ export interface LedgerReadResult {
  * signer (SDK's `getProvidersWithBalance` requires it). Use
  * `getLedgerDetail({ privkeyHex })` when unlock is acceptable; use
  * `getLedgerDetailReadOnly({ agentAddress })` for operator-side aggregators
- * like `anima balance` that want a fast read with no friction.
+ * like `promus balance` that want a fast read with no friction.
  */
 export async function getLedgerDetailReadOnly(opts: {
   network: PromusNetwork

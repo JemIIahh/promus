@@ -5,14 +5,14 @@ import {Script, console2} from "forge-std/Script.sol";
 import {PromusSubnameRegistrar, ISidRegistry} from "../src/PromusSubnameRegistrar.sol";
 
 /// @notice Deploy PromusSubnameRegistrar via CREATE2 (mainnet-only) and grant
-/// the registrar write-access under `anima.0g`. Must be broadcast by the
-/// anima.0g registry owner (dev.deployer).
+/// the registrar write-access under `promus.0g`. Must be broadcast by the
+/// promus.0g registry owner (dev.deployer).
 ///
 ///   forge script contracts/script/DeployRegistrar.s.sol:DeployRegistrar \
 ///     --rpc-url og_mainnet --broadcast --private-key $DEV_DEPLOYER_PK \
 ///     --priority-gas-price 2000000000 --with-gas-price 2500000000
 contract DeployRegistrar is Script {
-    bytes32 public constant SALT = keccak256("anima:PromusSubnameRegistrar:v1");
+    bytes32 public constant SALT = keccak256("promus:PromusSubnameRegistrar:v1");
     address constant REGISTRY = 0x5dC881dDA4e4a8d312be3544AD13118D1a04Cb17;
     address constant RESOLVER = 0x6D3B3F99177FB2A5de7F9E928a9BD807bF7b5BAD;
 
@@ -25,6 +25,6 @@ contract DeployRegistrar is Script {
         require(reg.isOperational(), "registrar not operational after deploy");
         console2.log("PromusSubnameRegistrar deployed at:", address(reg));
         console2.log("Salt:", vm.toString(SALT));
-        console2.log("Approval set by anima owner:", caller);
+        console2.log("Approval set by promus owner:", caller);
     }
 }

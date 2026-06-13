@@ -7,7 +7,7 @@
  * stored in config or the repo).
  *
  * Design notes:
- *  - `thinking` is intentionally omitted. anima's BrainMessage can't carry
+ *  - `thinking` is intentionally omitted. promus's BrainMessage can't carry
  *    Claude thinking blocks, and extended/adaptive thinking + tool use requires
  *    round-tripping those blocks. Opus 4.8 runs fine without an explicit
  *    `thinking` field; we lean on the model's native capability instead.
@@ -290,7 +290,7 @@ export class AnthropicBrain implements Brain {
       .join('\n\n')
     const convo = toAnthropicMessages(messages.filter(m => m.role !== 'system'))
 
-    // Anthropic tool names must match ^[a-zA-Z0-9_-]{1,128}$ (no dots); anima
+    // Anthropic tool names must match ^[a-zA-Z0-9_-]{1,128}$ (no dots); promus
     // tools are `namespace.method` (memory.save). Sanitize for the API and keep
     // a reverse map so tool_use names in the response map back to real names.
     const toolNameMap = new Map<string, string>() // sanitized -> original
@@ -334,7 +334,7 @@ export class AnthropicBrain implements Brain {
 }
 
 /**
- * Map anima's BrainMessage[] into Anthropic MessageParam[]. assistant tool
+ * Map promus's BrainMessage[] into Anthropic MessageParam[]. assistant tool
  * calls become `tool_use` content blocks; `tool` rows become `tool_result`
  * blocks in a user turn. Consecutive tool results are grouped into a single
  * user message, as the Messages API expects after one assistant tool turn.

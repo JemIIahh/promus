@@ -28,14 +28,14 @@ import { resumeArchivedSandbox, unlockAgentKeystore } from './init/sandbox-provi
  * POST /approval/:id/respond.
  *
  * The agent's privkey lives ONLY in the harness container. Operator never
- * decrypts the keystore here — that happened during `anima init` or `anima
+ * decrypts the keystore here — that happened during `promus init` or `promus
  * deploy` when the privkey was ECIES-encrypted to the bootstrap pubkey.
  */
 export interface RunChatSandboxOpts {
   /**
    * When set, the client routes via this unix socket instead of the configured
    * sandbox.endpoint TCP URL. Used for the local-gateway-daemon path
-   * (Phase 14): chat.tsx detects `~/.anima/agents/<id>/gateway.sock` and calls
+   * (Phase 14): chat.tsx detects `~/.promus/agents/<id>/gateway.sock` and calls
    * runChatSandbox with this opt; the sandbox-specific recovery path
    * (resumeArchivedSandbox) is skipped because there's no Daytona to resume.
    */
@@ -47,13 +47,13 @@ export async function runChatSandbox(
   opts: RunChatSandboxOpts = {},
 ): Promise<void> {
   if (!config.identity.iNFT || !config.identity.agent) {
-    console.log('Config has no iNFT or agent. Re-run `anima init`.')
+    console.log('Config has no iNFT or agent. Re-run `promus init`.')
     process.exit(1)
   }
   const isLocalGateway = !!opts.unixSocketPath
   if (!isLocalGateway && (!config.sandbox?.endpoint || !config.sandbox.id)) {
     console.log(
-      'deployTarget is sandbox but sandbox.endpoint or sandbox.id missing. Re-run `anima init`.',
+      'deployTarget is sandbox but sandbox.endpoint or sandbox.id missing. Re-run `promus init`.',
     )
     process.exit(1)
   }
@@ -100,7 +100,7 @@ export async function runChatSandbox(
     // it isn't. Tell the user to (re)start it and exit.
     if (isLocalGateway) {
       sReady.stop(
-        `gateway unreachable at ${opts.unixSocketPath} — try \`anima gateway start\` then re-run`,
+        `gateway unreachable at ${opts.unixSocketPath} — try \`promus gateway start\` then re-run`,
       )
       await operator.close?.()
       process.exit(1)
@@ -117,7 +117,7 @@ export async function runChatSandbox(
       operator: operatorAccount,
     })
     if (!config.brain.provider) {
-      sReady.stop('harness unreachable AND brain provider missing; run `anima model`')
+      sReady.stop('harness unreachable AND brain provider missing; run `promus model`')
       await operator.close?.()
       process.exit(1)
     }
@@ -177,7 +177,7 @@ export async function runChatSandbox(
 
   const state = createChatState({
     // v0.24.4: branch on isLocalGateway. Local-gateway TUI talks to a daemon
-    // over a unix socket (`~/.anima/agents/<id>/gateway.sock`) — calling that
+    // over a unix socket (`~/.promus/agents/<id>/gateway.sock`) — calling that
     // "sandbox" mislead operators into believing they were paying sandbox
     // billing fees and into expecting a Daytona-style endpoint. The
     // standalone gateway path gets a clearer label; sandbox path keeps its

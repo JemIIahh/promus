@@ -1,4 +1,4 @@
-// promus-core: always-on infrastructure for the anima harness.
+// promus-core: always-on infrastructure for the promus harness.
 export const VERSION = '0.0.0'
 
 export * from './config'

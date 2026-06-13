@@ -24,11 +24,11 @@ import { pickOperatorSigner } from './init/operator-picker'
  * topup --compute / restore / resume all work without a passphrase.
  */
 export async function runMigrateKeystore(): Promise<void> {
-  intro('anima migrate-keystore')
+  intro('promus migrate-keystore')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima config found. Run `anima init` (or `anima restore`) first.')
+    cancel('No promus config found. Run `promus init` (or `promus restore`) first.')
     return
   }
   const { config } = loaded
@@ -51,7 +51,7 @@ export async function runMigrateKeystore(): Promise<void> {
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
       cancel(
-        `No local keystore at ${paths.keystore}. Migration only works when v0.5.0 left a passphrase keystore on disk. If you only have the iNFT, use \`anima restore\` (it handles v1 directly).`,
+        `No local keystore at ${paths.keystore}. Migration only works when v0.5.0 left a passphrase keystore on disk. If you only have the iNFT, use \`promus restore\` (it handles v1 directly).`,
       )
       return
     }
@@ -122,7 +122,7 @@ export async function runMigrateKeystore(): Promise<void> {
   } catch (e) {
     sUpload.stop(`upload failed: ${(e as Error).message.slice(0, 160)}`)
     note(
-      'Local v1 keystore is unchanged. Re-run `anima migrate-keystore` after fixing the issue.',
+      'Local v1 keystore is unchanged. Re-run `promus migrate-keystore` after fixing the issue.',
       'no changes made',
     )
     await operator.close?.()
@@ -135,7 +135,7 @@ export async function runMigrateKeystore(): Promise<void> {
     operator: operatorHint,
   })
   await writeConfigTs(loaded.path, cfg, {
-    header: '// Updated by `anima migrate-keystore`. Edit freely; type-safe.',
+    header: '// Updated by `promus migrate-keystore`. Edit freely; type-safe.',
   })
 
   await operator.close?.()
@@ -149,7 +149,7 @@ export async function runMigrateKeystore(): Promise<void> {
       `  keystore  ${paths.keystore} (now v2 cache)`,
       `  config    operator source persisted: ${operatorHint.source}`,
       '',
-      'You can now use `anima` (chat) / `anima topup --compute` without a passphrase.',
+      'You can now use `promus` (chat) / `promus topup --compute` without a passphrase.',
     ].join('\n'),
   )
 }

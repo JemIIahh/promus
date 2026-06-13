@@ -8,7 +8,7 @@
  *   2. The previously-running gateway daemon was spawned from the OLD binary
  *      and pinned its node_modules at boot. `/healthz` reports the old version
  *      forever.
- *   3. Operator runs `anima` (chat) or `anima gateway start`. Without this
+ *   3. Operator runs `promus` (chat) or `promus gateway start`. Without this
  *      helper, chat.tsx re-attaches to the stale daemon — operator sees old
  *      features for the entire daemon lifetime.
  *

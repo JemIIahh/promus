@@ -807,7 +807,7 @@ contract PromusMarketTest is Test {
         // proposeSplit tx reverts NativeTransferFailed, contract state
         // rolls back, no double-spend possible. The buyer can grief but
         // not steal. This is a documented MVP limitation; the practical
-        // mitigation is that anima agents are EOAs (no malicious receive).
+        // mitigation is that promus agents are EOAs (no malicious receive).
         ReentrantBuyer attacker = new ReentrantBuyer();
         attacker.setMarket(address(market));
         vm.deal(address(attacker), 10 ether);

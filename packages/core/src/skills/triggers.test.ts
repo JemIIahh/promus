@@ -25,11 +25,11 @@ describe('matchBashPattern', () => {
 
 function ref(filePattern?: string, bashPattern?: string): SkillRef {
   return {
-    id: 'anima:t',
+    id: 'promus:t',
     name: 't',
     description: '',
     path: '/tmp/SKILL.md',
-    source: 'anima',
+    source: 'promus',
     frontmatter: {
       name: 't',
       description: '',

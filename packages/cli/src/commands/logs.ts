@@ -11,7 +11,7 @@ import { extractExecOutput } from './init/sandbox-provision'
 
 export async function runLogs(opts: { agent?: string; tail?: number } = {}): Promise<void> {
   // Phase 11: in sandbox mode the activity log lives in the container at
-  // /var/log/anima-gateway.log. Tail it via toolbox exec.
+  // /var/log/promus-gateway.log. Tail it via toolbox exec.
   const found = await findAndLoadConfig().catch(() => null)
   if (
     found?.config.deployTarget === 'sandbox' &&
@@ -34,10 +34,10 @@ export async function runLogs(opts: { agent?: string; tail?: number } = {}): Pro
     const tail = opts.tail ?? 200
     try {
       const r = await provider.execInToolbox(found.config.sandbox.id, {
-        // Harness logs to ~/anima-logs/ inside the container (daytona user;
+        // Harness logs to ~/promus-logs/ inside the container (daytona user;
         // /var/log needs root). bash -c needed because Daytona exec splits
         // argv-style without a shell.
-        command: `bash -c 'tail -n ${tail} ~/anima-logs/anima-gateway.log'`,
+        command: `bash -c 'tail -n ${tail} ~/promus-logs/promus-gateway.log'`,
         timeout: 60,
       })
       const out = extractExecOutput(r)
@@ -55,7 +55,7 @@ export async function runLogs(opts: { agent?: string; tail?: number } = {}): Pro
   // Local mode: read from agentPaths
   const id = opts.agent ?? (await pickDefaultAgent())
   if (!id) {
-    console.log('No agents found in ~/.anima/agents. Run `anima init` first.')
+    console.log('No agents found in ~/.promus/agents. Run `promus init` first.')
     process.exit(1)
   }
   const path = agentPaths.agent(id).activityLog

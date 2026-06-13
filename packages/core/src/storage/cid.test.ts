@@ -5,7 +5,7 @@ import { cidToSlotHash, isSlotHash, slotHashToCid } from './cid'
 
 describe('cid <-> slot hash codec', () => {
   it('round-trips a 32-byte digest through CIDv1(raw, sha2-256)', () => {
-    const digest = createHash('sha256').update('anima').digest()
+    const digest = createHash('sha256').update('promus').digest()
     const hash = bytesToHex(digest)
     const cid = slotHashToCid(hash)
     expect(cid.startsWith('bafkrei')).toBe(true) // CIDv1 raw sha2-256 base32 prefix

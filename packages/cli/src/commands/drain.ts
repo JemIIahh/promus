@@ -13,16 +13,16 @@ export interface DrainOpts {
 }
 
 export async function runDrain(opts: DrainOpts): Promise<void> {
-  intro('anima drain')
+  intro('promus drain')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   const { config } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 

@@ -86,7 +86,7 @@ export interface SandboxProvisionOpts {
   name: string
   /** Git tag the bootstrap script clones (e.g. 'v0.15.0'). Used in git mode. */
   ref: string
-  /** Override repo URL (defaults to canonical anima repo). Used in git mode. */
+  /** Override repo URL (defaults to canonical promus repo). Used in git mode. */
   repoUrl?: string
   /**
    * Bootstrap mode: 'git' clones monorepo from GitHub; 'npm' installs
@@ -108,7 +108,7 @@ export interface SandboxProvisionOpts {
   /** Initial deposit to provider contract (testnet 0G). Default 1.0 0G. */
   depositOg?: number
   /**
-   * GitHub PAT for cloning private anima repo from inside the container.
+   * GitHub PAT for cloning private promus repo from inside the container.
    * Falls back to `PROMUS_GITHUB_TOKEN` env var. Public repos can leave unset.
    */
   githubToken?: string
@@ -141,8 +141,8 @@ export interface SandboxProvisionResult {
 }
 
 /**
- * Orchestrate the full sandbox-deploy handoff. Used by `anima init --target
- * sandbox`, `anima deploy`, and `anima upgrade`.
+ * Orchestrate the full sandbox-deploy handoff. Used by `promus init --target
+ * sandbox`, `promus deploy`, and `promus upgrade`.
  *
  * Steps:
  *   1. Galileo testnet: deposit + acknowledge TEE signer (skip if already done)
@@ -242,7 +242,7 @@ export async function runSandboxProvision(
   // 60s cap then doesn't bite. We poll the done/fail markers for actual
   // completion before moving on to /bootstrap/pubkey.
   //
-  // For private anima repos, pass a GitHub PAT via PROMUS_GITHUB_TOKEN env (or
+  // For private promus repos, pass a GitHub PAT via PROMUS_GITHUB_TOKEN env (or
   // the explicit `githubToken` opt). Token is embedded in the clone URL inside
   // the bootstrap script. Public repos skip auth entirely.
   const githubToken = opts.githubToken ?? process.env.PROMUS_GITHUB_TOKEN
@@ -444,7 +444,7 @@ export interface HandoffAgentToGatewayOpts {
    * v0.23.0: operator-derived AES key for the PROFILE iNFT slot (32 bytes,
    * hex-encoded with 0x prefix). Shipped via the same secondary envelope as
    * telegramSecrets. Without it the sandbox skips profile flush + restore;
-   * the operator can ship one later via `anima profile init`. v0.23.0+
+   * the operator can ship one later via `promus profile init`. v0.23.0+
    * harness picks it up; older harnesses ignore unknown fields.
    */
   profileScopeKeyHex?: `0x${string}`
@@ -640,7 +640,7 @@ export async function ensureSandboxStarted(
  *
  * Default deadlines per phase: 60s for stop, 5min for archive (Daytona snapshots
  * the filesystem to object storage; verified live to take >60s sometimes).
- * Used by `anima pause` to confirm Daytona acknowledges the full transition.
+ * Used by `promus pause` to confirm Daytona acknowledges the full transition.
  */
 export interface EnsureSandboxArchivedOpts {
   intervalMs?: number
@@ -762,7 +762,7 @@ export async function ensureSandboxArchived(
  * (newly restarted) harness. Idempotent: if the harness is already Ready
  * with the correct agentAddress, returns without re-handoff.
  *
- * Used by `anima resume` (operator wakes their agent) and `runInPlaceUpgrade`
+ * Used by `promus resume` (operator wakes their agent) and `runInPlaceUpgrade`
  * after the upgrade-script restarts the harness in place.
  */
 export interface ResumeArchivedSandboxOpts {
@@ -796,7 +796,7 @@ export interface ResumeArchivedSandboxOpts {
    * resumed harness boots with `slots.profile` ready to anchor. Source via
    * `loadProfileScopeKeyHex` (util/profile-key.ts). Without it the resumed
    * daemon comes back with `slots.profile = no-profile-key` until the operator
-   * re-runs `anima profile init`.
+   * re-runs `promus profile init`.
    */
   profileScopeKeyHex?: `0x${string}`
   onProgress?: (msg: string) => void
@@ -948,7 +948,7 @@ async function relaunchGatewayDaemon(opts: RelaunchGatewayOpts): Promise<void> {
  * `bash -c '<cmd>'` so pipes / redirects / `2>/dev/null` work — Daytona's
  * exec splits argv-style without a shell.
  *
- * Used by the bootstrap poll loop, deploy/upgrade flows, and `anima logs`
+ * Used by the bootstrap poll loop, deploy/upgrade flows, and `promus logs`
  * sandbox-mode tail.
  */
 export function makeExecRead(
@@ -994,7 +994,7 @@ export function resolveHandoffPlugins(
  * Pull the most informative progress line from a chunk of the bootstrap log.
  *
  * v0.24.4: bootstrap.ts emits explicit `STAGE: ...` markers before each major
- * step (apt update, apt install, bun install, anima install, browser deps,
+ * step (apt update, apt install, bun install, promus install, browser deps,
  * harness launch). If any tail line starts with `STAGE: ` we prefer that
  * (last-wins, prefix stripped) so the operator sees the current stage instead
  * of whichever raw `[$(date) ...]` log line happened to land last. Falls back
@@ -1050,7 +1050,7 @@ function sleep(ms: number): Promise<void> {
 /**
  * createSandbox + 409-orphan recovery. The Daytona provider rejects new
  * sandbox names that already exist with HTTP 409. This bites whenever a
- * prior `anima init` / `anima deploy` partially succeeded (sandbox created
+ * prior `promus init` / `promus deploy` partially succeeded (sandbox created
  * but bootstrap failed) and the operator retries: the orphan is still on
  * the provider holding the name. Catch the 409 once, list-by-name + delete
  * the orphan, then retry create. Keeps OOB clean without exposing operators
@@ -1112,7 +1112,7 @@ export async function preflightProviderDeposit(operator: OperatorSigner): Promis
       cancel(
         [
           `Galileo provider deposit ${formatEther(balance)} 0G is below safe threshold (0.12 0G).`,
-          'Run `anima topup --sandbox 1` to deposit 1 0G first (~11h runway).',
+          'Run `promus topup --sandbox 1` to deposit 1 0G first (~11h runway).',
         ].join('\n'),
       )
       return false
@@ -1129,7 +1129,7 @@ export async function preflightProviderDeposit(operator: OperatorSigner): Promis
 
 /**
  * Decrypt the agent keystore via the operator wallet. Used by both
- * `anima deploy` (Local→Sandbox migration) and `anima upgrade` (re-handoff
+ * `promus deploy` (Local→Sandbox migration) and `promus upgrade` (re-handoff
  * to a new container). The keystore lives encrypted on 0G Storage; the
  * operator's signature derives the AEAD key (Phase 6.6).
  */
@@ -1160,7 +1160,7 @@ export async function unlockAgentKeystore(params: {
 
 /**
  * Publish or update the `agent:endpoint` text record on the agent's
- * `<subname>.anima.0g`. Idempotent: writes the latest endpoint URL each
+ * `<subname>.promus.0g`. Idempotent: writes the latest endpoint URL each
  * call. Best-effort — caller decides whether to surface the failure.
  */
 export async function publishSandboxEndpoint(params: {

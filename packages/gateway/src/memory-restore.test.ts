@@ -19,7 +19,7 @@ const HASH_C = '0x33333333333333333333333333333333333333333333333333333333333333
 const CONTRACT_ADDR = '0x9e71d79f06f956d4d2666b5c93dafab721c84721' as Address
 
 async function setupAgentDir(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'anima-restore-test-'))
+  const dir = await mkdtemp(join(tmpdir(), 'promus-restore-test-'))
   await mkdir(join(dir, 'memory', 'agent'), { recursive: true })
   await mkdir(join(dir, 'memory', 'user'), { recursive: true })
   return dir
@@ -85,7 +85,7 @@ describe('restoreMemoryFromChain', () => {
   })
 
   // v0.23.0: a slot that was minted with the bootstrap placeholder hash
-  // (`keccak256("anima:bootstrap:<slot>")`) but never had a real blob uploaded
+  // (`keccak256("promus:bootstrap:<slot>")`) but never had a real blob uploaded
   // must be skipped, NOT retried. Pre-v0.23 the restore code tried every turn
   // and hit blob-not-found in an infinite loop. The fix is treating bootstrap-
   // hash as "intentionally unset", same as ZERO_HASH.

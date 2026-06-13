@@ -349,7 +349,7 @@ describe('ensureSandboxArchived', () => {
 
 describe('ResumeArchivedSandboxOpts shape', () => {
   // Regression guard for the v0.19.18 fix: every pause→resume cycle on
-  // anima resume must be able to ship telegram secrets to the restored
+  // promus resume must be able to ship telegram secrets to the restored
   // gateway, otherwise the TG listener silently drops on resume. This
   // test fails to compile if anyone removes the telegramSecrets field
   // from the interface.
@@ -453,7 +453,7 @@ describe('extractBootstrapProgressLine (v0.24.4 STAGE-aware surfacing)', () => {
       'updating package index',
       'installing system deps (build-essential, curl, git, xvfb)',
       'installing bun runtime',
-      'installing anima (0.24.4)',
+      'installing promus (0.24.4)',
       'installing chrome for browser tools',
       'starting harness daemon',
       'harness ready',

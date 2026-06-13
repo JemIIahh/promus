@@ -10,7 +10,7 @@ import { Runtime } from './runtime'
 
 async function withTempRoot<T>(fn: (root: string) => Promise<T>): Promise<T> {
   const prev = process.env.PROMUS_ROOT
-  const tmp = mkdtempSync(join(tmpdir(), 'anima-root-'))
+  const tmp = mkdtempSync(join(tmpdir(), 'promus-root-'))
   process.env.PROMUS_ROOT = tmp
   try {
     return await fn(tmp)

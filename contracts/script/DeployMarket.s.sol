@@ -18,7 +18,7 @@ import {PromusMarket} from "../src/PromusMarket.sol";
 /// The fee recipient defaults to the deployer (msg.sender of broadcast).
 /// Override with FEE_RECIPIENT env var if a different address should collect.
 contract DeployMarket is Script {
-    bytes32 public constant SALT = keccak256("anima:PromusMarket:v1");
+    bytes32 public constant SALT = keccak256("promus:PromusMarket:v1");
 
     function run() external returns (PromusMarket market) {
         address feeRecipient = vm.envOr("FEE_RECIPIENT", address(0));

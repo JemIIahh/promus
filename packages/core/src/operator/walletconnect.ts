@@ -42,7 +42,7 @@ function jsonSafe(value: unknown): unknown {
  * sessions trigger `No matching key` errors AND `session_event` chainChanged
  * messages get replayed, which crashes EthereumProvider's default handler
  * when the chain isn't in our active config. By using a fresh Map per
- * provider instance, every `anima init` / `anima restore` starts WC with a
+ * provider instance, every `promus init` / `promus restore` starts WC with a
  * clean slate.
  */
 class EphemeralWcStorage {
@@ -76,7 +76,7 @@ export const PROMUS_WC_PROJECT_ID =
 type EthProvider = Awaited<ReturnType<typeof EthereumProvider.init>>
 
 export interface WalletConnectOperatorSignerOptions {
-  /** WC project ID. Defaults to the anima-bundled one. */
+  /** WC project ID. Defaults to the promus-bundled one. */
   projectId?: string
   /** Networks to expose to the wallet. Default: both 0G mainnet and testnet. */
   networks?: PromusNetwork[]
@@ -98,9 +98,9 @@ export interface WalletConnectOperatorSignerOptions {
  * pop up on the phone; the user approves, signed tx comes back over the WC
  * relay. Keys never leave the phone. Fully non-custodial.
  *
- * Session is NOT persisted across `anima` invocations in MVP. For the init
+ * Session is NOT persisted across `promus` invocations in MVP. For the init
  * flow that's fine (one-shot). Post-MVP: persist session to
- * `~/.anima/wc-session.json` so `anima topup` reuses the pair.
+ * `~/.promus/wc-session.json` so `promus topup` reuses the pair.
  */
 export class WalletConnectOperatorSigner implements OperatorSigner {
   readonly source: string
@@ -169,9 +169,9 @@ export class WalletConnectOperatorSigner implements OperatorSigner {
       // biome-ignore lint/suspicious/noExplicitAny: WC's IKeyValueStorage has loose generics
       storage: new EphemeralWcStorage() as any,
       metadata: {
-        name: 'Anima',
+        name: 'Promus',
         description: 'Sovereign agent harness on 0G',
-        url: 'https://anima.s0nderlabs.xyz',
+        url: 'https://promus.s0nderlabs.xyz',
         icons: [],
       },
     })
@@ -257,7 +257,7 @@ export class WalletConnectOperatorSigner implements OperatorSigner {
       }
       if (/No matching key/i.test(msg)) {
         throw new Error(
-          'WalletConnect: stale session detected (likely from a previous interrupted run). Disconnect anima from your wallet app and retry.',
+          'WalletConnect: stale session detected (likely from a previous interrupted run). Disconnect promus from your wallet app and retry.',
         )
       }
       throw new Error(`WalletConnect connect failed: ${msg}`)

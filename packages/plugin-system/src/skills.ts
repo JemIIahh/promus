@@ -10,14 +10,14 @@ import { z } from 'zod'
 
 interface SkillsToolDeps {
   importsClaudeCode: boolean
-  /** Override the anima skills root. Defaults to agentPaths.skills. */
-  animaSkillsRoot?: string
+  /** Override the promus skills root. Defaults to agentPaths.skills. */
+  promusSkillsRoot?: string
   /** Override the Claude Code skills root. Default: $HOME/.claude/skills. */
   claudeSkillsRoot?: string
   /** Override the Claude Code plugins cache root. Default: $HOME/.claude/plugins/cache. */
   claudePluginsCacheRoot?: string
-  /** Override the anima plugins root. Defaults to agentPaths.plugins. */
-  animaPluginsRoot?: string
+  /** Override the promus plugins root. Defaults to agentPaths.plugins. */
+  promusPluginsRoot?: string
   /** Disabled skill ids (skills.manage persists this set into config). */
   disabled?: readonly string[]
 }
@@ -25,8 +25,8 @@ interface SkillsToolDeps {
 async function discover(deps: SkillsToolDeps): Promise<SkillRef[]> {
   const found = await scanSkills({
     importsClaudeCode: deps.importsClaudeCode,
-    animaSkillsRoot: deps.animaSkillsRoot,
-    animaPluginsRoot: deps.animaPluginsRoot,
+    promusSkillsRoot: deps.promusSkillsRoot,
+    promusPluginsRoot: deps.promusPluginsRoot,
     claudeSkillsRoot: deps.claudeSkillsRoot,
     claudePluginsCacheRoot: deps.claudePluginsCacheRoot,
   })
@@ -36,14 +36,14 @@ async function discover(deps: SkillsToolDeps): Promise<SkillRef[]> {
 }
 
 const ListSchema = z.object({
-  source: z.enum(['anima', 'anima-plugin', 'claude-code', 'claude-plugin', 'all']).optional(),
+  source: z.enum(['promus', 'promus-plugin', 'claude-code', 'claude-plugin', 'all']).optional(),
 })
 
 export function makeSkillsList(deps: SkillsToolDeps): ToolDef<z.infer<typeof ListSchema>> {
   return {
     name: 'skills.list',
     description:
-      'List skills from ~/.anima/skills, ~/.anima/plugins/<n>/skills, ~/.claude/skills, and ~/.claude/plugins/cache/<m>/<p>/<v>/skills (when imports.claudeCode). Returns id, name, description, source, path.',
+      'List skills from ~/.promus/skills, ~/.promus/plugins/<n>/skills, ~/.claude/skills, and ~/.claude/plugins/cache/<m>/<p>/<v>/skills (when imports.claudeCode). Returns id, name, description, source, path.',
     searchHint: 'skills list catalog discover available',
     schema: ListSchema,
     handler: async args => {
@@ -69,7 +69,7 @@ export function makeSkillsList(deps: SkillsToolDeps): ToolDef<z.infer<typeof Lis
 }
 
 const ViewSchema = z.object({
-  id: z.string().min(1).describe('Skill id from skills.list (e.g., "anima:dogfood").'),
+  id: z.string().min(1).describe('Skill id from skills.list (e.g., "promus:dogfood").'),
   max_bytes: coerceInt.refine(n => n > 0 && n <= 200_000, 'max_bytes must be 1..200000').optional(),
 })
 

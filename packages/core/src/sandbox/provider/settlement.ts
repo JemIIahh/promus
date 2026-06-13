@@ -130,9 +130,9 @@ const SANDBOX_PROVIDER_GALILEO_INTERNAL =
  * client against the Galileo testnet RPC. Returns 0n if the chain reverts (e.g.
  * recipient never deposited for that provider).
  *
- * Used by `anima balance` (CLI) and `account.balance` (brain tool) to surface
+ * Used by `promus balance` (CLI) and `account.balance` (brain tool) to surface
  * the operator-funded sandbox runtime reserve in one read. The recipient is
- * the OPERATOR wallet that signed `anima topup --sandbox`, not the agent EOA.
+ * the OPERATOR wallet that signed `promus topup --sandbox`, not the agent EOA.
  */
 export async function getSandboxBillingReserve(opts: {
   recipient: Address

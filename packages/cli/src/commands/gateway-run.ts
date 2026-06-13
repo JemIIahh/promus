@@ -1,9 +1,9 @@
 /**
- * `anima gateway run` — foreground daemon (blocks; Ctrl+C to stop).
+ * `promus gateway run` — foreground daemon (blocks; Ctrl+C to stop).
  *
- * Spawns `anima-gateway-local` (the bin in promus-gateway) with
+ * Spawns `promus-gateway-local` (the bin in promus-gateway) with
  * inherit stdio so the user sees logs live. Reads operator-session for the
- * cached AES keys; fails loud if no session exists ("run anima gateway start
+ * cached AES keys; fails loud if no session exists ("run promus gateway start
  * first").
  */
 
@@ -18,9 +18,9 @@ export interface GatewayRunOpts {
 export async function runGatewayForeground(opts: GatewayRunOpts): Promise<void> {
   const env = { ...process.env }
   if (opts.agentId) env.PROMUS_AGENT_ID = opts.agentId
-  // Default PROMUS_CONFIG to ~/.anima/config.ts if not already set.
+  // Default PROMUS_CONFIG to ~/.promus/config.ts if not already set.
   if (!env.PROMUS_CONFIG) {
-    env.PROMUS_CONFIG = join(env.HOME ?? '', '.anima', 'config.ts')
+    env.PROMUS_CONFIG = join(env.HOME ?? '', '.promus', 'config.ts')
   }
 
   const localBin = resolveLocalBin()

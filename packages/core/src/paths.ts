@@ -1,9 +1,9 @@
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 
-/** Resolve `~/.anima` at call time so tests can override via PROMUS_ROOT or HOME. */
-function animaRoot(): string {
-  return process.env.PROMUS_ROOT ?? join(homedir(), '.anima')
+/** Resolve `~/.promus` at call time so tests can override via PROMUS_ROOT or HOME. */
+function promusRoot(): string {
+  return process.env.PROMUS_ROOT ?? join(homedir(), '.promus')
 }
 
 export interface AgentPaths {
@@ -30,22 +30,22 @@ export interface AgentPaths {
 
 export const agentPaths: AgentPaths = {
   get root() {
-    return animaRoot()
+    return promusRoot()
   },
   get config() {
-    return join(animaRoot(), 'config.ts')
+    return join(promusRoot(), 'config.ts')
   },
   get skills() {
-    return join(animaRoot(), 'skills')
+    return join(promusRoot(), 'skills')
   },
   get plugins() {
-    return join(animaRoot(), 'plugins')
+    return join(promusRoot(), 'plugins')
   },
   get agentsDir() {
-    return join(animaRoot(), 'agents')
+    return join(promusRoot(), 'agents')
   },
   agent(id: string) {
-    const dir = join(animaRoot(), 'agents', id)
+    const dir = join(promusRoot(), 'agents', id)
     return {
       dir,
       keystore: join(dir, 'keystore.json'),

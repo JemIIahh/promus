@@ -23,7 +23,7 @@
   "files": ["src", "bin", "README.md"],
   "bin": {
     "promus": "./bin/promus",
-    "anima": "./bin/promus"
+    "promus": "./bin/promus"
   },
   "main": "./src/index.ts",
   "types": "./src/index.ts",

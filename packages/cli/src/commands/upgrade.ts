@@ -50,8 +50,8 @@ export type UpgradeMode = 'in-place' | 'reprovision'
 /**
  * Parse the argv tail (everything AFTER the `upgrade` subcommand token) into
  * {@link UpgradeOpts}. `--ref <val>` takes priority. Otherwise the first
- * non-flag arg becomes the ref, so `anima upgrade latest` and
- * `anima upgrade v0.17.8` work without `--ref`. Empty tail → undefined ref →
+ * non-flag arg becomes the ref, so `promus upgrade latest` and
+ * `promus upgrade v0.17.8` work without `--ref`. Empty tail → undefined ref →
  * command flow defaults to `latest` via GitHub API.
  */
 export function parseUpgradeArgs(tail: readonly string[]): UpgradeOpts {
@@ -70,8 +70,8 @@ interface UpgradeOpts {
   yes?: boolean
   /**
    * Opt into the heavy container-swap path. Default (false) is in-place. We
-   * default to in-place because anima's harness layer is unsealed
-   * (`feedback-anima-is-unsealed-currently.md`), so a fresh container buys
+   * default to in-place because promus's harness layer is unsealed
+   * (`feedback-promus-is-unsealed-currently.md`), so a fresh container buys
    * no real attestation freshness. Heavy mode is reserved for the future
    * when sealed mode + image-hash attestation are wired up.
    */
@@ -79,7 +79,7 @@ interface UpgradeOpts {
 }
 
 /**
- * `anima upgrade`: roll the sandbox harness to a new git ref while preserving
+ * `promus upgrade`: roll the sandbox harness to a new git ref while preserving
  * agent identity + memory.
  *
  * Default = in-place: `git fetch + checkout + bun install + harness restart`
@@ -95,11 +95,11 @@ interface UpgradeOpts {
  * memory anchored on chain, 0G Compute ledger.
  */
 export async function runUpgrade(opts: UpgradeOpts = {}): Promise<void> {
-  intro('anima upgrade')
+  intro('promus upgrade')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found.')
+    cancel('No promus.config.ts found.')
     return
   }
   const { config } = loaded
@@ -109,12 +109,12 @@ export async function runUpgrade(opts: UpgradeOpts = {}): Promise<void> {
   }
   if (config.deployTarget !== 'sandbox' || !config.sandbox?.id || !config.sandbox.endpoint) {
     cancel(
-      `Agent is not deployed to a sandbox. (deployTarget=${config.deployTarget ?? 'local'}). Run \`anima deploy\` first.`,
+      `Agent is not deployed to a sandbox. (deployTarget=${config.deployTarget ?? 'local'}). Run \`promus deploy\` first.`,
     )
     return
   }
   if (!config.brain.provider) {
-    cancel('Brain provider not configured. Run `anima model` first.')
+    cancel('Brain provider not configured. Run `promus model` first.')
     return
   }
 
@@ -138,7 +138,7 @@ export async function runUpgrade(opts: UpgradeOpts = {}): Promise<void> {
       const exists = await checkTagExists(PROMUS_REPO_URL, resolved.ref)
       if (!exists) {
         cancel(
-          `Tag ${resolved.ref} is not visible on the remote yet (CI may still be propagating).\nTry again in 30s, or run \`anima upgrade ${LATEST_KEYWORD}\` to pick the most recent published release.`,
+          `Tag ${resolved.ref} is not visible on the remote yet (CI may still be propagating).\nTry again in 30s, or run \`promus upgrade ${LATEST_KEYWORD}\` to pick the most recent published release.`,
         )
         return
       }
@@ -276,7 +276,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
     note(
       [
         'The sandbox could not be brought to started state.',
-        'If state is `error` or restore failed, run `anima upgrade --reprovision` to spin a fresh container.',
+        'If state is `error` or restore failed, run `promus upgrade --reprovision` to spin a fresh container.',
       ].join('\n'),
       'recoverable',
     )
@@ -286,12 +286,12 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
   sBox.message('probing container bootstrap mode')
   const probedMode = await probeContainerBootstrapMode(provider, args.sandboxId)
   if (!probedMode) {
-    sBox.stop('cannot determine container bootstrap mode (no anima install detected)')
+    sBox.stop('cannot determine container bootstrap mode (no promus install detected)')
     note(
       [
-        'Container has neither $HOME/anima/.git/ nor a global anima-gateway binary.',
+        'Container has neither $HOME/promus/.git/ nor a global promus-gateway binary.',
         'The container may have been wiped or never bootstrapped successfully.',
-        'Try `anima upgrade --reprovision` to spin a fresh container.',
+        'Try `promus upgrade --reprovision` to spin a fresh container.',
       ].join('\n'),
       'recoverable',
     )
@@ -347,8 +347,8 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
           'log tail:',
           log.slice(-400),
           '',
-          'You can retry with `anima upgrade` (the script is idempotent),',
-          'or fall back to `anima upgrade --reprovision` for a fresh container.',
+          'You can retry with `promus upgrade` (the script is idempotent),',
+          'or fall back to `promus upgrade --reprovision` for a fresh container.',
         ].join('\n'),
         'recoverable',
       )
@@ -385,7 +385,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
     const verifyPath =
       probedMode === 'npm'
         ? '$HOME/.bun/install/global/node_modules/promus-gateway/package.json'
-        : '$HOME/anima/packages/gateway/package.json'
+        : '$HOME/promus/packages/gateway/package.json'
     const verifyOut = await execRead(`grep '"version"' ${verifyPath} | head -1`)
     const m = verifyOut.match(/"version"\s*:\s*"([^"]+)"/)
     if (!m) {
@@ -393,7 +393,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
       note(
         [
           'The upgrade reported success but we could not read the deployed package.json.',
-          'Re-running `anima upgrade` should land cleanly. If this persists, file an issue.',
+          'Re-running `promus upgrade` should land cleanly. If this persists, file an issue.',
         ].join('\n'),
         'recoverable',
       )
@@ -415,8 +415,8 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
           [
             `The harness reported success but is running ${actual} instead of ${expected}.`,
             'This means git fetch may not have seen the tag yet. Re-running',
-            `\`anima upgrade --ref ${args.resolved.ref ?? 'latest'}\` should land it correctly,`,
-            'or `anima upgrade latest` to pick the most recent published release.',
+            `\`promus upgrade --ref ${args.resolved.ref ?? 'latest'}\` should land it correctly,`,
+            'or `promus upgrade latest` to pick the most recent published release.',
           ].join('\n'),
           'recoverable',
         )
@@ -469,8 +469,8 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
     note(
       [
         'Container code rolled to the new ref but the agent privkey handoff did not complete.',
-        'The harness is back in Bootstrapping state. Re-run `anima upgrade` to retry the handoff,',
-        'or `anima upgrade --reprovision` to start fresh.',
+        'The harness is back in Bootstrapping state. Re-run `promus upgrade` to retry the handoff,',
+        'or `promus upgrade --reprovision` to start fresh.',
       ].join('\n'),
       'recoverable',
     )
@@ -484,7 +484,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
       `  endpoint      ${args.sandboxEndpoint} (unchanged)`,
       `  ref           ${formatResolvedRef(args.resolved)}`,
       '',
-      'Next: `anima` to chat (same harness endpoint, same agent EOA, new code)',
+      'Next: `promus` to chat (same harness endpoint, same agent EOA, new code)',
     ].join('\n'),
   )
 }
@@ -558,7 +558,7 @@ async function runReprovisionUpgrade(args: ReprovisionUpgradeArgs): Promise<void
         model: args.config.brain.model ?? '',
       },
       iNFTNetwork: args.config.network,
-      name: args.config.subname || 'anima',
+      name: args.config.subname || 'promus',
       ref: args.resolved.ref,
       subname: args.config.subname,
       plugins: args.config.plugins,
@@ -577,7 +577,7 @@ async function runReprovisionUpgrade(args: ReprovisionUpgradeArgs): Promise<void
       [
         'Old sandbox was deleted but the new one did not provision.',
         'Identity + funds + memory all safe on chain / 0G Storage.',
-        'Re-run `anima upgrade --reprovision` after fixing the issue, or `anima deploy` to start fresh.',
+        'Re-run `promus upgrade --reprovision` after fixing the issue, or `promus deploy` to start fresh.',
       ].join('\n'),
       'recoverable (agent offline)',
     )
@@ -586,7 +586,7 @@ async function runReprovisionUpgrade(args: ReprovisionUpgradeArgs): Promise<void
 
   if (args.config.subname) {
     const sEp = spinner()
-    sEp.start(`Updating agent:endpoint on ${args.config.subname}.anima.0g`)
+    sEp.start(`Updating agent:endpoint on ${args.config.subname}.promus.0g`)
     try {
       await publishSandboxEndpoint({
         subname: args.config.subname,
@@ -619,7 +619,7 @@ async function runReprovisionUpgrade(args: ReprovisionUpgradeArgs): Promise<void
       `  endpoint      ${sandboxResult.endpoint}`,
       `  ref           ${formatResolvedRef(args.resolved)}`,
       '',
-      'Next: `anima` to chat (now routes through the new harness)',
+      'Next: `promus` to chat (now routes through the new harness)',
     ].join('\n'),
   )
 }
@@ -666,8 +666,8 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * Single execInToolbox round-trip that probes the container's bootstrap mode
- * by checking filesystem state. Returns 'git' if `$HOME/anima/.git/` exists,
- * 'npm' if global anima-gateway binary exists, or null if neither.
+ * by checking filesystem state. Returns 'git' if `$HOME/promus/.git/` exists,
+ * 'npm' if global promus-gateway binary exists, or null if neither.
  *
  * Used by `runInPlaceUpgrade` so the upgrade script ships only the path it
  * actually needs (auto-detect inside the script blew the 5KB Daytona cap).
@@ -682,7 +682,7 @@ export async function probeContainerBootstrapMode(
   // exec errors, returning '' on failure — matches the previous catch arm.
   const execRead = makeExecRead(provider, sandboxId)
   const out = await execRead(
-    `if [ -d "$HOME/anima/.git" ]; then echo MODE=git; elif [ -x "$HOME/.bun/install/global/node_modules/.bin/anima-gateway" ]; then echo MODE=npm; else echo MODE=none; fi`,
+    `if [ -d "$HOME/promus/.git" ]; then echo MODE=git; elif [ -x "$HOME/.bun/install/global/node_modules/.bin/promus-gateway" ]; then echo MODE=npm; else echo MODE=none; fi`,
   )
   if (out.includes('MODE=git')) return 'git'
   if (out.includes('MODE=npm')) return 'npm'

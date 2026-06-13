@@ -2,7 +2,7 @@
   "name": "promus-plugin-telegram",
   "version": "0.24.17",
   "type": "module",
-  "description": "Telegram gateway plugin for anima — long-poll bot, debounced dispatch, reactions, allowlist",
+  "description": "Telegram gateway plugin for promus — long-poll bot, debounced dispatch, reactions, allowlist",
   "license": "MIT",
   "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "anima", "agent", "telegram", "grammy", "gateway", "plugin"],
+  "keywords": ["0g", "promus", "agent", "telegram", "grammy", "gateway", "plugin"],
   "publishConfig": {
     "access": "public"
   },

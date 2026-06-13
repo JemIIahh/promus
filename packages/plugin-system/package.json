@@ -2,7 +2,7 @@
   "name": "promus-plugin-system",
   "version": "0.24.17",
   "type": "module",
-  "description": "Filesystem + shell + browser + skills tools plugin for anima",
+  "description": "Filesystem + shell + browser + skills tools plugin for promus",
   "license": "MIT",
   "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "anima", "agent", "fs", "shell", "browser", "tools", "plugin"],
+  "keywords": ["0g", "promus", "agent", "fs", "shell", "browser", "tools", "plugin"],
   "publishConfig": {
     "access": "public"
   },

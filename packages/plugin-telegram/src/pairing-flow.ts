@@ -3,7 +3,7 @@
 // When an unknown user DMs the bot, the listener replies with a pairing code
 // they can give to the operator. The operator approves out-of-band via
 // `promus pairing approve telegram <code>`, which writes the user-id to
-// `~/.anima/agents/<id>/pairing/telegram-approved.json`. The next message
+// `~/.promus/agents/<id>/pairing/telegram-approved.json`. The next message
 // from that user passes sanitize and reaches the brain.
 
 export interface PairingMessageOpts {

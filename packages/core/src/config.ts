@@ -1,5 +1,5 @@
 /**
- * User-facing configuration shape for `anima.config.ts`.
+ * User-facing configuration shape for `promus.config.ts`.
  *
  * Example:
  *
@@ -9,7 +9,7 @@
  *     identity: { iNFT: null },               // iNFT token id once minted
  *     network: '0g-mainnet',                  // or '0g-testnet'
  *     storage: { network: '0g-mainnet' },
- *     brain: { provider: '0xd9966e...' },     // chosen at `anima init`
+ *     brain: { provider: '0xd9966e...' },     // chosen at `promus init`
  *     plugins: ['onchain', 'comms', 'system'],
  *     tools: { 'defi.*': false, 'shell.run': false },
  *     imports: { claudeCode: true },
@@ -23,7 +23,7 @@ export type PromusPlugin = 'onchain' | 'comms' | 'system' | 'telegram'
 export interface INFTRef {
   /** ERC-7857 contract address. */
   contract: string
-  /** Token id minted to the owner at `anima init`. */
+  /** Token id minted to the owner at `promus init`. */
   tokenId: string
   /** Network where the iNFT lives. */
   network: PromusNetwork
@@ -40,7 +40,7 @@ export type OperatorSourceKind = 'walletconnect' | 'keychain' | 'keystore-file' 
 
 /**
  * Persisted hint about which operator source to use when commands like
- * `anima` (chat), `anima topup`, and `anima restore` need to talk to the
+ * `promus` (chat), `promus topup`, and `promus restore` need to talk to the
  * operator wallet again. Stores enough metadata to reconstruct the signer
  * without re-prompting the user from scratch (passphrases / QR scans still
  * happen because they're per-session).
@@ -88,7 +88,7 @@ export interface PromusConfig {
     } | null
     /**
      * v0.20.0: persist channel histories to JSONL under
-     * `~/.anima/agents/<id>/conversations/`. Loaded on boot, appended per
+     * `~/.promus/agents/<id>/conversations/`. Loaded on boot, appended per
      * turn, atomically rewritten on compaction. Default true.
      */
     persistConversations?: boolean
@@ -106,8 +106,8 @@ export interface PromusConfig {
    */
   operator?: OperatorSourceHint | null
   /**
-   * Phase 7: the agent's `<label>.anima.0g` subname (without the suffix).
-   * Recorded by `anima init` so the chat loop can auto-publish the agent's
+   * Phase 7: the agent's `<label>.promus.0g` subname (without the suffix).
+   * Recorded by `promus init` so the chat loop can auto-publish the agent's
    * pubkey text record on every launch (idempotent backfill for pre-Phase-7
    * agents). Optional — agents without a subname skip the publish.
    */
@@ -126,14 +126,14 @@ export interface PromusConfig {
   /**
    * Phase 9.1: skills system. `disabled` is the persistent list of skill ids
    * that should never auto-load or appear in the index. Updated by
-   * `skills.manage` and persisted to ~/.anima/config.ts.
+   * `skills.manage` and persisted to ~/.promus/config.ts.
    */
   skills?: {
     disabled?: string[]
   }
   /**
    * v0.9.3: operator-supplied additions to the system prompt. `append` is
-   * concatenated under a `# Operator instructions` header AFTER anima's
+   * concatenated under a `# Operator instructions` header AFTER promus's
    * built-in safety + tool-use scaffolding. Can NOT replace the base prompt;
    * use it for personal rules ("always reply in Indonesian", "prefer Bun
    * over npm", "follow our team commit convention").
@@ -145,7 +145,7 @@ export interface PromusConfig {
    * v0.9.4 (Apr 28 2026): structural sandbox for limb spawns. Defense-in-depth
    * BENEATH the permission floor — even when `s` (allow session) or yolo grants
    * a destructive command, the sandbox profile prevents writes outside an
-   * allowlist (agentDir + workspaceRoot + /tmp/anima-* + /var/folders).
+   * allowlist (agentDir + workspaceRoot + /tmp/promus-* + /var/folders).
    *
    *  - `none` (default): passthrough, today's behaviour. Permission floor only.
    *  - `os`: native OS sandbox. macOS = sandbox-exec wrapper. Linux = bubblewrap
@@ -192,12 +192,12 @@ export interface PromusConfig {
   /**
    * Phase 11 (May 2026): where the harness physically runs.
    *
-   *  - `local` (default): harness lives on this machine while `anima` chat is
+   *  - `local` (default): harness lives on this machine while `promus` chat is
    *    open. Listeners run only when CLI is open. Use for dev / always-on
    *    laptop / VPS / home server.
    *  - `sandbox`: harness runs in a 0G Sandbox TDX TEE container. Persistent
-   *    even when the operator laptop is closed. Set by `anima init --target
-   *    sandbox` or `anima deploy`. Co-exists with `sandbox.id`/`endpoint` etc
+   *    even when the operator laptop is closed. Set by `promus init --target
+   *    sandbox` or `promus deploy`. Co-exists with `sandbox.id`/`endpoint` etc
    *    fields below.
    */
   deployTarget?: 'local' | 'sandbox'
@@ -251,7 +251,7 @@ export interface PromusConfig {
     dockerCpu?: number
     /**
      * docker mode only: memory cap in MB (`--memory <N>m`). Default unlimited.
-     * Hermes default is 5120 (5GB); leaving unset is anima's default so the
+     * Hermes default is 5120 (5GB); leaving unset is promus's default so the
      * container competes fairly with host work without OOM-killing surprise.
      */
     dockerMemoryMb?: number
@@ -346,7 +346,7 @@ export const NETWORK_CURRENCY: Record<PromusNetwork, string> = {
 /**
  * True only for the 0G-native chains, which carry the 0G Storage / Compute /
  * Sandbox economy (agent float, compute ledger, on-chain storage anchors, the
- * `.anima.0g` Space ID name service). On every other network anima runs the
+ * `.promus.0g` Space ID name service). On every other network promus runs the
  * lean stack: Claude brain (off-chain API key) + IPFS memory (off-chain) +
  * local runtime, so the only on-chain cost is real L2 gas.
  */

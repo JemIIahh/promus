@@ -1,7 +1,7 @@
 /**
  * Bundle B unit tests: spawnGatewayDaemon path. Uses a tiny shell-stub bin
  * that "binds" the socket by simply touching the path then sleeping. We
- * avoid spinning up the real `bun packages/gateway/bin/anima-gateway-local`
+ * avoid spinning up the real `bun packages/gateway/bin/promus-gateway-local`
  * because that pulls in keystore + viem + 0G SDKs.
  */
 
@@ -14,7 +14,7 @@ import { spawnGatewayDaemon } from './gateway-spawn'
 let workDir: string
 
 beforeEach(() => {
-  workDir = mkdtempSync(join(tmpdir(), 'anima-spawn-test-'))
+  workDir = mkdtempSync(join(tmpdir(), 'promus-spawn-test-'))
 })
 
 afterEach(() => {

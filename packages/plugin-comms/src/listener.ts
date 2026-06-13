@@ -71,7 +71,7 @@ export interface DeliveredMessage {
   from: Address
   /**
    * Friendly name for `from`: contact label if the receiver added the sender
-   * as a contact (preferring `.anima.0g` form when known), else null. Chat
+   * as a contact (preferring `.promus.0g` form when known), else null. Chat
    * UI prefers this over the raw address; brain prompt context uses it too.
    */
   fromLabel: string | null

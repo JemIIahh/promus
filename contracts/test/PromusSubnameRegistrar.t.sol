@@ -48,7 +48,7 @@ contract PromusSubnameRegistrarTest is Test {
     PromusSubnameRegistrar reg;
     MockRegistry registry;
     address resolver = address(0xBEEF);
-    address animaOwner = address(0xA11CE);
+    address promusOwner = address(0xA11CE);
     address alice = address(0xa1);
     address bob = address(0xb0);
     address carol = address(0xca);
@@ -58,9 +58,9 @@ contract PromusSubnameRegistrarTest is Test {
 
     function setUp() public {
         registry = new MockRegistry();
-        registry.prime(PROMUS_NODE, animaOwner);
-        reg = new PromusSubnameRegistrar(address(registry), resolver, animaOwner);
-        vm.prank(animaOwner);
+        registry.prime(PROMUS_NODE, promusOwner);
+        reg = new PromusSubnameRegistrar(address(registry), resolver, promusOwner);
+        vm.prank(promusOwner);
         registry.setApprovalForAll(address(reg), true);
     }
 
@@ -103,7 +103,7 @@ contract PromusSubnameRegistrarTest is Test {
     }
 
     function test_NotApprovedReverts() public {
-        vm.prank(animaOwner);
+        vm.prank(promusOwner);
         registry.setApprovalForAll(address(reg), false);
 
         vm.prank(alice);
@@ -113,14 +113,14 @@ contract PromusSubnameRegistrarTest is Test {
 
     function test_IsOperationalReflectsApproval() public {
         assertTrue(reg.isOperational());
-        vm.prank(animaOwner);
+        vm.prank(promusOwner);
         registry.setApprovalForAll(address(reg), false);
         assertFalse(reg.isOperational());
     }
 
     function test_IsOperationalFalseAfterOwnerTransfer() public {
         assertTrue(reg.isOperational());
-        // anima.0g transferred to a new owner who hasn't approved the registrar
+        // promus.0g transferred to a new owner who hasn't approved the registrar
         address newOwner = address(0xDEC0DE);
         registry.prime(PROMUS_NODE, newOwner);
         assertFalse(reg.isOperational());

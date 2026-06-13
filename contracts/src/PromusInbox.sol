@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 /// @title PromusInbox
-/// @notice Singleton A2A message emitter for anima agents on 0G Chain.
+/// @notice Singleton A2A message emitter for promus agents on 0G Chain.
 /// @dev Stateless: the contract owns nothing, stores nothing. Every message
 /// is just a chain event. Recipients scan logs filtered by `to`, decrypt
 /// the ECIES payload, or fetch the 0G Storage blob via `dataHash` if set.
@@ -15,7 +15,7 @@ pragma solidity ^0.8.28;
 /// sender re-broadcasting the same ciphertext) is not impersonation, since
 /// the new sender is correctly attributed in `event.from`.
 contract PromusInbox {
-    /// @notice Hard cap on inline payload bytes. Anima's spillover threshold
+    /// @notice Hard cap on inline payload bytes. Promus's spillover threshold
     /// is 3 KiB at the application layer; this 16 KiB ceiling gives 5x
     /// headroom for unusual cases while forcing megabyte-scale abuse to
     /// route through 0G Storage (which carries its own write fee).

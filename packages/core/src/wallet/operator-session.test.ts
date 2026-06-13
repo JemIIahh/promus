@@ -44,13 +44,13 @@ const ORIGINAL_PROMUS_ROOT = process.env.PROMUS_ROOT
 const hex32 = (byte: number): Hex => `0x${byte.toString(16).padStart(2, '0').repeat(32)}` as Hex
 
 beforeEach(() => {
-  const tmp = join(tmpdir(), `anima-op-session-test-${process.pid}-${Date.now().toString(36)}`)
+  const tmp = join(tmpdir(), `promus-op-session-test-${process.pid}-${Date.now().toString(36)}`)
   mkdirSync(join(tmp, 'agents', TEST_AGENT_ID), { recursive: true })
   process.env.PROMUS_ROOT = tmp
 })
 
 afterEach(() => {
-  if (process.env.PROMUS_ROOT?.includes('anima-op-session-test')) {
+  if (process.env.PROMUS_ROOT?.includes('promus-op-session-test')) {
     try {
       rmSync(process.env.PROMUS_ROOT, { recursive: true, force: true })
     } catch {
@@ -62,7 +62,7 @@ afterEach(() => {
 })
 
 describe('operatorSessionPath', () => {
-  test('returns ~/.anima/agents/<id>/.operator-session', () => {
+  test('returns ~/.promus/agents/<id>/.operator-session', () => {
     const p = operatorSessionPath(TEST_AGENT_ID)
     expect(p.endsWith(`/agents/${TEST_AGENT_ID}/.operator-session`)).toBe(true)
   })

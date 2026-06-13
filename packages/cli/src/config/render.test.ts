@@ -81,7 +81,7 @@ describe('renderConfigTs sandbox block', () => {
     const { writeFile, rm, mkdtemp } = await import('node:fs/promises')
     const { tmpdir } = await import('node:os')
     const { join } = await import('node:path')
-    const dir = await mkdtemp(join(tmpdir(), 'anima-render-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-render-test-'))
     const path = join(dir, 'config.ts')
     try {
       await writeFile(path, out, 'utf8')

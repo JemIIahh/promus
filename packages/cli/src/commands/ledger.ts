@@ -24,16 +24,16 @@ export interface LedgerOpts {
 }
 
 export async function runLedger(opts: LedgerOpts): Promise<void> {
-  intro(`anima ledger ${opts.sub}`)
+  intro(`promus ledger ${opts.sub}`)
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   const { config } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 
@@ -63,7 +63,7 @@ export async function runLedger(opts: LedgerOpts): Promise<void> {
       )
       s.stop('retrieve submitted')
       log.info(
-        'Provider sub-accounts now have a pending refund. Some balance returns immediately; the rest unlocks after the contract lock window. Re-run `anima ledger retrieve` after the window to pull what was queued.',
+        'Provider sub-accounts now have a pending refund. Some balance returns immediately; the rest unlocks after the contract lock window. Re-run `promus ledger retrieve` after the window to pull what was queued.',
       )
       await printBalance(network, unlocked.agentPrivkey, agentAddress)
       outro('retrieve done')
@@ -101,7 +101,7 @@ export async function runLedger(opts: LedgerOpts): Promise<void> {
       }
       if (parseEther(amount.toString()) > detail.availableBalance) {
         log.warn(
-          `Requested ${amount} 0G but only ${formatEther(detail.availableBalance)} 0G is available in the main ledger. Run \`anima ledger retrieve\` first if funds are still in provider sub-accounts.`,
+          `Requested ${amount} 0G but only ${formatEther(detail.availableBalance)} 0G is available in the main ledger. Run \`promus ledger retrieve\` first if funds are still in provider sub-accounts.`,
         )
         outro('refund skipped')
         return

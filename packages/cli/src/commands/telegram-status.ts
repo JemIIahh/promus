@@ -11,16 +11,16 @@ import {
 import { loadOrPickOperatorSigner } from './init/operator-picker'
 
 export async function runTelegramStatus(): Promise<void> {
-  intro('anima telegram status')
+  intro('promus telegram status')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   const { config } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 
@@ -32,7 +32,7 @@ export async function runTelegramStatus(): Promise<void> {
 
   if (!telegramSecretsExist(agentId)) {
     log.warn(`No telegram secrets stored for ${agentId}.`)
-    log.info(`Expected at: ${path}\nRun \`anima telegram setup\` to configure.`)
+    log.info(`Expected at: ${path}\nRun \`promus telegram setup\` to configure.`)
     outro('not configured')
     return
   }
@@ -71,7 +71,7 @@ export async function runTelegramStatus(): Promise<void> {
     sPing.stop(`bot ok: @${info.username} (id ${info.id})`)
   } catch (e) {
     sPing.stop(`getMe failed: ${(e as Error).message.slice(0, 200)}`)
-    log.warn('Token may have been revoked at @BotFather. Re-run `anima telegram setup`.')
+    log.warn('Token may have been revoked at @BotFather. Re-run `promus telegram setup`.')
     return
   }
 

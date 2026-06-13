@@ -1,6 +1,6 @@
 # promus-core
 
-Always-on infrastructure for **anima**: runtime, brain (0G Compute), identity (iNFT), memory (0G Storage), wallet, tool registry, event queue, plugin context.
+Always-on infrastructure for **promus**: runtime, brain (0G Compute), identity (iNFT), memory (0G Storage), wallet, tool registry, event queue, plugin context.
 
 ## Install
 

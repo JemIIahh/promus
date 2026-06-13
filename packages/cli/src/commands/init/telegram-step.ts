@@ -1,6 +1,6 @@
 /**
- * Hermes-aligned Telegram setup wizard step. Shared by `anima telegram setup`
- * (standalone) and the optional Phase E in `anima init` (right after Phase D
+ * Hermes-aligned Telegram setup wizard step. Shared by `promus telegram setup`
+ * (standalone) and the optional Phase E in `promus init` (right after Phase D
  * summary, reusing the in-flight operator wallet so we don't prompt Touch ID
  * twice).
  *
@@ -8,8 +8,8 @@
  *   1. Bot token (password input + `getMe` probe).
  *   2. Auth-mode select: pair (default) or allowlist.
  *   3. Allowlist branch: text prompt for IDs + @userinfobot hint.
- *   4. Encrypt + save secrets to `~/.anima/agents/<id>/telegram-secrets.encrypted`.
- *   5. Merge `'telegram'` into config.plugins; rewrite `~/.anima/config.ts`.
+ *   4. Encrypt + save secrets to `~/.promus/agents/<id>/telegram-secrets.encrypted`.
+ *   5. Merge `'telegram'` into config.plugins; rewrite `~/.promus/config.ts`.
  *
  * Caller frames its own intro/outro. This helper is content-only.
  */
@@ -54,7 +54,7 @@ export interface TelegramStepOpts {
    * caller (init.ts) builds the final cfg with `'telegram'` in plugins and
    * writes once. Avoids the partial-write hazard where Phase E runs before
    * the init's main config build and the intermediate write has incomplete
-   * identity/sandbox fields. Standalone `anima telegram setup` keeps the
+   * identity/sandbox fields. Standalone `promus telegram setup` keeps the
    * default false so it still rewrites the config.
    */
   skipConfigWrite?: boolean

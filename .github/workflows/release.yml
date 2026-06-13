@@ -251,10 +251,10 @@ jobs:
           done
           # Bun puts directly-installed bins at ~/.bun/bin/<name> and
           # transitive-dep bins at ~/.bun/install/global/node_modules/.bin/<name>.
-          # `anima` is direct (the CLI package), `anima-gateway` is transitive.
+          # `promus` is direct (the CLI package), `promus-gateway` is transitive.
           # PATH-walk both dirs so bin lookups don't depend on layout knowledge.
           export PATH="$HOME/.bun/bin:$HOME/.bun/install/global/node_modules/.bin:$PATH"
-          for bin in anima anima-gateway; do
+          for bin in promus promus-gateway; do
             if ! command -v "$bin" >/dev/null 2>&1; then
               echo "::error::$bin not found on PATH after global install"
               echo "~/.bun/bin contents:" && ls -la "$HOME/.bun/bin" || true
@@ -265,7 +265,7 @@ jobs:
           done
           # Verify version of every installed promus-* package.
           # 6 packages total: cli + gateway + core + 3 plugins (telegram lives under deps).
-          for pkg in anima anima-gateway anima-core anima-plugin-comms anima-plugin-onchain anima-plugin-system anima-plugin-telegram; do
+          for pkg in promus promus-gateway promus-core promus-plugin-comms promus-plugin-onchain promus-plugin-system promus-plugin-telegram; do
             PKG_JSON="$HOME/.bun/install/global/node_modules/${pkg}/package.json"
             if [ ! -f "$PKG_JSON" ]; then
               echo "::error::${pkg} not installed (missing $PKG_JSON)"

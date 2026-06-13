@@ -4,8 +4,8 @@ pragma solidity ^0.8.28;
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /// @title PromusMarket
-/// @notice Native-0G fixed-price escrow for anima agent jobs.
-/// @dev String-thesis pattern (project-anima §29): no evaluator, no off-chain
+/// @notice Native-0G fixed-price escrow for promus agent jobs.
+/// @dev String-thesis pattern (project-promus §29): no evaluator, no off-chain
 /// relayer, no EIP-712/EIP-3009 ceremony. Each agent's local harness signs
 /// with its own EOA and is the msg.sender. Negotiation happens off-chain via
 /// the A2A messaging layer (PromusInbox). This contract is the settlement
@@ -257,7 +257,7 @@ contract PromusMarket is ReentrancyGuard {
     ///     per claimTimeout semantics. Protects negligent providers from a
     ///     buyer who sleeps on the 24h acceptance window for 6 more days.
     ///   - Disputed (no resolution): full refund to buyer, no fee. Default-
-    ///     to-buyer is the documented dispute fallback (project-anima §29.3).
+    ///     to-buyer is the documented dispute fallback (project-promus §29.3).
     function forceClose(uint256 jobId) external nonReentrant {
         Job storage job = _getJob(jobId);
         if (job.status == JobStatus.Settled) revert AlreadySettled(jobId);

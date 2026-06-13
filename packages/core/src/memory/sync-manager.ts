@@ -39,8 +39,8 @@ export interface MemorySyncManagerOpts {
   tokenId: bigint
   /**
    * Override the activity-log path. The gateway daemon writes its live
-   * activity log under `${TMPDIR}/anima-gateway/<id>/activity.jsonl`, not
-   * the legacy `~/.anima/agents/<id>/activity.jsonl`. Without this override
+   * activity log under `${TMPDIR}/promus-gateway/<id>/activity.jsonl`, not
+   * the legacy `~/.promus/agents/<id>/activity.jsonl`. Without this override
    * /sync would upload the stale legacy file (often megabytes of dead data)
    * and ignore the fresh runtime log. Pass whenever the daemon's agentDir
    * differs from `agentPaths.agent(id).dir`.
@@ -48,8 +48,8 @@ export interface MemorySyncManagerOpts {
   activityLogPath?: string
   /**
    * Override the memory directory base. Same rationale as `activityLogPath`:
-   * defaults to `~/.anima/agents/<id>/memory/`, but the daemon writes to
-   * `${TMPDIR}/anima-gateway/<id>/memory/`. Pass the daemon's memoryDir
+   * defaults to `~/.promus/agents/<id>/memory/`, but the daemon writes to
+   * `${TMPDIR}/promus-gateway/<id>/memory/`. Pass the daemon's memoryDir
    * here so /sync uploads the live MEMORY.md + agent/identity.md +
    * agent/persona.md, not the legacy on-disk copies.
    */
@@ -93,7 +93,7 @@ export class MemorySyncManager {
   private readonly activityLogPath: string
   private readonly syncStatePath: string
   // v0.23.0: profileKey is NOT readonly so the gateway can flip it on
-  // mid-session via /admin/profile-key (operator runs `anima profile init`
+  // mid-session via /admin/profile-key (operator runs `promus profile init`
   // after the daemon is already up). setProfileKey() updates it; the next
   // doFlush picks it up. No restart needed.
   private profileKey: Buffer | null
@@ -112,7 +112,7 @@ export class MemorySyncManager {
     this.fileTargets = defaultMemorySyncTargets(opts.agentId, opts.memoryDir)
     this.activityLogPath = opts.activityLogPath ?? agentPaths.agent(opts.agentId).activityLog
     // Sidecar lives alongside activity.jsonl by default so it tracks the
-    // same agent state tree (TMPDIR for the gateway daemon, ~/.anima for
+    // same agent state tree (TMPDIR for the gateway daemon, ~/.promus for
     // embedded callers). Falls back to the legacy agent dir if neither
     // override is supplied.
     this.syncStatePath =
@@ -130,7 +130,7 @@ export class MemorySyncManager {
 
   /**
    * v0.23.0: live-flip the operator-scoped PROFILE key. Called by the gateway
-   * after `/admin/profile-key` succeeds (operator just ran `anima profile init`).
+   * after `/admin/profile-key` succeeds (operator just ran `promus profile init`).
    * The next doFlush picks up the new key and includes the profile slot in the
    * batched updateSlots tx. No daemon restart needed.
    *

@@ -10,7 +10,7 @@ const ALICE_PRIV = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b
 const ALICE_ADDR = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as Address // arbitrary, not derived
 
 function tempDir(): string {
-  return mkdtempSync(join(tmpdir(), 'anima-pubkey-test-'))
+  return mkdtempSync(join(tmpdir(), 'promus-pubkey-test-'))
 }
 
 function fakeSann(records: Record<string, Record<string, string>>) {
@@ -45,7 +45,7 @@ describe('PubkeyResolver: input format', () => {
       agentDir: dir,
       sann: fakeSann({}),
     })
-    await expect(r.resolve(`0x${'a'.repeat(40)}`)).rejects.toThrow(/use .anima.0g name|MVP/)
+    await expect(r.resolve(`0x${'a'.repeat(40)}`)).rejects.toThrow(/use .promus.0g name|MVP/)
     rmSync(dir, { recursive: true, force: true })
   })
 
@@ -60,14 +60,14 @@ describe('PubkeyResolver: input format', () => {
     rmSync(dir, { recursive: true, force: true })
   })
 
-  it('rejects non-anima .0g names', async () => {
+  it('rejects non-promus .0g names', async () => {
     const dir = tempDir()
     const r = new PubkeyResolver({
       publicClient: {} as unknown as PublicClient,
       agentDir: dir,
       sann: fakeSann({}),
     })
-    await expect(r.resolve('foo.bar.0g')).rejects.toThrow(/only \*.anima.0g/)
+    await expect(r.resolve('foo.bar.0g')).rejects.toThrow(/only \*.promus.0g/)
     rmSync(dir, { recursive: true, force: true })
   })
 })
@@ -83,10 +83,10 @@ describe('PubkeyResolver: subname text records', () => {
       agentDir: dir,
       sann: fakeSann({ [node.toLowerCase()]: { address: ALICE_ADDR, pubkey } }),
     })
-    const out = await r.resolve('alice.anima.0g')
+    const out = await r.resolve('alice.promus.0g')
     expect(out.eoa.toLowerCase()).toBe(ALICE_ADDR.toLowerCase())
     expect(out.pubkey.toLowerCase()).toBe(pubkey.toLowerCase())
-    expect(out.name).toBe('alice.anima.0g')
+    expect(out.name).toBe('alice.promus.0g')
     expect(out.source).toBe('subname-text-record')
     rmSync(dir, { recursive: true, force: true })
   })
@@ -101,7 +101,7 @@ describe('PubkeyResolver: subname text records', () => {
       agentDir: dir,
       sann: fakeSann({ [node.toLowerCase()]: { pubkey } }),
     })
-    await expect(r.resolve('lonely.anima.0g')).rejects.toThrow(/address text record not set/)
+    await expect(r.resolve('lonely.promus.0g')).rejects.toThrow(/address text record not set/)
     rmSync(dir, { recursive: true, force: true })
   })
 
@@ -114,7 +114,7 @@ describe('PubkeyResolver: subname text records', () => {
       agentDir: dir,
       sann: fakeSann({ [node.toLowerCase()]: { address: ALICE_ADDR } }),
     })
-    await expect(r.resolve('legacy.anima.0g')).rejects.toThrow(/publish-pubkey/)
+    await expect(r.resolve('legacy.promus.0g')).rejects.toThrow(/publish-pubkey/)
     rmSync(dir, { recursive: true, force: true })
   })
 
@@ -135,8 +135,8 @@ describe('PubkeyResolver: subname text records', () => {
       agentDir: dir,
       sann,
     })
-    const a = await r.resolve('cached.anima.0g')
-    const b = await r.resolve('cached.anima.0g')
+    const a = await r.resolve('cached.promus.0g')
+    const b = await r.resolve('cached.promus.0g')
     expect(a.source).toBe('subname-text-record')
     expect(b.source).toBe('cache')
     expect(calls).toBe(2) // two reads on first lookup, none on second
@@ -161,9 +161,9 @@ describe('PubkeyResolver: subname text records', () => {
       agentDir: dir,
       sann,
     })
-    await r.resolve('drop.anima.0g')
-    r.invalidate('drop.anima.0g')
-    await r.resolve('drop.anima.0g')
+    await r.resolve('drop.promus.0g')
+    r.invalidate('drop.promus.0g')
+    await r.resolve('drop.promus.0g')
     expect(calls).toBe(4) // re-read after invalidate
     rmSync(dir, { recursive: true, force: true })
   })

@@ -52,7 +52,7 @@ function parsePrivkeyFlag(name: string, args: string[]): { value: Hex } | { erro
 }
 
 /**
- * `anima transfer <ref> --to <addr> [--recipient-key 0x...] [--oracle-key 0x...] [--dry-run] [--yes] [--no-purge]`
+ * `promus transfer <ref> --to <addr> [--recipient-key 0x...] [--oracle-key 0x...] [--dry-run] [--yes] [--no-purge]`
  *
  * Positional `<ref>` is the iNFT identifier (`eip155:<chainId>:<contract>:<tokenId>`
  * or shorthand). All other args are flags.
@@ -95,7 +95,7 @@ export function parseTransferArgs(argv: readonly string[]): ParseTransferResult 
 }
 
 export async function runTransfer(opts: TransferOpts): Promise<void> {
-  intro(opts.dryRun ? 'anima transfer (dry run)' : 'anima transfer')
+  intro(opts.dryRun ? 'promus transfer (dry run)' : 'promus transfer')
 
   let parsed: ParsedINFTRef
   try {
@@ -512,7 +512,7 @@ export async function runTransfer(opts: TransferOpts): Promise<void> {
       `  tx            ${txHash}`,
       `  explorer      ${explorerTokenUrl(parsed.network, parsed.contract, parsed.tokenId)}`,
       '',
-      'Recipient: run `anima restore` from your environment with the recipient',
+      'Recipient: run `promus restore` from your environment with the recipient',
       'wallet to unlock the agent locally.',
       '',
     ].join('\n'),

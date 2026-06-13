@@ -7,7 +7,7 @@
  *   │  [00:12] apt update                     ✓   │
  *   │  [00:38] system deps installed          ✓   │
  *   │  [01:04] bun runtime installed          ✓   │
- *   │  [01:22] anima 0.24.7 installed         ✓   │
+ *   │  [01:22] promus 0.24.7 installed         ✓   │
  *   │  [01:45] browser deps installed         ✓   │
  *   │  [02:08] harness daemon spawned         ✓   │
  *   │  [02:11] /healthz Ready                 ✓   │
@@ -32,7 +32,7 @@ export type BootstrapStageId =
   | 'apt-update'
   | 'system-deps'
   | 'bun-install'
-  | 'anima-install'
+  | 'promus-install'
   | 'browser-deps'
   | 'harness-spawn'
   | 'healthz-ready'
@@ -44,7 +44,7 @@ const STAGE_ORDER: readonly BootstrapStageId[] = [
   'apt-update',
   'system-deps',
   'bun-install',
-  'anima-install',
+  'promus-install',
   'browser-deps',
   'harness-spawn',
   'healthz-ready',
@@ -55,7 +55,7 @@ const DEFAULT_LABELS: Record<BootstrapStageId, string> = {
   'apt-update': 'apt update',
   'system-deps': 'system deps installed',
   'bun-install': 'bun runtime installed',
-  'anima-install': 'promus installed',
+  'promus-install': 'promus installed',
   'browser-deps': 'browser deps installed',
   'harness-spawn': 'harness daemon spawned',
   'healthz-ready': '/healthz Ready',
@@ -74,7 +74,7 @@ interface StageState {
 export interface BootstrapProgressBoxOpts {
   /** Box title. Defaults to "bootstrap progress". */
   title?: string
-  /** Per-stage label override. Useful for injecting the version into anima-install. */
+  /** Per-stage label override. Useful for injecting the version into promus-install. */
   labels?: Partial<Record<BootstrapStageId, string>>
   /** Stream to write to. Defaults to process.stdout. */
   out?: NodeJS.WritableStream & { isTTY?: boolean }
@@ -92,7 +92,7 @@ export function mapBootstrapMarkerToStage(marker: string): BootstrapStageId | nu
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.aptUpdate)) return 'apt-update'
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.systemDeps)) return 'system-deps'
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.bunInstall)) return 'bun-install'
-  if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.animaInstall)) return 'anima-install'
+  if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.promusInstall)) return 'promus-install'
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.browserDeps)) return 'browser-deps'
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.harnessSpawn)) return 'harness-spawn'
   if (m.startsWith(BOOTSTRAP_STAGE_MARKERS.harnessReady)) return 'harness-spawn'
@@ -345,7 +345,7 @@ export class BootstrapProgressController {
       this.spinner.stop(this.startedMsg)
       this.spinnerStopped = true
       this.box = new BootstrapProgressBox({
-        labels: { 'anima-install': `promus ${this.cliVersion} installed` },
+        labels: { 'promus-install': `promus ${this.cliVersion} installed` },
       })
       this.box.start()
     }

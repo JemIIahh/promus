@@ -16,9 +16,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params
   const doc = await getDoc(slug)
-  if (!doc) return { title: 'docs · anima' }
+  if (!doc) return { title: 'docs · promus' }
   return {
-    title: `${doc.frontmatter.title} · anima docs`,
+    title: `${doc.frontmatter.title} · promus docs`,
     description: doc.frontmatter.description,
   }
 }

@@ -15,7 +15,7 @@ import {PromusInbox} from "../src/PromusInbox.sol";
 ///     --rpc-url og_mainnet --broadcast --private-key $DEV_DEPLOYER_PK \
 ///     --priority-gas-price 2000000000 --with-gas-price 2500000000
 contract DeployInbox is Script {
-    bytes32 public constant SALT = keccak256("anima:PromusInbox:v1");
+    bytes32 public constant SALT = keccak256("promus:PromusInbox:v1");
 
     function run() external returns (PromusInbox inbox) {
         vm.startBroadcast();

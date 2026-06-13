@@ -14,7 +14,7 @@ import {
 
 async function withTempRoot<T>(fn: () => Promise<T>): Promise<T> {
   const prev = process.env.PROMUS_ROOT
-  const tmp = mkdtempSync(join(tmpdir(), 'anima-save-'))
+  const tmp = mkdtempSync(join(tmpdir(), 'promus-save-'))
   process.env.PROMUS_ROOT = tmp
   try {
     return await fn()
@@ -55,7 +55,7 @@ test('memory.save routes agent-* types to agent partition', async () => {
 
     const r = await tool.handler({
       name: 'persona voice',
-      description: 'anima should speak in concise second-person sentences.',
+      description: 'promus should speak in concise second-person sentences.',
       type: 'agent-persona',
       content: 'Voice is direct, second-person, no hedging.',
     })

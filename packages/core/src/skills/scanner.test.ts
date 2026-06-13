@@ -7,7 +7,7 @@ import { parseFrontmatter, scanSkills } from './scanner'
 let scratch: string
 
 beforeEach(async () => {
-  scratch = await mkdtemp(join(tmpdir(), 'anima-skills-scanner-'))
+  scratch = await mkdtemp(join(tmpdir(), 'promus-skills-scanner-'))
 })
 
 afterEach(async () => {
@@ -46,14 +46,14 @@ describe('parseFrontmatter', () => {
 })
 
 describe('scanSkills', () => {
-  it('finds anima + claude-code skills + claude plugin cache layouts', async () => {
-    const animaSkillsRoot = join(scratch, '.anima', 'skills')
+  it('finds promus + claude-code skills + claude plugin cache layouts', async () => {
+    const promusSkillsRoot = join(scratch, '.promus', 'skills')
     const claudeSkillsRoot = join(scratch, '.claude', 'skills')
     const claudePluginsCacheRoot = join(scratch, '.claude', 'plugins', 'cache')
 
     await plant(
-      join(animaSkillsRoot, 'dogfood'),
-      '---\nname: dogfood\ndescription: anima skill\n---',
+      join(promusSkillsRoot, 'dogfood'),
+      '---\nname: dogfood\ndescription: promus skill\n---',
     )
     await plant(
       join(claudeSkillsRoot, 'commit'),
@@ -70,14 +70,14 @@ describe('scanSkills', () => {
     )
 
     const skills = await scanSkills({
-      animaSkillsRoot,
-      animaPluginsRoot: join(scratch, '.anima', 'plugins'),
+      promusSkillsRoot,
+      promusPluginsRoot: join(scratch, '.promus', 'plugins'),
       claudeSkillsRoot,
       claudePluginsCacheRoot,
       importsClaudeCode: true,
     })
     const ids = skills.map(s => s.id).sort()
-    expect(ids).toContain('anima:dogfood')
+    expect(ids).toContain('promus:dogfood')
     expect(ids).toContain('claude-code:commit')
     expect(ids).toContain('claude-plugin:awesome:pdf:extract')
     expect(ids).toContain('claude-plugin:awesome:docx')
@@ -91,8 +91,8 @@ describe('scanSkills', () => {
     const claudeSkillsRoot = join(scratch, '.claude', 'skills')
     await plant(join(claudeSkillsRoot, 'foo'), '---\nname: foo\ndescription: x\n---')
     const skills = await scanSkills({
-      animaSkillsRoot: join(scratch, 'doesnotexist'),
-      animaPluginsRoot: join(scratch, 'doesnotexist'),
+      promusSkillsRoot: join(scratch, 'doesnotexist'),
+      promusPluginsRoot: join(scratch, 'doesnotexist'),
       claudeSkillsRoot,
       claudePluginsCacheRoot: join(scratch, 'doesnotexist'),
       importsClaudeCode: false,
@@ -100,39 +100,39 @@ describe('scanSkills', () => {
     expect(skills).toEqual([])
   })
 
-  it('discovers anima-plugin skills', async () => {
-    const animaPluginsRoot = join(scratch, '.anima', 'plugins')
+  it('discovers promus-plugin skills', async () => {
+    const promusPluginsRoot = join(scratch, '.promus', 'plugins')
     await plant(
-      join(animaPluginsRoot, 'system', 'skills', 'sweep'),
+      join(promusPluginsRoot, 'system', 'skills', 'sweep'),
       '---\nname: sweep\ndescription: plugin-sourced skill\n---',
     )
     const skills = await scanSkills({
-      animaSkillsRoot: join(scratch, 'doesnotexist'),
-      animaPluginsRoot,
+      promusSkillsRoot: join(scratch, 'doesnotexist'),
+      promusPluginsRoot,
       claudeSkillsRoot: join(scratch, 'doesnotexist'),
       claudePluginsCacheRoot: join(scratch, 'doesnotexist'),
       importsClaudeCode: false,
     })
-    expect(skills.map(s => s.id)).toEqual(['anima-plugin:system:sweep'])
+    expect(skills.map(s => s.id)).toEqual(['promus-plugin:system:sweep'])
   })
 })
 
 describe('skills without YAML frontmatter', () => {
   it('still surfaces skills whose SKILL.md has no frontmatter (fallback to dir name + first body line)', async () => {
-    const animaSkillsRoot = join(scratch, '.anima', 'skills')
-    await mkdir(join(animaSkillsRoot, 'no-fm'), { recursive: true })
+    const promusSkillsRoot = join(scratch, '.promus', 'skills')
+    await mkdir(join(promusSkillsRoot, 'no-fm'), { recursive: true })
     await writeFile(
-      join(animaSkillsRoot, 'no-fm', 'SKILL.md'),
+      join(promusSkillsRoot, 'no-fm', 'SKILL.md'),
       '# no-fm skill\n\nA skill without yaml frontmatter that should still be discoverable.\n',
     )
     const skills = await scanSkills({
-      animaSkillsRoot,
-      animaPluginsRoot: join(scratch, 'doesnotexist'),
+      promusSkillsRoot,
+      promusPluginsRoot: join(scratch, 'doesnotexist'),
       claudeSkillsRoot: join(scratch, 'doesnotexist'),
       claudePluginsCacheRoot: join(scratch, 'doesnotexist'),
       importsClaudeCode: false,
     })
-    const found = skills.find(s => s.id === 'anima:no-fm')
+    const found = skills.find(s => s.id === 'promus:no-fm')
     expect(found).toBeDefined()
     expect(found!.name).toBe('no-fm')
     expect(found!.description).toContain('A skill without yaml frontmatter')

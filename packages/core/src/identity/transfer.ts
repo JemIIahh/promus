@@ -98,7 +98,7 @@ export interface BuildTransferHashesArgs {
   /**
    * If true (default), the `profile` slot is reset to its bootstrap placeholder
    * so any operator-scoped data anchored there does NOT cross the transfer
-   * boundary (privacy-preserving handoff per project-anima.md section 26.3).
+   * boundary (privacy-preserving handoff per project-promus.md section 26.3).
    * Set to false to pass profile through unchanged.
    */
   purgeProfile?: boolean

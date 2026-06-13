@@ -9,20 +9,20 @@ interface PauseOpts {
 }
 
 /**
- * `anima pause`: archive a started sandbox to stop the runtime burn.
+ * `promus pause`: archive a started sandbox to stop the runtime burn.
  *
  * Use during dev gaps to extend deposit runway. Sandbox UUID + endpoint
- * preserved; resume via `anima resume` (~2-5 min cold restore).
+ * preserved; resume via `promus resume` (~2-5 min cold restore).
  *
  * Does NOT require operator-keystore unlock. Only needs the operator wallet
  * to sign the provider HTTP request (action=archive). Fast, low-friction.
  */
 export async function runPause(opts: PauseOpts = {}): Promise<void> {
-  intro('anima pause')
+  intro('promus pause')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found.')
+    cancel('No promus.config.ts found.')
     return
   }
   const { config } = loaded
@@ -45,7 +45,7 @@ export async function runPause(opts: PauseOpts = {}): Promise<void> {
 
   if (!opts.yes) {
     const ok = await confirm({
-      message: `Pause sandbox ${sandboxId.slice(0, 8)}? Burn stops; resume with \`anima resume\`.`,
+      message: `Pause sandbox ${sandboxId.slice(0, 8)}? Burn stops; resume with \`promus resume\`.`,
       initialValue: true,
     })
     if (isCancel(ok) || !ok) {
@@ -81,7 +81,7 @@ export async function runPause(opts: PauseOpts = {}): Promise<void> {
         '  state now     archived',
         '  burn          stopped',
         '',
-        'To wake: anima resume',
+        'To wake: promus resume',
       ].join('\n'),
     )
   } catch (e) {
@@ -89,7 +89,7 @@ export async function runPause(opts: PauseOpts = {}): Promise<void> {
     note(
       [
         'The sandbox could not transition to archived.',
-        'Run `anima status` to inspect, or retry. If the underlying state is bad, `anima upgrade --reprovision` is the escape hatch.',
+        'Run `promus status` to inspect, or retry. If the underlying state is bad, `promus upgrade --reprovision` is the escape hatch.',
       ].join('\n'),
       'recoverable',
     )

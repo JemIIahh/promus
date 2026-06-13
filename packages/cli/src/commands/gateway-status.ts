@@ -1,5 +1,5 @@
 /**
- * `anima gateway status` — show PID, uptime, socket path, lock state,
+ * `promus gateway status` — show PID, uptime, socket path, lock state,
  * operator-session freshness.
  */
 
@@ -34,7 +34,7 @@ export async function runGatewayStatus(opts: GatewayStatusOpts): Promise<void> {
   if (!agentId) {
     const found = await findAndLoadConfig()
     if (!found?.config) {
-      console.error('anima gateway status: no anima.config.ts and no --agent provided')
+      console.error('promus gateway status: no promus.config.ts and no --agent provided')
       process.exit(1)
     }
     const contractAddress = getAddress(found.config.identity.iNFT!.contract as Address)
@@ -44,7 +44,7 @@ export async function runGatewayStatus(opts: GatewayStatusOpts): Promise<void> {
   const paths = agentPaths.agent(agentId)
   const socketPath = join(paths.dir, 'gateway.sock')
   const identityHash = createHash('sha256').update(agentId).digest('hex').slice(0, 16)
-  const lockFile = join(homedir(), '.anima', 'locks', `anima-gateway-${identityHash}.lock`)
+  const lockFile = join(homedir(), '.promus', 'locks', `promus-gateway-${identityHash}.lock`)
 
   console.log(`agent:        ${agentId}`)
   console.log(`socket:       ${socketPath} ${existsSync(socketPath) ? '(present)' : '(absent)'}`)

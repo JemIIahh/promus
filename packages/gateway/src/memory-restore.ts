@@ -118,7 +118,7 @@ async function restoreSlot(
   if (entry.dataHash === ZERO_HASH) {
     return { slot: entry.dataDescription, path, status: 'skipped', reason: 'unset' }
   }
-  // v0.23.0: the bootstrap-placeholder hash is `keccak256("anima:bootstrap:<slot>")`,
+  // v0.23.0: the bootstrap-placeholder hash is `keccak256("promus:bootstrap:<slot>")`,
   // assigned at mint when the operator hasn't uploaded a real blob yet. Trying to
   // download it produces an infinite blob-not-found retry loop. Treat it as
   // intentionally-unset, same as ZERO_HASH. The slot becomes "real" the moment

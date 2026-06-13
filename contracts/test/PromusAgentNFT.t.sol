@@ -19,7 +19,7 @@ contract PromusAgentNFTTest is Test {
         alice = address(0xa1);
         bob = address(0xb0);
 
-        nft = new PromusAgentNFT("Anima", "ANIMA", oracle);
+        nft = new PromusAgentNFT("Promus", "PROMUS", oracle);
     }
 
     function _canonicalDatas() internal pure returns (PromusAgentNFT.IntelligentData[] memory) {

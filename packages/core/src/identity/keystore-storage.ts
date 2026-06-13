@@ -21,9 +21,9 @@ import { PromusAgentNFTClient, PromusAgentNFTReader, bootstrapHashFor } from './
  * it; only the passphrase holder can decrypt.
  *
  * This closes the "hybrid runtime hot copy + iNFT-metadata cold copy" spec gap
- * (project-anima.md section 22). Before this function, the `keystore` slot held
+ * (project-promus.md section 22). Before this function, the `keystore` slot held
  * a keccak of the bytes (hash-only, no recovery path). After, it holds a 0G
- * Storage root hash that `anima restore <iNFT>` can resolve back to bytes.
+ * Storage root hash that `promus restore <iNFT>` can resolve back to bytes.
  */
 export async function persistKeystoreToStorage(opts: {
   network: PromusNetwork

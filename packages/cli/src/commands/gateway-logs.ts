@@ -1,9 +1,9 @@
 /**
- * `anima gateway logs [--tail N] [-f]` — tail the gateway log.
+ * `promus gateway logs [--tail N] [-f]` — tail the gateway log.
  *
  * v0.19.x: gateway daemon logs to stdout/stderr only (inherited by `gateway run`
  * or backgrounded by `gateway start`). v0.19.3 wires a log file at
- * `~/.anima/agents/<id>/gateway.log` for tailing. Until then, this command
+ * `~/.promus/agents/<id>/gateway.log` for tailing. Until then, this command
  * informs the user where to look.
  */
 
@@ -25,7 +25,7 @@ export async function runGatewayLogs(opts: GatewayLogsOpts): Promise<void> {
   if (!agentId) {
     const found = await findAndLoadConfig()
     if (!found?.config) {
-      console.error('anima gateway logs: no anima.config.ts and no --agent provided')
+      console.error('promus gateway logs: no promus.config.ts and no --agent provided')
       process.exit(1)
     }
     const contractAddress = getAddress(found.config.identity.iNFT!.contract as Address)
@@ -35,9 +35,9 @@ export async function runGatewayLogs(opts: GatewayLogsOpts): Promise<void> {
   const logFile = join(agentPaths.agent(agentId).dir, 'gateway.log')
   if (!existsSync(logFile)) {
     console.log(`gateway log not found at ${logFile}`)
-    console.log('v0.19.x: gateway daemon logs to stdout when run via `anima gateway run`.')
+    console.log('v0.19.x: gateway daemon logs to stdout when run via `promus gateway run`.')
     console.log(
-      'Background it with: nohup bun packages/gateway/bin/anima-gateway-local > ~/anima-logs/gateway.log 2>&1 &',
+      'Background it with: nohup bun packages/gateway/bin/promus-gateway-local > ~/promus-logs/gateway.log 2>&1 &',
     )
     return
   }

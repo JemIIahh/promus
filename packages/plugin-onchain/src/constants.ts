@@ -76,7 +76,7 @@ export const LOG_SCAN_MAX_CHUNKS = 30
 export const EIP1967_IMPL_SLOT =
   '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc' as const
 
-/** ERC-165 interface IDs anima checks via `chain.contract`. */
+/** ERC-165 interface IDs promus checks via `chain.contract`. */
 export const ERC165_INTERFACES = {
   ERC721: '0x80ac58cd',
   ERC1155: '0xd9b67a26',

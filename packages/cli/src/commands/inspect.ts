@@ -27,7 +27,7 @@ import { parseINFTRef } from './_inft-ref'
 import { loadOrPickOperatorSigner } from './init/operator-picker'
 
 /**
- * `anima inspect` — read what's anchored on chain for an iNFT.
+ * `promus inspect` — read what's anchored on chain for an iNFT.
  *
  * Modes (each compose with `--full`/`--json`/`--out <dir>`):
  *   default               own agent: decrypt + render every slot
@@ -64,7 +64,7 @@ const PREVIEW_LINES = 40
 export async function runInspect(flags: InspectFlags): Promise<void> {
   if (flags.json) return runJson(flags)
 
-  intro('anima inspect')
+  intro('promus inspect')
 
   if (flags.tx) {
     await renderTxMode(flags)
@@ -148,13 +148,13 @@ async function resolveTarget(flags: InspectFlags): Promise<ResolvedTarget | null
   const loaded = await findAndLoadConfig()
   if (!loaded) {
     cancel(
-      'No anima config. Run `anima init` first or pass an iNFT ref like `0g-mainnet:0xCONTRACT:tokenId`.',
+      'No promus config. Run `promus init` first or pass an iNFT ref like `0g-mainnet:0xCONTRACT:tokenId`.',
     )
     return null
   }
   const { config } = loaded
   if (!config.identity.iNFT) {
-    cancel('Active config has no iNFT. Run `anima init` first or pass a ref.')
+    cancel('Active config has no iNFT. Run `promus init` first or pass a ref.')
     return null
   }
   return {
@@ -429,14 +429,14 @@ async function renderDiffMode(opts: {
       `${drift.length} slot(s) drifted: ${drift.map(d => `${d.slot}:${d.status}`).join(', ')}`,
       'drift detected',
     )
-    outro('Run `anima sync` to push local → chain, or pull chain via `anima inspect --out <dir>`.')
+    outro('Run `promus sync` to push local → chain, or pull chain via `promus inspect --out <dir>`.')
   }
 }
 
 async function dumpToDir(out: string, result: InspectAgentResult): Promise<void> {
   await mkdir(out, { recursive: true })
   const sumLines: string[] = [
-    '# anima inspect dump',
+    '# promus inspect dump',
     '',
     `iNFT:    ${result.contractAddress} #${result.tokenId} (${result.network})`,
     `owner:   ${result.owner}`,

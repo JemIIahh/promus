@@ -6,21 +6,21 @@ import { loadOrPickOperatorSigner } from './init/operator-picker'
 import { runTelegramStep } from './init/telegram-step'
 
 /**
- * `anima telegram setup` — standalone entry. Loads the operator wallet, then
- * delegates to `runTelegramStep` (the same helper bundled into `anima init`'s
+ * `promus telegram setup` — standalone entry. Loads the operator wallet, then
+ * delegates to `runTelegramStep` (the same helper bundled into `promus init`'s
  * Phase E). Owns its own intro/outro framing.
  */
 export async function runTelegramSetup(): Promise<void> {
-  intro('anima telegram setup')
+  intro('promus telegram setup')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   const { config, path: configPath } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 
@@ -60,12 +60,12 @@ export async function runTelegramSetup(): Promise<void> {
   const isSandbox = config.deployTarget === 'sandbox' && config.sandbox?.endpoint
   if (isSandbox) {
     note(
-      'Sandbox-mode agent: secrets are stored locally now, but the harness inside\nthe Daytona container needs them too. Run `anima upgrade` to ship them across\nthe handoff envelope.',
+      'Sandbox-mode agent: secrets are stored locally now, but the harness inside\nthe Daytona container needs them too. Run `promus upgrade` to ship them across\nthe handoff envelope.',
       'sandbox handoff pending',
     )
   } else {
     note(
-      `Open https://t.me/${result.botUsername} in Telegram and send any message.\nThen run \`anima\` (or \`anima gateway start\`) to bring the agent online.`,
+      `Open https://t.me/${result.botUsername} in Telegram and send any message.\nThen run \`promus\` (or \`promus gateway start\`) to bring the agent online.`,
       'next step',
     )
   }

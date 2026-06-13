@@ -108,12 +108,12 @@ function findAgentBrowser(override?: string, cwdOverride?: string): string | nul
 
   // Search a small ladder of candidate roots: the operator-supplied cwd
   // first, then the daemon's bun cwd, then a probe one level deeper
-  // ("./anima") which catches the sandbox-harness case where the daemon
+  // ("./promus") which catches the sandbox-harness case where the daemon
   // boots from $HOME but the workspace tree (with node_modules) lives in
   // a sibling dir. Without that probe enigma's `findAgentBrowser` would
-  // miss `/home/daytona/anima/node_modules/.bin/agent-browser` and the
+  // miss `/home/daytona/promus/node_modules/.bin/agent-browser` and the
   // brain quietly falls back to web.fetch.
-  const candidates = Array.from(new Set([cwd, process.cwd(), join(cwd, 'anima')]))
+  const candidates = Array.from(new Set([cwd, process.cwd(), join(cwd, 'promus')]))
   for (const root of candidates) {
     const localBin = join(root, 'node_modules', '.bin', 'agent-browser')
     if (statSync(localBin, { throwIfNoEntry: false })?.isFile()) return localBin
@@ -172,7 +172,7 @@ function findAgentBrowser(override?: string, cwdOverride?: string): string | nul
  * an optional `cwdOverride` because the daemon's `process.cwd()` is not
  * always the workspace root — in the enigma sandbox the harness boots
  * from `/home/daytona`, but `node_modules/.bin/agent-browser` lives one
- * level deeper at `/home/daytona/anima/node_modules/.bin/`. The plugin
+ * level deeper at `/home/daytona/promus/node_modules/.bin/`. The plugin
  * loader passes `ctx.workspaceRoot` here so registration uses the right
  * tree on both surfaces.
  */
@@ -317,7 +317,7 @@ async function runAgentBrowserOnce(
     return {
       ok: false,
       error:
-        'agent-browser CLI not found in node_modules/.bin or PATH. Re-run `anima upgrade` to repair, or `bun install` in the workspace root if running from source.',
+        'agent-browser CLI not found in node_modules/.bin or PATH. Re-run `promus upgrade` to repair, or `bun install` in the workspace root if running from source.',
     }
   }
   // Path may contain a space if a user-supplied override was passed; preserve
@@ -368,7 +368,7 @@ async function runAgentBrowserOnce(
         resolve({
           ok: false,
           error:
-            'agent-browser binary not executable at resolved path. Re-run `anima upgrade` (sandbox) or `bun install` (host) to repair the workspace install.',
+            'agent-browser binary not executable at resolved path. Re-run `promus upgrade` (sandbox) or `bun install` (host) to repair the workspace install.',
         })
       } else {
         resolve({ ok: false, error: msg })
@@ -399,7 +399,7 @@ async function runAgentBrowserOnce(
         resolve({
           ok: false,
           error:
-            'agent-browser binary not executable at resolved path. Re-run `anima upgrade` (sandbox) or `bun install` (host) to repair the workspace install.',
+            'agent-browser binary not executable at resolved path. Re-run `promus upgrade` (sandbox) or `bun install` (host) to repair the workspace install.',
         })
         return
       }
@@ -629,10 +629,10 @@ export function makeBrowserVision(
         return {
           ok: false,
           error:
-            'vision provider not configured. Set `vision.provider` in ~/.anima/config.ts to a 0G Compute multimodal provider.',
+            'vision provider not configured. Set `vision.provider` in ~/.promus/config.ts to a 0G Compute multimodal provider.',
         }
       }
-      const path = join(tmpdir(), `anima-vision-${Date.now()}-${process.pid}.png`)
+      const path = join(tmpdir(), `promus-vision-${Date.now()}-${process.pid}.png`)
       const shot = await runAgentBrowser('screenshot', [path], deps)
       if (!shot.ok) return shot
       let bytes: Uint8Array

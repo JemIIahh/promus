@@ -18,7 +18,7 @@ import { PromusAgentNFTClient, PromusAgentNFTReader, bootstrapHashFor } from './
  *
  * Source-of-truth for the agent privkey is the encrypted blob anchored in
  * the iNFT's `keystore` IntelligentData slot (root hash on-chain, ciphertext
- * on 0G Storage). The local file at `~/.anima/agents/<id>/keystore.json` is
+ * on 0G Storage). The local file at `~/.promus/agents/<id>/keystore.json` is
  * just a download cache, deletable at will, will redownload on next use.
  *
  * Keys never leave RAM in plaintext. The ciphertext is decryptable only by
@@ -75,7 +75,7 @@ export async function saveKeystoreLocally(opts: {
    * v0.23.1: Optional pre-derived AES key (32 bytes). When provided, the
    * caller has already derived the keystore-scope key via
    * `precomputeAllScopes` and wants to avoid a second `signTypedData` call.
-   * Used by `anima init` so the operator-session cache and the encrypted
+   * Used by `promus init` so the operator-session cache and the encrypted
    * keystore share the same derive (operator signs once for the keystore
    * scope, once for the profile scope, never for keystore again).
    */
@@ -213,7 +213,7 @@ export async function fetchKeystore(opts: FetchKeystoreOpts): Promise<FetchKeyst
       const cached = await readFile(opts.cachePath, 'utf8')
       const parsed = decodeKeystoreBytes(new TextEncoder().encode(cached))
       // Cache is trusted because the blob is encrypted to the operator wallet
-      // anyway. `rm ~/.anima/agents/<id>/keystore.json` forces a fresh
+      // anyway. `rm ~/.promus/agents/<id>/keystore.json` forces a fresh
       // download; the on-chain root is not a hash we can recompute locally
       // without re-running the 0G Storage Merkle pipeline.
       return { rootHash, keystore: parsed, owner, source: 'local-cache' }

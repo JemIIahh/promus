@@ -22,7 +22,7 @@ const baseInput: SanitizeInput = {
 let pairingDir: string
 
 beforeEach(() => {
-  pairingDir = mkdtempSync(join(tmpdir(), 'anima-sanitize-pairing-'))
+  pairingDir = mkdtempSync(join(tmpdir(), 'promus-sanitize-pairing-'))
 })
 
 afterEach(() => {

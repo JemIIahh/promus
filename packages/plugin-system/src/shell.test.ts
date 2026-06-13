@@ -7,7 +7,7 @@ import { makeShellRun } from './shell'
 
 describe('shell.run', () => {
   it('captures stdout and exit code on success', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-shell-'))
     try {
       const tool = makeShellRun({ cwd: dir })
       const out = await tool.handler({ command: 'echo hello' })
@@ -20,7 +20,7 @@ describe('shell.run', () => {
     }
   })
   it('reports non-zero exits as ok=false', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-shell-'))
     try {
       const tool = makeShellRun({ cwd: dir })
       const out = await tool.handler({ command: 'exit 7' })
@@ -32,7 +32,7 @@ describe('shell.run', () => {
     }
   })
   it('redacts wallet secrets from the spawned environment', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-shell-'))
     process.env.PROMUS_AGENT_PRIVKEY_HEX = '0xdead'
     try {
       const tool = makeShellRun({ cwd: dir })
@@ -47,7 +47,7 @@ describe('shell.run', () => {
     }
   })
   it('kills the process on timeout', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-shell-'))
     try {
       const tool = makeShellRun({ cwd: dir })
       const out = await tool.handler({ command: 'sleep 5', timeout_ms: 200 })
@@ -61,7 +61,7 @@ describe('shell.run', () => {
   // Phase 9.5 integration: shell.run must delegate every spawn through the
   // SandboxBackend so that mode='os' actually wraps the command.
   it('routes every spawn through SandboxBackend.wrapSpawn', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'promus-shell-'))
     try {
       const seen: SandboxSpawnRequest[] = []
       const fakeBackend: SandboxBackend = {

@@ -15,7 +15,7 @@ import { withSilencedConsole } from '../util/silence-console'
 import { loadOrPickOperatorSigner } from './init/operator-picker'
 
 /**
- * `anima profile init` — v0.23.0 entry point for the user-partition profile
+ * `promus profile init` — v0.23.0 entry point for the user-partition profile
  * slot. Three things happen:
  *
  *   1. Seed `user/profile.md` on disk if missing (idempotent; never clobbers
@@ -31,11 +31,11 @@ import { loadOrPickOperatorSigner } from './init/operator-picker'
  * content changed since the last flush.
  */
 export async function runProfileInit(): Promise<void> {
-  intro('anima profile init')
+  intro('promus profile init')
 
   note(
     [
-      'Legacy command. v0.23.1+ folds profile-key derivation into anima init.',
+      'Legacy command. v0.23.1+ folds profile-key derivation into promus init.',
       'Run this only if your agent was created before v0.23.1.',
     ].join('\n'),
     'profile init (legacy)',
@@ -43,12 +43,12 @@ export async function runProfileInit(): Promise<void> {
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima config found. Run `anima init` first.')
+    cancel('No promus config found. Run `promus init` first.')
     return
   }
   const { config } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 

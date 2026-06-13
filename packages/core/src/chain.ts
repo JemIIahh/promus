@@ -62,7 +62,7 @@ export async function getGasPriceWithFloor(client: PublicClient): Promise<bigint
 export const STORAGE_SUBMIT_GAS = 250_000n
 
 /**
- * viem `Chain` for an anima network, with correct name + native currency.
+ * viem `Chain` for an promus network, with correct name + native currency.
  * (Name kept `ogChain` for now; the 0G chains and the Arbitrum-family L2s both
  * route through it.)
  */

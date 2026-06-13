@@ -10,10 +10,10 @@ import {PromusAgentNFT} from "../src/PromusAgentNFT.sol";
 /// Usage (dev.deployer as broadcaster):
 ///   forge script contracts/script/Deploy.s.sol:Deploy \
 ///     --rpc-url og_testnet --broadcast --private-key $DEV_DEPLOYER_PK \
-///     --sig 'run(string,string,address)' "Anima" "ANIMA" 0xC635...87Ec \
+///     --sig 'run(string,string,address)' "Promus" "PROMUS" 0xC635...87Ec \
 ///     --priority-gas-price 2000000000 --with-gas-price 2500000000
 contract Deploy is Script {
-    bytes32 public constant SALT = keccak256("anima:PromusAgentNFT:v1");
+    bytes32 public constant SALT = keccak256("promus:PromusAgentNFT:v1");
 
     function run(string memory name_, string memory symbol_, address oracle_)
         external

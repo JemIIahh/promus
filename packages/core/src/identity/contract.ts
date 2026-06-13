@@ -38,7 +38,7 @@ export interface ReaderConfig {
 
 /**
  * Read-only view into an PromusAgentNFT deployment. No wallet required.
- * Used by `anima restore`, subname availability checks, and other flows
+ * Used by `promus restore`, subname availability checks, and other flows
  * that only need `getIntelligentData` / `ownerOf` / `getSlotHash`.
  */
 export class PromusAgentNFTReader {
@@ -222,7 +222,7 @@ export class PromusAgentNFTClient extends PromusAgentNFTReader {
 
   /**
    * Read the address authorized to sign transfer proofs (`teeOracle()` on the
-   * contract). Used by `anima transfer` to detect whether the operator wallet
+   * contract). Used by `promus transfer` to detect whether the operator wallet
    * IS the oracle (MVP path) or a separate signer is required.
    */
   async teeOracle(): Promise<Address> {
@@ -245,5 +245,5 @@ export function buildMintEntries(
 }
 
 export function bootstrapHashFor(slot: IntelligentDataSlot): Hex {
-  return keccak256(toBytes(`anima:bootstrap:${slot}`))
+  return keccak256(toBytes(`promus:bootstrap:${slot}`))
 }

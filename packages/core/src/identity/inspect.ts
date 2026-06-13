@@ -17,7 +17,7 @@ import { PromusAgentNFTReader, bootstrapHashFor } from './contract'
 import { INTELLIGENT_DATA_SLOTS, type IntelligentDataSlot, slotByIndex } from './intelligent-data'
 
 /**
- * Phase 9.1 `anima inspect` library.
+ * Phase 9.1 `promus inspect` library.
  *
  * Pure read-only audit of an iNFT's IntelligentData slots. Pulls slot hashes
  * off chain, fetches each encrypted blob from 0G Storage, optionally

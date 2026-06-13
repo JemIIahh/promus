@@ -1,24 +1,24 @@
 /**
- * tmux driver for `anima` (chat). Catches the regression class where the TUI
+ * tmux driver for `promus` (chat). Catches the regression class where the TUI
  * boots, renders one frame, and silently exits before the user can interact.
  *
  * Plain unit tests don't cover this — chat.tsx wires opentui's renderer +
  * stdin and clack/prompts spinner together, and a single mistake (e.g. a
  * spinner.stop() after createCliRenderer) tears down stdin. The only way to
- * catch that is to drive a real tmux pane: spawn anima, send a real message,
+ * catch that is to drive a real tmux pane: spawn promus, send a real message,
  * wait for a real brain response, and confirm the sync row points at a real
  * chain tx. Then exit cleanly via Ctrl+C and verify the process drained.
  */
 import { capturePane, runTmuxTest, sendKeys, sleep, waitForText } from './_tmux'
 
 const PROMPT = 'hello, are you there?'
-const ASSISTANT_ROW = /^\s+anima\s/m
+const ASSISTANT_ROW = /^\s+promus\s/m
 const SYNC_ROW = /synced .* → https:\/\//
 const RESPONSE_TIMEOUT_MS = 60_000
 const SYNC_TIMEOUT_MS = 90_000
 
 await runTmuxTest(
-  `anima-tmux-chat-${process.pid}`,
+  `promus-tmux-chat-${process.pid}`,
   async s => {
     await waitForText(s, /unlocked \(keystore source/, 30_000)
     console.log('[ok] keystore unlocked')
@@ -47,5 +47,5 @@ await runTmuxTest(
     await sleep(2_000)
     console.log('[ok] sent ctrl+c')
   },
-  'bun packages/cli/bin/anima',
+  'bun packages/cli/bin/promus',
 )

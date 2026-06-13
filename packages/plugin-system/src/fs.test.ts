@@ -9,9 +9,9 @@ async function tmp(): Promise<{
   agentDir: string
   cleanup: () => Promise<void>
 }> {
-  const root = await mkdtemp(join(tmpdir(), 'anima-fs-test-'))
+  const root = await mkdtemp(join(tmpdir(), 'promus-fs-test-'))
   const workspace = join(root, 'workspace')
-  const agentDir = join(root, '.anima', 'agents', 'fake')
+  const agentDir = join(root, '.promus', 'agents', 'fake')
   await mkdir(workspace, { recursive: true })
   await mkdir(agentDir, { recursive: true })
   return {

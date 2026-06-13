@@ -44,7 +44,7 @@ export function estimateCosts(opts: {
   if (lean) {
     // Arbitrum-family: only real L2 gas, in ETH. Memory is IPFS (off-chain) and
     // the brain is Claude (off-chain API key), so there is no compute ledger or
-    // 0G storage cost, and no subname (the `.anima.0g` Space ID registry only
+    // 0G storage cost, and no subname (the `.promus.0g` Space ID registry only
     // exists on 0G). The operator pays the mint, then seeds a small ETH float to
     // the agent EOA — the agent spends it on its own keystore-CID anchor and the
     // per-turn memory-sync anchors. Both numbers are generous L2 buffers that

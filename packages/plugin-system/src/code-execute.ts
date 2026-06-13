@@ -73,7 +73,7 @@ async function execute(
 ): Promise<RunResult> {
   const interp = pickInterpreter(args.language)
   if (!interp) return { ok: false, error: `unsupported language: ${args.language}` }
-  const dir = await mkdtemp(join(tmpdir(), 'anima-code-'))
+  const dir = await mkdtemp(join(tmpdir(), 'promus-code-'))
   const file = join(dir, `snippet.${interp.ext}`)
   await writeFile(file, args.code, 'utf8')
   const cwd = args.cwd && args.cwd.trim().length > 0 ? args.cwd : defaultCwd

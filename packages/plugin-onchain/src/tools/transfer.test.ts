@@ -29,36 +29,36 @@ describe('resolveRecipient', () => {
     expect(result).toBe(SPECTER_EOA)
   })
 
-  test('.anima.0g subname resolves via SANN resolver', async () => {
-    const result = await resolveRecipient('alice.anima.0g', fakeClient(SPECTER_EOA) as PublicClient)
+  test('.promus.0g subname resolves via SANN resolver', async () => {
+    const result = await resolveRecipient('alice.promus.0g', fakeClient(SPECTER_EOA) as PublicClient)
     expect(result).toBe(SPECTER_EOA)
   })
 
-  test('.anima.0g with empty text record throws', async () => {
+  test('.promus.0g with empty text record throws', async () => {
     await expect(
-      resolveRecipient('alice.anima.0g', fakeClient('') as PublicClient),
+      resolveRecipient('alice.promus.0g', fakeClient('') as PublicClient),
     ).rejects.toThrow(/empty or invalid/)
   })
 
-  test('.anima.0g with garbage text record throws (caught by SANN getAddress)', async () => {
+  test('.promus.0g with garbage text record throws (caught by SANN getAddress)', async () => {
     await expect(
-      resolveRecipient('alice.anima.0g', fakeClient('not-an-address') as PublicClient),
+      resolveRecipient('alice.promus.0g', fakeClient('not-an-address') as PublicClient),
     ).rejects.toThrow(/empty or invalid/)
   })
 
-  test('bare ".anima.0g" with no label throws', async () => {
-    await expect(resolveRecipient('.anima.0g', fakeClient('') as PublicClient)).rejects.toThrow(
+  test('bare ".promus.0g" with no label throws', async () => {
+    await expect(resolveRecipient('.promus.0g', fakeClient('') as PublicClient)).rejects.toThrow(
       /empty subname label/,
     )
   })
 
   test('non-address, non-suffix input throws with helpful message', async () => {
     await expect(resolveRecipient('alice', fakeClient('') as PublicClient)).rejects.toThrow(
-      /expected 0x address or \*\.anima\.0g name/,
+      /expected 0x address or \*\.promus\.0g name/,
     )
   })
 
-  test('alternate-tld name (alice.0g without .anima) is rejected', async () => {
+  test('alternate-tld name (alice.0g without .promus) is rejected', async () => {
     await expect(
       resolveRecipient('alice.0g', fakeClient(SPECTER_EOA) as PublicClient),
     ).rejects.toThrow(/expected 0x address/)

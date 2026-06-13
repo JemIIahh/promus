@@ -4,12 +4,12 @@
 // the chat input uses contenteditable + React's controlled input state, not a
 // standard textbox. execCommand insertText writes characters but the Send
 // Message button's enabled-state stays gated. (See state-snapshot-2026-05-04
-// in memory.) The cleanest live drive is operator-driven: anima runs in a tmux
+// in memory.) The cleanest live drive is operator-driven: promus runs in a tmux
 // pane, operator DMs the bot from their TG client (phone or desktop), this
 // runner watches for the expected response patterns + reports.
 //
 // Usage:
-//   PROMUS_AGENT=specter PROMUS_TG_BOT_USERNAME=anima_specter_bot \
+//   PROMUS_AGENT=specter PROMUS_TG_BOT_USERNAME=promus_specter_bot \
 //     bun test/local/tmux-telegram-drive.ts
 //
 // Watches the activity.jsonl + the tmux pane output for ~5 min, reports which
@@ -29,7 +29,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 
 const AGENT = process.env.PROMUS_AGENT
-const BOT_USERNAME = process.env.PROMUS_TG_BOT_USERNAME ?? `anima_${AGENT}_bot`
+const BOT_USERNAME = process.env.PROMUS_TG_BOT_USERNAME ?? `promus_${AGENT}_bot`
 const DEADLINE_MS = Number(process.env.PROMUS_TG_DEADLINE_MS ?? 5 * 60_000)
 
 if (!AGENT) {
@@ -49,9 +49,9 @@ console.log()
 // Discover agent dir from the agent's iNFT-derived id. The runner reads the
 // iNFT contract+tokenId from the local config and computes the same id the
 // runtime uses.
-const configPath = join(homedir(), '.anima', 'config.ts')
+const configPath = join(homedir(), '.promus', 'config.ts')
 if (!existsSync(configPath)) {
-  console.error(`Missing ${configPath}. Run anima init first.`)
+  console.error(`Missing ${configPath}. Run promus init first.`)
   process.exit(1)
 }
 
@@ -66,7 +66,7 @@ const [, contract, tokenId] = inftMatch
 // Compute agentId via the same iNFTAgentId helper the runtime uses.
 const { iNFTAgentId } = await import('promus-core')
 const agentId = iNFTAgentId({ contractAddress: contract as `0x${string}`, tokenId: BigInt(tokenId!) })
-const activityLogPath = join(homedir(), '.anima', 'agents', agentId, 'activity.jsonl')
+const activityLogPath = join(homedir(), '.promus', 'agents', agentId, 'activity.jsonl')
 
 console.log(`Tailing activity log: ${activityLogPath}`)
 

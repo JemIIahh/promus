@@ -15,7 +15,7 @@ import type { Storage } from './types'
  *   PROMUS_IPFS_API_URL     IPFS HTTP API base   (e.g. http://127.0.0.1:5001)
  *   PROMUS_IPFS_GATEWAY     read gateway + /ipfs/ (e.g. https://ipfs.io/ipfs/)
  *   PROMUS_IPFS_API_TOKEN   optional bearer for hosted pinning endpoints
- *   PROMUS_STORAGE_DIR      local-backend root   (default: ~/.anima/storage)
+ *   PROMUS_STORAGE_DIR      local-backend root   (default: ~/.promus/storage)
  *
  * `network`/`privkeyHex` are accepted for call-site compatibility (the prior
  * 0G backend keyed off them); the EVM-agnostic backends ignore them.
@@ -43,12 +43,12 @@ export function createStorage(_opts: CreateStorageOpts = {}): Storage {
     })
   }
 
-  return new LocalStubStorage(process.env.PROMUS_STORAGE_DIR ?? join(homedir(), '.anima', 'storage'))
+  return new LocalStubStorage(process.env.PROMUS_STORAGE_DIR ?? join(homedir(), '.promus', 'storage'))
 }
 
 /**
  * Fetch an encrypted blob by its content id, with no signer/funds required —
- * used by `anima restore` / inspect to recover a keystore from just the CID
+ * used by `promus restore` / inspect to recover a keystore from just the CID
  * anchored on-chain. Drop-in replacement for the old 0G `downloadBlobByRoot`
  * (the `network` arg is kept for call-site compatibility and ignored).
  */

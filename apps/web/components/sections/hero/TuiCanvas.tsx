@@ -14,7 +14,7 @@ type Stage = 'idle' | 'typing' | 'committed' | 'tools' | 'reply'
 //   2600 - 2800ms    commit (input clears, prompt lands as `you · …`)
 //                    → right station 1 fires at 2700 (you signed)
 //                    → right station 2 fires at 3000 (brain attested)
-//   2800 - +N*700ms  tools stream in beneath `anima` label as ● + └ ok
+//   2800 - +N*700ms  tools stream in beneath `promus` label as ● + └ ok
 //                    → right station 3 fires at 3400 (sandbox engaged)
 //                    → right station 4 fires at 6500 (memory.save)
 //   ~7600ms          reply text fades in below the tool block
@@ -26,10 +26,10 @@ const COMMIT_MS = 200
 const TOOL_STAGGER_MS = 700
 const REPLY_DELAY_MS = 600
 
-// Real anima TUI label colors. Light-mode-ish but still recognizable.
+// Real promus TUI label colors. Light-mode-ish but still recognizable.
 const COLOR_SYS = 'rgba(26, 20, 16, 0.40)'
 const COLOR_YOU = '#2a78a8'
-const COLOR_ANIMA = '#3a8e5e'
+const COLOR_PROMUS = '#3a8e5e'
 const COLOR_THINKING = '#2a78a8'
 
 export function TuiCanvas({ cycle }: { cycle: Cycle }) {
@@ -72,7 +72,7 @@ export function TuiCanvas({ cycle }: { cycle: Cycle }) {
   return (
     <div className="flex h-full min-h-[460px] flex-col bg-[var(--color-paper)] font-mono text-[12px] leading-[1.55] text-[var(--color-ink)]">
       {/* SCROLLBACK , every line uses a 60px label column on the left
-          (sys/you/anima) + content on the right. Matches real anima TUI.
+          (sys/you/promus) + content on the right. Matches real promus TUI.
           `min-h-0` forces the flex child to honor its share instead of
           growing to intrinsic content height, so long replies scroll
           internally instead of pushing the status line off-frame. */}
@@ -101,7 +101,7 @@ export function TuiCanvas({ cycle }: { cycle: Cycle }) {
           </motion.div>
         )}
 
-        {/* anima row , tools then reply share a single content column */}
+        {/* promus row , tools then reply share a single content column */}
         {showPromusRow && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -109,7 +109,7 @@ export function TuiCanvas({ cycle }: { cycle: Cycle }) {
             transition={{ duration: 0.18 }}
             className="mt-3"
           >
-            <Row label="promus" labelColor={COLOR_ANIMA}>
+            <Row label="promus" labelColor={COLOR_PROMUS}>
               <div className="flex flex-col">
                 {showTools &&
                   cycle.toolStream.map((entry, idx) => (
@@ -173,7 +173,7 @@ export function TuiCanvas({ cycle }: { cycle: Cycle }) {
       {/* STATUS LINE , agent identity + key meta */}
       <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-1.5 text-[10px] tracking-[0.04em]">
         <span className="flex items-center gap-2">
-          <span style={{ color: COLOR_ANIMA, fontWeight: 500 }}>promus</span>
+          <span style={{ color: COLOR_PROMUS, fontWeight: 500 }}>promus</span>
           <span style={{ color: 'var(--color-ink-3)', opacity: 0.5 }}>·</span>
           <span style={{ color: 'var(--color-ink-3)' }}>0xC635…87Ec</span>
           <span style={{ color: 'var(--color-ink-3)', opacity: 0.5 }}>·</span>
@@ -234,7 +234,7 @@ function ToolBlock({ entry, delaySec }: { entry: ToolStreamEntry; delaySec: numb
         className="pl-[14px]"
         style={{ color: 'var(--color-ink-3)' }}
       >
-        └ <span style={{ color: ok ? COLOR_ANIMA : '#c4393a' }}>{entry.status}</span>
+        └ <span style={{ color: ok ? COLOR_PROMUS : '#c4393a' }}>{entry.status}</span>
       </motion.div>
     </motion.div>
   )
@@ -262,7 +262,7 @@ function ThinkingRow({ stage }: { stage: Stage }) {
   )
 }
 
-// Same 10-frame braille spinner the real anima TUI uses
+// Same 10-frame braille spinner the real promus TUI uses
 // (packages/cli/src/ui/app.tsx:8). 80ms cadence per frame.
 const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] as const
 

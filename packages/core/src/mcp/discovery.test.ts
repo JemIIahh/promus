@@ -7,7 +7,7 @@ import { discoverMcpServers } from './discovery'
 let scratch: string
 
 beforeEach(async () => {
-  scratch = await mkdtemp(join(tmpdir(), 'anima-mcp-'))
+  scratch = await mkdtemp(join(tmpdir(), 'promus-mcp-'))
 })
 
 afterEach(async () => {
@@ -15,11 +15,11 @@ afterEach(async () => {
 })
 
 describe('discoverMcpServers', () => {
-  it('reads ~/.anima/.mcp.json + ~/.claude/.mcp.json', async () => {
-    const animaPath = join(scratch, 'anima.mcp.json')
+  it('reads ~/.promus/.mcp.json + ~/.claude/.mcp.json', async () => {
+    const promusPath = join(scratch, 'promus.mcp.json')
     const claudePath = join(scratch, 'claude.mcp.json')
     await writeFile(
-      animaPath,
+      promusPath,
       JSON.stringify({
         mcpServers: {
           alpha: { command: 'bun', args: ['run', 'a.ts'] },
@@ -35,7 +35,7 @@ describe('discoverMcpServers', () => {
       }),
     )
     const out = await discoverMcpServers({
-      animaMcpPath: animaPath,
+      promusMcpPath: promusPath,
       claudeMcpPath: claudePath,
       claudePluginsCacheRoot: join(scratch, 'doesnotexist'),
       importsClaudeCode: true,
@@ -69,7 +69,7 @@ describe('discoverMcpServers', () => {
       }),
     )
     const out = await discoverMcpServers({
-      animaMcpPath: join(scratch, 'doesnotexist'),
+      promusMcpPath: join(scratch, 'doesnotexist'),
       claudeMcpPath: join(scratch, 'doesnotexist'),
       claudePluginsCacheRoot: cacheRoot,
       importsClaudeCode: true,
@@ -83,11 +83,11 @@ describe('discoverMcpServers', () => {
     }
   })
 
-  it('honors importsClaudeCode=false (only anima path scanned)', async () => {
+  it('honors importsClaudeCode=false (only promus path scanned)', async () => {
     const claudePath = join(scratch, 'claude.mcp.json')
     await writeFile(claudePath, JSON.stringify({ mcpServers: { foo: { command: 'bun' } } }))
     const out = await discoverMcpServers({
-      animaMcpPath: join(scratch, 'doesnotexist'),
+      promusMcpPath: join(scratch, 'doesnotexist'),
       claudeMcpPath: claudePath,
       claudePluginsCacheRoot: join(scratch, 'doesnotexist'),
       importsClaudeCode: false,

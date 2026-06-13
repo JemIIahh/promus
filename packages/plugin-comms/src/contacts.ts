@@ -8,7 +8,7 @@ import { loadJson, saveJson } from './state-files'
  */
 export interface Contact {
   addr: Address
-  /** Optional friendly name (e.g. an `.anima.0g` resolved earlier). */
+  /** Optional friendly name (e.g. an `.promus.0g` resolved earlier). */
   name?: string
   addedAt: number
 }

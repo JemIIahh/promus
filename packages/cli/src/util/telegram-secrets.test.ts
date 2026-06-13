@@ -101,7 +101,7 @@ describe('loadTelegramHandoffSecrets', () => {
     else process.env.PROMUS_ROOT = prevPromusRoot
   })
   beforeEach(() => {
-    tmpRoot = mkdtempSync(join(tmpdir(), 'anima-tg-secrets-test-'))
+    tmpRoot = mkdtempSync(join(tmpdir(), 'promus-tg-secrets-test-'))
     process.env.PROMUS_ROOT = tmpRoot
   })
   afterEach(() => {
@@ -136,7 +136,7 @@ describe('loadTelegramHandoffSecrets', () => {
       agentId: TEST_AGENT_ID,
       plaintext: {
         botToken: '8731160904:AAH8FQ3CLrE8-WAfZtDeOTqmpVgOFLg8GyU',
-        botUsername: 'anima_test_bot',
+        botUsername: 'promus_test_bot',
         botId: 8731160904,
         allowedUserIds: [1140813034, 222333444],
       },
@@ -199,7 +199,7 @@ describe('loadTelegramHandoffSecrets', () => {
       agentId: TEST_AGENT_ID,
       plaintext: {
         botToken: '8152506307:AAFbXSJ0qnfJNbLWkxbmzYEM9fc74uaznJs',
-        botUsername: 'anima_init_test_bot',
+        botUsername: 'promus_init_test_bot',
         botId: 8152506307,
         allowedUserIds: [1140813034],
       },

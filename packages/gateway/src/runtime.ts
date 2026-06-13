@@ -3,8 +3,8 @@ import type { Address, Hex } from 'viem'
 import type { EventHub } from './events'
 
 /**
- * Anima runtime config carried in the /bootstrap/provision payload. Subset of
- * the operator's anima.config that the harness needs to start. Operator
+ * Promus runtime config carried in the /bootstrap/provision payload. Subset of
+ * the operator's promus.config that the harness needs to start. Operator
  * encrypts agent privkey + signs (envelope hash + this config); harness uses
  * the config to construct OGComputeBrain, MemorySyncManager, plugin set, etc.
  */
@@ -43,15 +43,15 @@ export interface RuntimeConfig {
   /** Optional system-prompt append from the operator. */
   promptAppend?: string
   /**
-   * Optional .0g subname (e.g. "specter" for `specter.anima.0g`). Used by the
+   * Optional .0g subname (e.g. "specter" for `specter.promus.0g`). Used by the
    * telegram pairing greeting to address the agent by its registered name
    * instead of the hex-slug fallback. Sourced from `config.subname` in the
-   * loaded anima.config.ts.
+   * loaded promus.config.ts.
    */
   subname?: string | null
   /**
    * v0.21.0: agent self-funds compute bills out of its EOA. Mirror of the
-   * `economy.autoTopup` field in the operator's anima.config.ts.
+   * `economy.autoTopup` field in the operator's promus.config.ts.
    */
   economy?: {
     autoTopup?: {
@@ -148,7 +148,7 @@ export interface RuntimeAdapter {
   slotStatus?(): Record<string, { status: string; reason?: string; bytes?: number }>
   /**
    * v0.23.0: live-flip the operator-scoped PROFILE key. Called when the
-   * operator runs `anima profile init` against a sandbox endpoint; the
+   * operator runs `promus profile init` against a sandbox endpoint; the
    * gateway forwards the raw 32-byte key (hex-encoded over a sealed channel
    * verified by sig) here so the sync-manager picks it up on the next flush.
    * Returns ok:false with reason='profile-unsupported' when the runtime
@@ -157,7 +157,7 @@ export interface RuntimeAdapter {
   setProfileKey?(keyHex: `0x${string}`): Promise<{ ok: true } | { ok: false; reason: string }>
   /**
    * v0.24.4: approve a pending pairing code in the container's canonical
-   * pairing dir (`~/.anima/agents/<id>/pairing`). Backs the
+   * pairing dir (`~/.promus/agents/<id>/pairing`). Backs the
    * `/admin/pairing/approve` endpoint so the host CLI can route pair-mode
    * approvals to sandbox-deployed agents without SSHing into the container.
    * `ok:true` returns the approved user's id + name; `ok:false` returns one

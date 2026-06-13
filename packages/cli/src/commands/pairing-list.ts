@@ -42,12 +42,12 @@ export async function runPairingList(opts: RunPairingListOpts): Promise<void> {
 async function openPairingStore(): Promise<PairingStore | null> {
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    console.error('No anima.config.ts found. Run `anima init` first.')
+    console.error('No promus.config.ts found. Run `promus init` first.')
     return null
   }
   const { config } = loaded
   if (!config.identity.iNFT) {
-    console.error('Config has no iNFT. Run `anima init` first.')
+    console.error('Config has no iNFT. Run `promus init` first.')
     return null
   }
   const inftContract = getAddress(config.identity.iNFT.contract) as `0x${string}`

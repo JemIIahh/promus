@@ -57,11 +57,11 @@ export interface PluginContext {
   addHook: <TIn = unknown, TOut = void>(name: HookName, fn: HookHandler<TIn, TOut>) => void
   /** Network the agent is configured for. */
   network: PromusNetwork
-  /** Agent state directory (`~/.anima/agents/<id>/`). */
+  /** Agent state directory (`~/.promus/agents/<id>/`). */
   agentDir: string
   /** Per-agent unique id (matches `iNFTAgentId(...)` for non-stub agents). */
   agentId: string
-  /** Absolute path to ~/.anima/config.ts. Plugins that persist user-level state write here. */
+  /** Absolute path to ~/.promus/config.ts. Plugins that persist user-level state write here. */
   configPath: string
   /** Imports surface from config (e.g. claudeCode toggle for skills + MCP discovery). */
   imports: { claudeCode: boolean }
@@ -71,7 +71,7 @@ export interface PluginContext {
    * the current value next turn.
    */
   skillsDisabled: { current: string[] }
-  /** Path to the agent's activity log (~/.anima/agents/<id>/activity.jsonl). */
+  /** Path to the agent's activity log (~/.promus/agents/<id>/activity.jsonl). */
   activityLogPath: string
   /** Workspace cwd. Used by tools that spawn subprocesses. */
   workspaceRoot: string

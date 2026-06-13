@@ -13,7 +13,7 @@ import { loadOrPickOperatorSigner } from './operator-picker'
 import { readWizardState, updateWizardState } from './wizard-state'
 
 /**
- * Resume a partial `anima init` that crashed after mint + funding. Phase 6.6
+ * Resume a partial `promus init` that crashed after mint + funding. Phase 6.6
  * requires that the keystore was uploaded to 0G Storage before resume can
  * proceed — otherwise the agent privkey is lost (it only existed in the
  * original wizard's RAM).
@@ -22,11 +22,11 @@ export async function runResumeInit(opts: {
   config: PromusConfig
   configPath: string
 }): Promise<void> {
-  intro('anima init --resume')
+  intro('promus init --resume')
 
   const { config } = opts
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('No iNFT or agent address in config. Nothing to resume — run `anima init` fresh.')
+    cancel('No iNFT or agent address in config. Nothing to resume — run `promus init` fresh.')
     return
   }
   const network = config.network
@@ -39,14 +39,14 @@ export async function runResumeInit(opts: {
   const state = await readWizardState(paths.dir)
   if (!state) {
     cancel(
-      `No state file at ${paths.dir}. If init was never started, run \`anima init\` without --resume.`,
+      `No state file at ${paths.dir}. If init was never started, run \`promus init\` without --resume.`,
     )
     return
   }
 
   if (!state.steps.mintTx || !state.steps.agentFundedTx) {
     cancel(
-      'Mint or agent-funding did not complete. Resume only supports steps after funding. Start fresh with `anima init` (pick Overwrite) and re-mint.',
+      'Mint or agent-funding did not complete. Resume only supports steps after funding. Start fresh with `promus init` (pick Overwrite) and re-mint.',
     )
     return
   }
@@ -56,7 +56,7 @@ export async function runResumeInit(opts: {
       [
         'Keystore was never uploaded to 0G Storage. The agent privkey only',
         "existed in the original wizard's RAM, so it is unrecoverable now.",
-        'Start fresh with `anima init` and re-mint into a new iNFT.',
+        'Start fresh with `promus init` and re-mint into a new iNFT.',
       ].join(' '),
     )
     return
@@ -111,10 +111,10 @@ export async function runResumeInit(opts: {
 
   // Subname records are not resumable: the state file intentionally doesn't
   // persist the requested label, so if text records are incomplete we tell
-  // the user to re-run `anima init` and pick the same label manually.
+  // the user to re-run `promus init` and pick the same label manually.
   if (!state.steps.subnameClaimedTx) {
     note(
-      'If you wanted a subname, re-run `anima init` (it can re-pick the same label).',
+      'If you wanted a subname, re-run `promus init` (it can re-pick the same label).',
       'subname not resumable',
     )
   }
@@ -130,7 +130,7 @@ export async function runResumeInit(opts: {
       `  keystore  ${paths.keystore} (cache of 0G Storage blob)`,
       `  chain id  ${NETWORK_CHAIN_ID[network]}`,
       '',
-      'Resume finished. `anima` to chat, `anima status` for health.',
+      'Resume finished. `promus` to chat, `promus status` for health.',
     ].join('\n'),
   )
 }

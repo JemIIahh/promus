@@ -167,7 +167,7 @@ function AssistantTextRow(props: { text: string; firstOfBlock: boolean }) {
   return (
     <box flexDirection="row" marginTop={props.firstOfBlock ? 0 : 1} marginBottom={1}>
       <text fg="#86efac" flexShrink={0}>
-        {props.firstOfBlock ? renderPrefix('anima') : BODY_INDENT}
+        {props.firstOfBlock ? renderPrefix('promus') : BODY_INDENT}
       </text>
       <text wrapMode="word" flexGrow={1} fg="#e5e7eb">
         <MarkdownSegments text={props.text} />
@@ -185,7 +185,7 @@ function ToolCallRow(props: {
   return (
     <box flexDirection="row">
       <text fg="#86efac" flexShrink={0}>
-        {props.firstOfBlock ? renderPrefix('anima') : BODY_INDENT}
+        {props.firstOfBlock ? renderPrefix('promus') : BODY_INDENT}
       </text>
       <text wrapMode="word" flexGrow={1}>
         {/* @ts-expect-error opentui SpanProps omits fg, runtime accepts it */}

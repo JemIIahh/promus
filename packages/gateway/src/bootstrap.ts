@@ -1,5 +1,5 @@
 /**
- * Bootstrap script template for first-cold-start of an anima harness inside
+ * Bootstrap script template for first-cold-start of an promus harness inside
  * a 0G Sandbox container. Returned as a string the init/deploy/upgrade
  * commands feed to `provider-client.execInToolbox(id, { command })`.
  *
@@ -14,8 +14,8 @@
  * detach the slow work into a background subshell via `nohup bash -c '...' &`
  * and return exit 0 immediately. Progress is observable via two files:
  *
- *  - `/tmp/anima-bootstrap-progress.log` (tail-able, line-by-line stages)
- *  - `/tmp/anima-bootstrap-done` (created only on full success, contains harness pid)
+ *  - `/tmp/promus-bootstrap-progress.log` (tail-able, line-by-line stages)
+ *  - `/tmp/promus-bootstrap-done` (created only on full success, contains harness pid)
  *
  * The caller (`sandbox-provision.ts`) launches the bootstrap, polls for the
  * `done` marker (then for `/bootstrap/pubkey` from the harness HTTP server).
@@ -54,7 +54,7 @@ export interface BuildBootstrapScriptOpts {
    */
   packageVersion?: string
   /**
-   * Public git URL of anima. Defaults to the canonical hackathon repo.
+   * Public git URL of promus. Defaults to the canonical hackathon repo.
    * Override only when running against a fork / private mirror. (Git mode only.)
    */
   repoUrl?: string
@@ -66,7 +66,7 @@ export interface BuildBootstrapScriptOpts {
    */
   extraAptPackages?: string[]
   /**
-   * GitHub PAT for cloning private anima repos. Embedded in clone URL as
+   * GitHub PAT for cloning private promus repos. Embedded in clone URL as
    * `https://x-access-token:TOKEN@github.com/...`. For public repos, leave
    * unset. Token is base64-wrapped inside the inner script (which itself is
    * base64-encoded into the outer command), and the inner script is written
@@ -82,7 +82,7 @@ export interface BuildBootstrapScriptResult {
   script: string
   /**
    * Path the caller should poll via `execInToolbox(id, { command: cat <path> })`
-   * to detect bootstrap completion. Returns success line `anima-gateway-pid=<N>`
+   * to detect bootstrap completion. Returns success line `promus-gateway-pid=<N>`
    * once everything is up; absent until then.
    */
   doneMarkerPath: string
@@ -112,22 +112,22 @@ const DEFAULT_APT_PACKAGES: readonly string[] = [
   'xvfb',
 ] as const
 
-const PROGRESS_LOG = '/tmp/anima-bootstrap-progress.log'
-const DONE_MARKER = '/tmp/anima-bootstrap-done'
-const FAIL_MARKER = '/tmp/anima-bootstrap-failed'
+const PROGRESS_LOG = '/tmp/promus-bootstrap-progress.log'
+const DONE_MARKER = '/tmp/promus-bootstrap-done'
+const FAIL_MARKER = '/tmp/promus-bootstrap-failed'
 
 /**
  * Stage marker bodies emitted as `STAGE: <body>` lines into the progress log.
  * Single source of truth for both the script generator (writes them) and the
  * CLI poll loop (reads them via `extractBootstrapProgressLine` and routes to
- * `BootstrapProgressBox`). Strings are prefixes — the apt/anima/chrome rows
+ * `BootstrapProgressBox`). Strings are prefixes — the apt/promus/chrome rows
  * append details after a space.
  */
 export const BOOTSTRAP_STAGE_MARKERS = {
   aptUpdate: 'updating package index',
   systemDeps: 'installing system deps',
   bunInstall: 'installing bun runtime',
-  animaInstall: 'installing anima',
+  promusInstall: 'installing promus',
   browserDeps: 'installing chrome for browser tools',
   harnessSpawn: 'starting harness daemon',
   harnessReady: 'harness ready',
@@ -177,7 +177,7 @@ function buildPreambleLines(
 function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: string): string[] {
   const port = opts.port ?? 8080
   return [
-    'mkdir -p "$HOME/anima-logs" "$HOME/workspace"',
+    'mkdir -p "$HOME/promus-logs" "$HOME/workspace"',
     '',
     `export SANDBOX_ID=${shQuote(opts.sandboxId)}`,
     `export PROMUS_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
@@ -194,7 +194,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     '  echo "[launch attempt $h_attempt/3]"',
     `  fuser -k ${port}/tcp 2>/dev/null || true`,
     '  sleep 1',
-    `  nohup ${gatewayLaunchCmd} > "$HOME/anima-logs/anima-gateway.log" 2>&1 &`,
+    `  nohup ${gatewayLaunchCmd} > "$HOME/promus-logs/promus-gateway.log" 2>&1 &`,
     '  HARNESS_PID=$!',
     '  disown',
     '  sleep 10',
@@ -203,7 +203,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     '    break',
     '  fi',
     '  echo "[harness died on attempt $h_attempt, log tail:]"',
-    '  tail -n 50 "$HOME/anima-logs/anima-gateway.log" 2>/dev/null',
+    '  tail -n 50 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
     '  if [ $h_attempt -lt 3 ]; then',
     '    echo "[retrying in 5s]"',
     '    sleep 5',
@@ -211,12 +211,12 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     'done',
     'if [ "$HARNESS_OK" -ne 1 ]; then',
     '  echo "[all 3 harness launch attempts failed, full log dump:]"',
-    '  tail -n 200 "$HOME/anima-logs/anima-gateway.log" 2>/dev/null',
+    '  tail -n 200 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
     `  echo "harness-died-early" > ${FAIL_MARKER}`,
     '  exit 18',
     'fi',
     `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.harnessReady}"`,
-    `echo "anima-gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
+    `echo "promus-gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
     'echo "[$(date -u +%FT%TZ)] bootstrap-done pid=$HARNESS_PID"',
     '',
   ]
@@ -234,8 +234,8 @@ function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
   const installLines = [
     `echo "  ref=${opts.ref}"`,
     `echo "  repo=${repoUrl}"`,
-    'PROMUS_DIR="$HOME/anima"',
-    `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.animaInstall} (git ${opts.ref})"`,
+    'PROMUS_DIR="$HOME/promus"',
+    `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.promusInstall} (git ${opts.ref})"`,
     `git_clone_one() { rm -rf "$PROMUS_DIR"; git clone --depth 1 --branch ${shQuote(opts.ref)} ${shQuote(cloneUrl)} "$PROMUS_DIR"; }`,
     `retry 'git clone' git_clone_one || { echo "git-clone-failed" > ${FAIL_MARKER}; exit 14; }`,
     `cd "$PROMUS_DIR" && git remote set-url origin ${shQuote(repoUrl)}`,
@@ -258,7 +258,7 @@ function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     'fi',
     '',
   ]
-  const launch = buildLaunchLines(opts, 'bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
+  const launch = buildLaunchLines(opts, 'bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
   return [...preamble, ...installLines, ...launch].join('\n')
 }
 
@@ -269,12 +269,12 @@ function buildNpmInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
   const preamble = buildPreambleLines(opts, 'npm', aptList)
   const installLines = [
     `echo "  package=promus@${opts.packageVersion}"`,
-    `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.animaInstall} (${opts.packageVersion})"`,
-    // Install anima from npm. `bun add -g <pkg>@<exact-version>` is idempotent
+    `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.promusInstall} (${opts.packageVersion})"`,
+    // Install promus from npm. `bun add -g <pkg>@<exact-version>` is idempotent
     // and overwrites whatever is in the global store. Atomic on success; on
     // failure the prior version remains (which may be empty on a fresh container).
-    `retry 'anima install' bun add -g ${shQuote(`promus@${opts.packageVersion}`)} || { echo "anima-install-failed" > ${FAIL_MARKER}; exit 14; }`,
-    // Add Bun's global package binaries to PATH so anima-gateway + agent-browser
+    `retry 'promus install' bun add -g ${shQuote(`promus@${opts.packageVersion}`)} || { echo "promus-install-failed" > ${FAIL_MARKER}; exit 14; }`,
+    // Add Bun's global package binaries to PATH so promus-gateway + agent-browser
     // resolve. ~/.bun/bin only contains bun's own binary, NOT third-party global
     // package bins (those live at ~/.bun/install/global/node_modules/.bin/).
     `export PATH="${BUN_GLOBAL_BIN_SHELL}:$PATH"`,
@@ -290,7 +290,7 @@ function buildNpmInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     'fi',
     '',
   ]
-  const launch = buildLaunchLines(opts, `${BUN_GLOBAL_BIN_SHELL}/anima-gateway`)
+  const launch = buildLaunchLines(opts, `${BUN_GLOBAL_BIN_SHELL}/promus-gateway`)
   return [...preamble, ...installLines, ...launch].join('\n')
 }
 
@@ -313,7 +313,7 @@ export function buildBootstrapScript(opts: BuildBootstrapScriptOpts): BuildBoots
   //   - `nohup ... &` sends the inner script to background. After `&` you
   //     CANNOT use `&&` (syntax error: `& && X`) so we use `;` to follow up
   //     with the success marker echo. The launching shell exits ~instantly.
-  const innerPath = '/tmp/anima-bootstrap-inner.sh'
+  const innerPath = '/tmp/promus-bootstrap-inner.sh'
   const innerB64 = Buffer.from(inner).toString('base64')
   const fileWrites = [
     `rm -f ${PROGRESS_LOG} ${DONE_MARKER} ${FAIL_MARKER}`,
@@ -333,7 +333,7 @@ export function buildBootstrapScript(opts: BuildBootstrapScriptOpts): BuildBoots
 export const BOOTSTRAP_DONE_MARKER = DONE_MARKER
 export const BOOTSTRAP_FAIL_MARKER = FAIL_MARKER
 export const BOOTSTRAP_PROGRESS_LOG = PROGRESS_LOG
-export const BOOTSTRAP_SUCCESS_MARKER_PREFIX = 'anima-gateway-pid='
+export const BOOTSTRAP_SUCCESS_MARKER_PREFIX = 'promus-gateway-pid='
 
 /**
  * The exact strings the inner subshell writes to FAIL_MARKER on each step
@@ -346,7 +346,7 @@ export const BOOTSTRAP_FAIL_KEYWORDS = [
   'apt-install-failed',
   'bun-install-failed',
   'git-clone-failed',
-  'anima-install-failed',
+  'promus-install-failed',
   'browser-install-failed',
   'harness-died-early',
 ] as const

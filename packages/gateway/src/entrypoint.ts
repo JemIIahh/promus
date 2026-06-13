@@ -35,7 +35,7 @@ const bootstrap = generateBootstrapKeypair()
 const events = new EventHub()
 const approvals = new ApprovalRelay(events)
 // HARNESS_RUNTIME=stub falls back to StubRuntime (echo) for HTTP-bridge
-// integration tests. Default = RealRuntime which constructs the full anima
+// integration tests. Default = RealRuntime which constructs the full promus
 // stack (brain + tools + plugins + listeners + sync) post-provision.
 const runtime =
   process.env.HARNESS_RUNTIME === 'stub' ? new StubRuntime() : new RealRuntime({ approvals })

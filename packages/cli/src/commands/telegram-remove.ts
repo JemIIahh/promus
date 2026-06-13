@@ -14,16 +14,16 @@ export interface TelegramRemoveOpts {
 }
 
 export async function runTelegramRemove(opts: TelegramRemoveOpts = {}): Promise<void> {
-  intro('anima telegram remove')
+  intro('promus telegram remove')
 
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    cancel('No anima.config.ts found. Run `anima init` first.')
+    cancel('No promus.config.ts found. Run `promus init` first.')
     return
   }
   const { config, path: configPath } = loaded
   if (!config.identity.iNFT || !config.identity.agent) {
-    cancel('Config has no iNFT or agent. Run `anima init` first.')
+    cancel('Config has no iNFT or agent. Run `promus init` first.')
     return
   }
 

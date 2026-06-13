@@ -99,14 +99,14 @@ import { loadOrPickOperatorSigner } from './init/operator-picker'
 export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<void> {
   const found = await findAndLoadConfig(opts?.cwd)
   if (!found) {
-    console.log('No anima.config.ts found. Run `anima init` first.')
+    console.log('No promus.config.ts found. Run `promus init` first.')
     process.exit(1)
   }
   let { config } = found
   const configPath = found.path
 
   if (!config.identity.iNFT || !config.identity.agent) {
-    console.log('Config has no iNFT or agent yet. Re-run `anima init`.')
+    console.log('Config has no iNFT or agent yet. Re-run `promus init`.')
     process.exit(1)
   }
   // Phase 11: deployTarget=sandbox routes the chat loop to a thin client of
@@ -117,7 +117,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     return runChatSandbox(config)
   }
   // Phase 14: if a local gateway daemon is running for this agent (socket
-  // present at ~/.anima/agents/<id>/gateway.sock), route to the same thin
+  // present at ~/.promus/agents/<id>/gateway.sock), route to the same thin
   // client over a unix socket. The TUI no longer holds the runtime — the
   // gateway daemon does. Closing the TUI doesn't stop the listeners.
   //
@@ -142,7 +142,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       const { ensureGatewayVersionMatchesCli } = await import('../util/gateway-version')
       const { createHash } = await import('node:crypto')
       const _identityHash = createHash('sha256').update(_aid).digest('hex').slice(0, 16)
-      const _lockFile = join(homedir(), '.anima', 'locks', `anima-gateway-${_identityHash}.lock`)
+      const _lockFile = join(homedir(), '.promus', 'locks', `promus-gateway-${_identityHash}.lock`)
       const drift = await ensureGatewayVersionMatchesCli({
         socketPath: _gatewaySock,
         lockFile: _lockFile,
@@ -160,7 +160,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       // missing the TELEGRAM scope causes the daemon to silently drop all
       // inbound TG (the regression we shipped this fix to close). When
       // incomplete, fall through to the embedded path with a hint to run
-      // `anima gateway start` interactively.
+      // `promus gateway start` interactively.
       const required = requiredScopesForAgent(_aid)
       if (isOperatorSessionComplete(_aid, required)) {
         const { spawnGatewayDaemon } = await import('../util/gateway-spawn')
@@ -201,13 +201,13 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
             ]),
         )
         console.log(
-          `note: cached operator-session is missing scope key(s) [${missing.join(', ')}] — run \`anima gateway start\` to re-derive via Touch ID. Continuing in embedded mode.`,
+          `note: cached operator-session is missing scope key(s) [${missing.join(', ')}] — run \`promus gateway start\` to re-derive via Touch ID. Continuing in embedded mode.`,
         )
       } else {
-        // No session at all → operator must run `anima gateway start` for the
+        // No session at all → operator must run `promus gateway start` for the
         // full daemon path (Touch ID + scope-key derivation). Print a hint.
         console.log(
-          'note: gateway daemon would unlock TG + auto-topup; run `anima gateway start` to enable. Continuing in embedded mode.',
+          'note: gateway daemon would unlock TG + auto-topup; run `promus gateway start` to enable. Continuing in embedded mode.',
         )
       }
     }
@@ -249,7 +249,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
 
   // Phase 12: decrypt telegram-secrets blob (if any) using the SAME operator
   // signer we already have unlocked. Avoids a second keychain prompt later.
-  // We only attempt this if the operator opted in via `anima telegram setup`
+  // We only attempt this if the operator opted in via `promus telegram setup`
   // (presence of the encrypted blob); the plugin opt-in is independent and
   // checked again below at plugin filter time.
   let telegramSecrets: Awaited<ReturnType<typeof loadTelegramSecrets>> = null
@@ -376,20 +376,20 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     })
   } catch (err) {
     process.stderr.write(
-      `anima: sandbox init failed (${(err as Error).message}), continuing without sandbox\n`,
+      `promus: sandbox init failed (${(err as Error).message}), continuing without sandbox\n`,
     )
     sandbox = new LocalBackend()
   }
   if (sandbox.mode === 'os') {
     process.stderr.write(
-      `anima: sandbox active [${sandbox.label}] — limb spawns gated to agentDir + cwd + /tmp/anima-* + /var/folders; reads of ~/.ssh ~/.aws ~/Library/Keychains ~/.config/gcloud denied\n`,
+      `promus: sandbox active [${sandbox.label}] — limb spawns gated to agentDir + cwd + /tmp/promus-* + /var/folders; reads of ~/.ssh ~/.aws ~/Library/Keychains ~/.config/gcloud denied\n`,
     )
   } else if (sandbox.mode === 'docker') {
     process.stderr.write(
-      `anima: container sandbox active [${sandbox.label}] — every shell-class spawn runs inside the container; host fs invisible to those tools${config.sandbox?.dockerMountWorkspace ? ' except mounted /workspace' : ''}\n`,
+      `promus: container sandbox active [${sandbox.label}] — every shell-class spawn runs inside the container; host fs invisible to those tools${config.sandbox?.dockerMountWorkspace ? ' except mounted /workspace' : ''}\n`,
     )
   }
-  // Register dispose hook so docker containers don't leak when anima exits.
+  // Register dispose hook so docker containers don't leak when promus exits.
   // Signal handlers MUST await dispose before exiting; sync `process.exit(0)`
   // would discard the dispose promise and leave the container orphaned.
   if (sandbox.dispose) {
@@ -423,7 +423,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     : null
 
   // Plugin filter: system + comms + onchain all ship; telegram is opt-in via
-  // `anima telegram setup` which writes ~/.anima/agents/<id>/telegram-secrets.encrypted
+  // `promus telegram setup` which writes ~/.promus/agents/<id>/telegram-secrets.encrypted
   // and adds 'telegram' to config.plugins.
   const pluginNames = (config.plugins ?? []).filter(
     p => p === 'system' || p === 'comms' || p === 'onchain' || p === 'telegram',
@@ -450,7 +450,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // agent EOA + iNFT mint block (used as Transfer-event scan floor). Pre-
   // Phase-10 configs lack `mintBlock`; we backfill at chat boot by querying
   // the iNFT contract's ERC-721 Transfer logs for `tokenId` from `0x0` and
-  // persist the value back to ~/.anima/config.ts so subsequent runs skip it.
+  // persist the value back to ~/.promus/config.ts so subsequent runs skip it.
   let onchain: OnchainRuntimeContext | undefined
   if (pluginNames.includes('onchain')) {
     const iNFT = config.identity.iNFT
@@ -621,7 +621,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     ).catch(() => {})
   }
 
-  // MCP discovery: scan ~/.anima/.mcp.json + ~/.claude/.mcp.json + plugin
+  // MCP discovery: scan ~/.promus/.mcp.json + ~/.claude/.mcp.json + plugin
   // cache, spawn each stdio server, register tools as deferred. Failures are
   // logged but never block startup.
   let mcpManager: McpManager | null = null
@@ -1247,21 +1247,21 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // Drain anything queued during boot.
   void drainInbound()
 
-  // Phase 7 auto-publish: idempotent backfill of `<subname>.anima.0g pubkey`
+  // Phase 7 auto-publish: idempotent backfill of `<subname>.promus.0g pubkey`
   // text record. Fire-and-forget; failures don't block chat. Skipped without
   // comms (no SannClient) or without a configured subname.
   if (config.subname && sann) {
     const sannPub = sann
     ensureOwnPubkeyPublished({
       privkeyHex: agentPrivkey,
-      subname: `${config.subname}.anima.0g`,
+      subname: `${config.subname}.promus.0g`,
       sann: sannPub,
     })
       .then(res => {
         if (res.txHash) {
           state.pushRow({
             role: 'system',
-            text: `pubkey published on ${config.subname}.anima.0g → ${explorerTxUrl(config.network, res.txHash)}`,
+            text: `pubkey published on ${config.subname}.promus.0g → ${explorerTxUrl(config.network, res.txHash)}`,
           })
         }
       })
@@ -1392,7 +1392,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     if (cmd === '/model') {
       state.pushRow({
         role: 'system',
-        text: 'Switching brain. (Quit chat first; run `anima model` to pick a new brain, then re-launch `anima`.)',
+        text: 'Switching brain. (Quit chat first; run `promus model` to pick a new brain, then re-launch `promus`.)',
       })
       return true
     }
@@ -1475,7 +1475,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     }
     if (cmd === '/help') {
       const builtins =
-        "  /sync                force memory + activity flush to 0G\n  /jobs                list active escrow jobs\n  /model               switch brain (run anima model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /exit                quit anima (drains 0G storage flush, releases process)\n  /help                this message"
+        "  /sync                force memory + activity flush to 0G\n  /jobs                list active escrow jobs\n  /model               switch brain (run promus model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /exit                quit promus (drains 0G storage flush, releases process)\n  /help                this message"
       const claudeBlock =
         commandIndex.size === 0
           ? ''
@@ -1795,11 +1795,11 @@ function formatInboxPreview(m: DeliveredMessage): string {
 
 function formatA2AChannel(m: DeliveredMessage): string {
   const env = m.envelope
-  // Prefer the .anima.0g name (or contact label) over the raw address so the
+  // Prefer the .promus.0g name (or contact label) over the raw address so the
   // brain can use it directly with `agent.message`. Address only as fallback
   // for unknown senders.
   const fromDisplay = m.fromLabel ?? m.from
-  const head = `<channel source="anima.inbox" from="${fromDisplay}" address="${m.from}" txHash="${m.txHash}">`
+  const head = `<channel source="promus.inbox" from="${fromDisplay}" address="${m.from}" txHash="${m.txHash}">`
   const body =
     env.type === 'msg'
       ? env.content

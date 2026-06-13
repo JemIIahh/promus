@@ -1,10 +1,10 @@
 {
-  "name": "anima",
+  "name": "promus",
   "version": "0.24.17",
   "private": true,
   "type": "module",
   "description": "Sovereign AI agents on Arbitrum — identity, memory, brain, and wallet as an on-chain entity",
-  "repository": "github.com/JemIIahh/anima",
+  "repository": "github.com/JemIIahh/promus",
   "license": "MIT",
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
@@ -17,7 +17,7 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "bun run build && changeset publish",
-    "anima": "bun packages/cli/bin/anima",
+    "promus": "bun packages/cli/bin/promus",
     "test:cache": "bun test/local/prompt-cache.test.ts"
   },
   "devDependencies": {

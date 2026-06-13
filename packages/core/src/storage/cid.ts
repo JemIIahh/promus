@@ -4,7 +4,7 @@ import { type Hex, bytesToHex, hexToBytes } from 'viem'
  * Minimal, dependency-free codec between an IPFS CID and the `bytes32` content
  * hash anchored in an iNFT IntelligentData slot.
  *
- * anima adds blobs with `cid-version=1&raw-leaves=true`, so any blob that fits
+ * promus adds blobs with `cid-version=1&raw-leaves=true`, so any blob that fits
  * in a single block is addressed by `CIDv1(codec=raw, multihash=sha2-256)`. The
  * multihash digest of that CID is exactly `sha256(bytes)` — the same 32 bytes
  * the local-stub backend returns as `0x<sha256>`. We anchor that digest on-chain

@@ -12,12 +12,12 @@ export interface RunPairingRevokeOpts {
 export async function runPairingRevoke(opts: RunPairingRevokeOpts): Promise<void> {
   const loaded = await findAndLoadConfig()
   if (!loaded) {
-    console.error('No anima.config.ts found. Run `anima init` first.')
+    console.error('No promus.config.ts found. Run `promus init` first.')
     process.exit(1)
   }
   const { config } = loaded
   if (!config.identity.iNFT) {
-    console.error('Config has no iNFT. Run `anima init` first.')
+    console.error('Config has no iNFT. Run `promus init` first.')
     process.exit(1)
   }
   const inftContract = getAddress(config.identity.iNFT.contract) as `0x${string}`

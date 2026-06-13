@@ -16,7 +16,7 @@ export async function runStatus(opts?: { cwd?: string }): Promise<void> {
   const cwd = opts?.cwd ?? process.cwd()
   const found = await findAndLoadConfig(cwd)
   if (!found) {
-    console.log('No anima.config.ts found. Run `anima init` first.')
+    console.log('No promus.config.ts found. Run `promus init` first.')
     process.exit(1)
   }
   const { config, path } = found
@@ -97,7 +97,7 @@ export async function runStatus(opts?: { cwd?: string }): Promise<void> {
 
   const ids = await listAgentIds()
   if (ids.length === 0) {
-    console.log('\nNo agents found in ~/.anima/agents. Re-run `anima init`.')
+    console.log('\nNo agents found in ~/.promus/agents. Re-run `promus init`.')
     return
   }
 

@@ -5,19 +5,19 @@ describe('parseGitHubRepoUrl', () => {
   it('handles https URL with .git suffix', () => {
     expect(parseGitHubRepoUrl('https://github.com/JemIIahh/promus.git')).toEqual({
       owner: 's0nderlabs',
-      repo: 'anima',
+      repo: 'promus',
     })
   })
   it('handles https URL without .git suffix', () => {
     expect(parseGitHubRepoUrl('https://github.com/JemIIahh/promus')).toEqual({
       owner: 's0nderlabs',
-      repo: 'anima',
+      repo: 'promus',
     })
   })
   it('handles SSH URL form', () => {
     expect(parseGitHubRepoUrl('git@github.com:JemIIahh/promus.git')).toEqual({
       owner: 's0nderlabs',
-      repo: 'anima',
+      repo: 'promus',
     })
   })
   it('throws on unparseable URL', () => {

@@ -2,7 +2,7 @@
  * Local accessor for the cached PROFILE scope key.
  *
  * Wraps `getSessionKey(agentId, OPERATOR_BLOB_SCOPES.PROFILE)` with the
- * hex-encoding the gateway handoff envelopes expect. Used by `anima upgrade`
+ * hex-encoding the gateway handoff envelopes expect. Used by `promus upgrade`
  * (both `--reprovision` + in-place) to ship the cached key to the new sandbox
  * daemon so it boots with `slots.profile` ready to anchor instead of
  * `{ status: 'skipped', reason: 'no-profile-key' }`.

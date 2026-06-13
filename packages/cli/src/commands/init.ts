@@ -123,12 +123,12 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     return
   }
 
-  // The `.anima.0g` subname is a 0G Space ID name service. It only exists on
+  // The `.promus.0g` subname is a 0G Space ID name service. It only exists on
   // the 0G chains, so skip the whole step on Arbitrum-family networks.
   let requestedSubname = ''
   if (isOgNetwork(network)) {
     const sub = (await text({
-      message: 'Subname under anima.0g (leave blank to skip)',
+      message: 'Subname under promus.0g (leave blank to skip)',
       placeholder: 'e.g. alice',
       validate: v => {
         if (!v) return undefined
@@ -144,15 +144,15 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
 
     if (requestedSubname) {
       const sAvail = spinner()
-      sAvail.start(`Checking ${requestedSubname}.anima.0g availability on mainnet`)
+      sAvail.start(`Checking ${requestedSubname}.promus.0g availability on mainnet`)
       try {
         const taken = await isLabelTaken(mainnetReadOnlyClient(), requestedSubname)
         if (taken) {
-          sAvail.stop(`${requestedSubname}.anima.0g is already claimed`)
+          sAvail.stop(`${requestedSubname}.promus.0g is already claimed`)
           cancel('Pick a different subname and re-run.')
           return
         }
-        sAvail.stop(`${requestedSubname}.anima.0g is available`)
+        sAvail.stop(`${requestedSubname}.promus.0g is available`)
       } catch (e) {
         sAvail.stop(`availability check failed: ${(e as Error).message.slice(0, 80)}`)
         const proceedAnyway = await confirm({
@@ -336,7 +336,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   // back to back" moment in the wizard: keystore scope (for the encrypted
   // privkey blob) + profile scope (for the operator-private user-partition
   // memory slot). Folding profile derivation into init removes the v0.23.0
-  // need for `anima profile init` as a follow-up command.
+  // need for `promus profile init` as a follow-up command.
   const sKeys = spinner()
   sKeys.start('Deriving operator scope keys (may prompt twice: keystore + profile)')
   let operatorKeys: OperatorSessionKeys
@@ -463,12 +463,12 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   }
 
   // v0.23.1: cache the operator scope keys to `.operator-session` so:
-  //   - First `anima` chat does NOT re-prompt Touch ID (`gateway-start` will
+  //   - First `promus` chat does NOT re-prompt Touch ID (`gateway-start` will
   //     find both keystore + profile scopes already cached and skip
   //     re-derivation).
   //   - First sync after init can encrypt + anchor the PROFILE slot
-  //     transparently — operator never needs to run `anima profile init`.
-  // requiredScopesForAgent now returns ['keystore', 'anima-profile-v1']
+  //     transparently — operator never needs to run `promus profile init`.
+  // requiredScopesForAgent now returns ['keystore', 'promus-profile-v1']
   // because seedStarterMemoryFiles just wrote user/profile.md.
   try {
     const sess = buildOperatorSession({ agent: agent.address as Address, keys: operatorKeys })
@@ -505,7 +505,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   let registeredSubname: string | null = null
   if (requestedSubname && mintedTokenId !== null && contractAddress) {
     const sSub = spinner()
-    sSub.start(`Registering ${requestedSubname}.anima.0g on mainnet`)
+    sSub.start(`Registering ${requestedSubname}.promus.0g on mainnet`)
     try {
       registeredSubname = await withSilencedConsole(async () => {
         const registrar = new PromusRegistrarClient({ privkeyHex: agent.privkeyHex as Hex })
@@ -525,7 +525,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
           `eip155:${NETWORK_CHAIN_ID[network]}:${contractAddress}:${mintedTokenId.toString()}`,
         )
         await sann.waitForReceipt(inftTx)
-        // Publish the agent's secp256k1 uncompressed pubkey so other animas
+        // Publish the agent's secp256k1 uncompressed pubkey so other agents
         // can ECIES-encrypt to this agent for A2A messaging (Phase 7).
         const pubkeyTx = await sann.setText(
           node,
@@ -537,12 +537,12 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
           draft.steps.textRecordsSetTx = pubkeyTx
         })
         sSub.stop(
-          `${requestedSubname}.anima.0g registered → ${explorerTxUrl('0g-mainnet', claimTx)}`,
+          `${requestedSubname}.promus.0g registered → ${explorerTxUrl('0g-mainnet', claimTx)}`,
         )
         return requestedSubname
       })
       if (registeredSubname === null) {
-        sSub.stop(`skipping: ${requestedSubname}.anima.0g was claimed mid-flow`)
+        sSub.stop(`skipping: ${requestedSubname}.promus.0g was claimed mid-flow`)
       }
     } catch (e) {
       sSub.stop(`subname registration failed: ${(e as Error).message.slice(0, 120)}`)
@@ -552,7 +552,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   // v0.24.17: seed canonical memory starter files AFTER the SANN claim resolves
   // so identity.md + persona.md reflect the VERIFIED subname, not the operator's
   // intent. If the claim races or reverts, registeredSubname stays null and the
-  // seed falls back to the generic "I am anima" template. Prior to v0.24.17 the
+  // seed falls back to the generic "I am promus" template. Prior to v0.24.17 the
   // seed ran before the claim with `requestedSubname`, so a failed claim left
   // the agent confidently anchoring "I am chou" on slots 1+2 during the first
   // chat turn even though chain disagreed.
@@ -572,7 +572,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   // provision) so the sandbox handoff envelope can ship `telegram-secrets`
   // and the listener boots active. Previously Phase E ran AFTER provision and
   // the sandbox booted with `listeners.telegram: disabled`, forcing the
-  // operator to `anima upgrade --in-place` post-init to re-ship secrets.
+  // operator to `promus upgrade --in-place` post-init to re-ship secrets.
   let telegramConfigured: { botUsername: string; mode: string } | null = null
   if (mintedTokenId !== null && contractAddress) {
     const tgChoice = await confirm({
@@ -662,7 +662,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
         iNFTRef: { contract: contractAddress, tokenId: mintedTokenId },
         brain: { provider: modelPick.provider as Address, model: modelPick.model ?? '' },
         iNFTNetwork: network,
-        name: requestedSubname || 'anima',
+        name: requestedSubname || 'promus',
         ref: process.env.PROMUS_BOOTSTRAP_REF ?? 'main',
         subname: registeredSubname,
         profileScopeKeyHex,
@@ -683,7 +683,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
       // can discover where to talk. Skipped if subname registration failed.
       if (registeredSubname) {
         const sEp = spinner()
-        sEp.start(`Publishing agent:endpoint on ${registeredSubname}.anima.0g`)
+        sEp.start(`Publishing agent:endpoint on ${registeredSubname}.promus.0g`)
         try {
           await withSilencedConsole(async () => {
             const sann = new SannClient({ privkeyHex: agent.privkeyHex as Hex })
@@ -706,7 +706,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
       note(
         [
           'iNFT minted, agent funded, keystore on 0G Storage, recoverable.',
-          'Re-run `anima deploy` after fixing the sandbox-side issue.',
+          'Re-run `promus deploy` after fixing the sandbox-side issue.',
           `Likely cause: insufficient testnet 0G at ${operatorAddress}, or provider 504/upstream timeout.`,
         ].join('\n'),
         'sandbox-deploy aborted (recoverable)',
@@ -779,7 +779,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     lines.push(`  iNFT       #${mintedTokenId.toString()} at ${contractAddress}`)
     lines.push(`             ${explorerTokenUrl(network, contractAddress, mintedTokenId)}`)
   }
-  if (registeredSubname) lines.push(`  subname    ${registeredSubname}.anima.0g (mainnet)`)
+  if (registeredSubname) lines.push(`  subname    ${registeredSubname}.promus.0g (mainnet)`)
   if (modelPick) lines.push(`  brain      ${modelPick.model ?? '?'} (${modelPick.provider})`)
   else if (useAnthropic)
     lines.push(`  brain      ${process.env.ANTHROPIC_MODEL || 'claude-opus-4-8'} (Claude)`)
@@ -804,9 +804,9 @@ interface SeedStarterOpts {
   brainProvider: string | null
   brainModel: string | null
   /**
-   * Operator-chosen SANN label (e.g. "chou" for `chou.anima.0g`). Threaded
+   * Operator-chosen SANN label (e.g. "chou" for `chou.promus.0g`). Threaded
    * into identity + persona so the agent introduces itself by name on the
-   * very first turn instead of the generic "I am Anima" template.
+   * very first turn instead of the generic "I am Promus" template.
    */
   subname: string | null
 }
@@ -827,7 +827,7 @@ async function seedStarterMemoryFiles(opts: SeedStarterOpts): Promise<void> {
 
   const now = new Date().toISOString().slice(0, 10)
   const displayName = opts.subname ?? 'promus'
-  const fullName = opts.subname ? `${opts.subname}.anima.0g` : null
+  const fullName = opts.subname ? `${opts.subname}.promus.0g` : null
   const identityTitle = opts.subname
     ? `# ${opts.subname} identity (Promus)`
     : '# Promus identity'
@@ -846,5 +846,5 @@ async function seedStarterMemoryFiles(opts: SeedStarterOpts): Promise<void> {
 
   // Seed an empty MEMORY.md so per-turn sync has something to anchor and the
   // brain's first turn sees a parseable index.
-  await writeFile(opts.paths.memoryIndex, '# Anima Memory Index\n\n', 'utf8')
+  await writeFile(opts.paths.memoryIndex, '# Promus Memory Index\n\n', 'utf8')
 }

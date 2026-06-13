@@ -1,7 +1,7 @@
 /**
  * promus-plugin-telegram
  *
- * Long-poll Telegram bot listener. Operator DMs `@anima_<name>_bot` from any
+ * Long-poll Telegram bot listener. Operator DMs `@promus_<name>_bot` from any
  * phone; the agent (running in 0G Sandbox or local) replies via the same
  * brain that handles stdin TUI turns.
  *

@@ -16,7 +16,7 @@ interface ShellToolDeps {
    * Phase 9.5: sandbox backend wraps the spawn before exec. Default
    * `LocalBackend` is a passthrough (today's behaviour). When sandbox.mode='os'
    * on darwin, this becomes a sandbox-exec wrapper that denies writes outside
-   * agentDir + workspaceRoot + /tmp/anima-* + /var/folders. Optional for
+   * agentDir + workspaceRoot + /tmp/promus-* + /var/folders. Optional for
    * back-compat: tests + legacy callers that don't supply it get LocalBackend.
    */
   sandbox?: SandboxBackend

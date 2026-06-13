@@ -5,7 +5,7 @@ import { LocalStubStorage } from './local-stub'
 import type { Storage } from './types'
 
 /**
- * IPFS-backed Storage. anima only ever exercises putBlob/getBlob (the encrypted
+ * IPFS-backed Storage. promus only ever exercises putBlob/getBlob (the encrypted
  * memory/keystore blobs whose CID is anchored on-chain in the iNFT slot); KV and
  * appendLog are part of the interface but unused, so they delegate to a small
  * local cache. This is the decentralized blob backend that replaces 0G Storage.
@@ -40,7 +40,7 @@ export class IpfsStorage implements Storage {
     this.apiUrl = opts.apiUrl.replace(/\/$/, '')
     this.gatewayUrl = opts.gatewayUrl?.replace(/\/$/, '')
     this.token = opts.token
-    this.local = new LocalStubStorage(opts.cacheDir ?? join(homedir(), '.anima', 'ipfs-cache'))
+    this.local = new LocalStubStorage(opts.cacheDir ?? join(homedir(), '.promus', 'ipfs-cache'))
   }
 
   private authHeaders(): Record<string, string> {
@@ -98,7 +98,7 @@ export class IpfsStorage implements Storage {
     }
   }
 
-  // ── Unused by anima (on-chain slot is the mutable pointer) — local cache. ──
+  // ── Unused by promus (on-chain slot is the mutable pointer) — local cache. ──
   putKV(stream: string, key: string, value: Uint8Array): Promise<void> {
     return this.local.putKV(stream, key, value)
   }
@@ -118,5 +118,5 @@ function fetchWithTimeout(url: string, init: RequestInit, ms: number): Promise<R
 
 /** Default local cache dir for the IPFS adapter's unused KV/log methods. */
 export function defaultIpfsCacheDir(): string {
-  return process.env.PROMUS_IPFS_CACHE_DIR ?? join(tmpdir(), 'anima-ipfs-cache')
+  return process.env.PROMUS_IPFS_CACHE_DIR ?? join(tmpdir(), 'promus-ipfs-cache')
 }

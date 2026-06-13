@@ -8,11 +8,11 @@ export interface RenderConfigOpts {
 }
 
 /**
- * Serialize an PromusConfig into a `~/.anima/config.ts` file body.
+ * Serialize an PromusConfig into a `~/.promus/config.ts` file body.
  *
- * Phase 6.6: the config lives at `~/.anima/config.ts` which is outside any
+ * Phase 6.6: the config lives at `~/.promus/config.ts` which is outside any
  * workspace, so it MUST NOT import `promus-core` (the import won't
- * resolve from `~/.anima/`). We emit a plain `export default { ... }` object;
+ * resolve from `~/.promus/`). We emit a plain `export default { ... }` object;
  * the runtime loader treats it as `PromusConfig` directly.
  */
 export function renderConfigTs(cfg: PromusConfig, opts: RenderConfigOpts = {}): string {
@@ -70,7 +70,7 @@ function renderSandboxBlock(sandbox: PromusConfig['sandbox']): string {
   //  OPTION 1: none (default): passthrough, fastest, permission floor only.
   //
   //  OPTION 2: os (macOS sandbox-exec / seatbelt). Allows writes to agentDir +
-  //    cwd + /tmp/anima-* + /var/folders. Denies reads of ~/.ssh, ~/.aws,
+  //    cwd + /tmp/promus-* + /var/folders. Denies reads of ~/.ssh, ~/.aws,
   //    ~/Library/Keychains, ~/.config/gcloud. Linux bubblewrap pending.
   //  sandbox: { mode: 'os' },
   //

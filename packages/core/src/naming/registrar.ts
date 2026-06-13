@@ -14,7 +14,7 @@ import { waitForReceiptResilient } from '../identity/receipt'
 import { readRegistryOwner, subnameNode } from './sann'
 
 /**
- * Permissionless `.anima.0g` subname registrar deployed via CREATE2 on
+ * Permissionless `.promus.0g` subname registrar deployed via CREATE2 on
  * mainnet. Any EOA with gas can register a label via `claim(label, owner)`.
  * See contracts/src/PromusSubnameRegistrar.sol.
  */
@@ -80,7 +80,7 @@ export class PromusRegistrarClient {
   }
 
   /**
-   * Register `<label>.anima.0g` owned by `owner`. Reverts if label is taken.
+   * Register `<label>.promus.0g` owned by `owner`. Reverts if label is taken.
    * Returns the transaction hash. The caller pays gas; ownership goes to `owner`.
    */
   async claim(label: string, owner: Address): Promise<Hex> {
@@ -118,7 +118,7 @@ export class PromusRegistrarClient {
 }
 
 /**
- * Read-only helper to check whether a `<label>.anima.0g` is already claimed.
+ * Read-only helper to check whether a `<label>.promus.0g` is already claimed.
  * Avoids instantiating a full `PromusRegistrarClient` (which requires a
  * privkey) for UX-only availability probes.
  */

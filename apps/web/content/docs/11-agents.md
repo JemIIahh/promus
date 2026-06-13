@@ -67,7 +67,7 @@ There is no non-TUI chat mode. `promus` and `promus chat` both drop into a TUI; 
 
 ## Where state lives
 
-A clean install creates `~/.anima/` with per-agent state: the operator-encrypted keystore, a local cache of IPFS data, the memory partitions (`agent/` travels with the iNFT, `user/` is operator-scoped), runtime state, and the gateway socket when running. The `~/.anima` path and the `PROMUS_` env prefix are unchanged runtime details.
+A clean install creates `~/.promus/` with per-agent state: the operator-encrypted keystore, a local cache of IPFS data, the memory partitions (`agent/` travels with the iNFT, `user/` is operator-scoped), runtime state, and the gateway socket when running. The `~/.promus` path and the `PROMUS_` env prefix are unchanged runtime details.
 
 ## Machine-readable surfaces
 

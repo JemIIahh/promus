@@ -62,7 +62,7 @@ type DrainSource = 'a2a' | 'market'
 /**
  * v0.24.16: shared drain-failure logger. Publishes a structured EventHub
  * `log` event AND mirrors to daemon stderr so silent failures surface in
- * `~/anima-logs/anima-gateway.log` without an SSE subscriber attached.
+ * `~/promus-logs/promus-gateway.log` without an SSE subscriber attached.
  *
  * Stderr is rate-limited per source: identical messages within
  * `STDERR_DEDUP_WINDOW_MS` only print once, so a stuck drain loop on a
@@ -89,12 +89,12 @@ function logTurnFailure(
 
 export interface RealRuntimeOpts {
   approvals: ApprovalRelay
-  /** Optional override of the agent state directory. Default `${TMPDIR}/anima-gateway/<agentId>`. */
+  /** Optional override of the agent state directory. Default `${TMPDIR}/promus-gateway/<agentId>`. */
   agentDirRoot?: string
 }
 
 /**
- * Production runtime adapter. Builds the full anima brain + tools + plugins
+ * Production runtime adapter. Builds the full promus brain + tools + plugins
  * + listeners + memory sync stack inside the sandbox container, exposes the
  * RuntimeAdapter contract that the harness HTTP server uses.
  *
@@ -136,7 +136,7 @@ export class RealRuntime implements RuntimeAdapter {
 
   constructor(opts: RealRuntimeOpts) {
     this.#approvals = opts.approvals
-    this.#agentDirRoot = opts.agentDirRoot ?? join(tmpdir(), 'anima-gateway')
+    this.#agentDirRoot = opts.agentDirRoot ?? join(tmpdir(), 'promus-gateway')
   }
 
   async start(opts: {
@@ -435,8 +435,8 @@ export class RealRuntime implements RuntimeAdapter {
           })
           const channelText =
             m.envelope.type === 'msg'
-              ? `<channel source="anima.inbox" from="${m.fromLabel ?? m.from}">${m.envelope.content}</channel>`
-              : `<channel source="anima.inbox" from="${m.fromLabel ?? m.from}" file="${m.envelope.filename}" size="${m.envelope.size}"/>`
+              ? `<channel source="promus.inbox" from="${m.fromLabel ?? m.from}">${m.envelope.content}</channel>`
+              : `<channel source="promus.inbox" from="${m.fromLabel ?? m.from}" file="${m.envelope.filename}" size="${m.envelope.size}"/>`
           try {
             const turn = await r.brain.infer({
               event: {

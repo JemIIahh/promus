@@ -8,7 +8,7 @@ import { loadOrPickOperatorSigner } from './init/operator-picker'
 export async function runAdminAutotopupTick(): Promise<void> {
   const found = await findAndLoadConfig()
   if (!found) {
-    console.error('No anima.config.ts found. Run `anima init` first.')
+    console.error('No promus.config.ts found. Run `promus init` first.')
     process.exit(1)
   }
   const { config } = found
@@ -40,7 +40,7 @@ export async function runAdminAutotopupTick(): Promise<void> {
   }
 
   if (!config.identity.agent) {
-    console.error('No agent address in config. Run `anima init` first.')
+    console.error('No agent address in config. Run `promus init` first.')
     process.exit(1)
   }
   // Slug derivation must match gateway-stop.ts (iNFT-based when minted, else
@@ -54,7 +54,7 @@ export async function runAdminAutotopupTick(): Promise<void> {
   const sockPath = `${agentPaths.agent(slug).dir}/gateway.sock`
   if (!existsSync(sockPath)) {
     console.error(
-      `Gateway socket not found at ${sockPath}. Start the gateway with \`anima gateway start\` or run \`anima\` first.`,
+      `Gateway socket not found at ${sockPath}. Start the gateway with \`promus gateway start\` or run \`promus\` first.`,
     )
     process.exit(1)
   }
