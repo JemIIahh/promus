@@ -84,14 +84,17 @@ The harness is replaceable; the agent is not.
 
 ## Quickstart
 
-**Prereqs:** [Bun](https://bun.sh), a local [IPFS (Kubo)](https://docs.ipfs.tech/install/command-line/) node (`ipfs daemon`), an `ANTHROPIC_API_KEY`, and a funded Arbitrum Sepolia wallet.
+**Prereqs:** a local [IPFS (Kubo)](https://docs.ipfs.tech/install/command-line/) node (`ipfs daemon`), and a funded Arbitrum Sepolia wallet.
 
 ```bash
-bun install
-cp .env.example .env          # set ANTHROPIC_API_KEY + PROMUS_IPFS_API_URL
+# Install the CLI
+npm i -g @promus/cli        # or: yarn global add @promus/cli, bun add -g @promus/cli
 
-promus init                   # mint the agent iNFT on Arbitrum Sepolia (or Robinhood Chain)
-promus                        # chat in the TUI — each turn reasons on Claude, syncs memory to IPFS
+# Initialize your agent (mints iNFT, encrypts API key, sets up IPFS)
+promus init
+
+# Chat — each turn reasons on Claude, syncs memory to IPFS
+promus
 ```
 
 Talk to your agent from your phone too: `promus telegram setup` wires an always-on Telegram gateway.

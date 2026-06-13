@@ -1,18 +1,35 @@
-# promus
+# @promus/cli
 
-CLI binary for **promus**: the first fully on-chain sovereign agent harness on 0G.
+CLI binary for **Promus**: sovereign AI agents on Arbitrum.
 
 ## Install
 
 ```bash
-bun add -g promus
+# npm
+npm i -g @promus/cli
+
+# yarn
+yarn global add @promus/cli
+
+# bun
+bun add -g @promus/cli
+```
+
+Requires [Node.js](https://nodejs.org) ≥ 18 or [Bun](https://bun.sh) ≥ 1.1.
+
+## Quick start
+
+```bash
 promus init
 ```
 
-Requires [bun](https://bun.sh) ≥ 1.1.
+The wizard mints an iNFT, encrypts your API key, and sets up the agent. Then:
 
-## Commands
-
-`promus init` boots the wizard (mints an iNFT, opens a 0G Compute ledger, generates the agent EOA). After that: `promus` for chat, `promus status`, `promus logs`, `promus topup`, `promus ledger`, `promus drain`, `promus sync`, `promus inspect`, `promus deploy`, `promus upgrade`, `promus help` for the full list.
+```bash
+promus         # chat with your agent
+promus status  # health check
+promus logs    # follow gateway logs
+promus topup   # add ETH to agent wallet
+```
 
 See the [root README](https://github.com/JemIIahh/promus#readme) for architecture, concepts, and the full command reference.
