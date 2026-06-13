@@ -51,6 +51,7 @@ export const OPERATOR_BLOB_SCOPES = {
   KEYSTORE: 'promus-keystore-v1',
   TELEGRAM: 'promus-telegram-v1',
   PROFILE: 'promus-profile-v1',
+  BRAIN: 'promus-brain-v1',
 } as const
 export type OperatorBlobScope =
   | (typeof OPERATOR_BLOB_SCOPES)[keyof typeof OPERATOR_BLOB_SCOPES]
