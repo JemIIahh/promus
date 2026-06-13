@@ -3,6 +3,7 @@ import { mkdir } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { isCancel, select, spinner } from '@clack/prompts'
+import { brainSecretsExist, loadBrainSecrets } from '../util/brain-secrets'
 import {
   PROMUS_INBOX_ADDRESS,
   PROMUS_MARKET_ADDRESS,
@@ -246,6 +247,30 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     sUnlock.stop(`unlock failed: ${(e as Error).message.slice(0, 160)}`)
     await operator.close?.()
     process.exit(1)
+  }
+
+  // Phase 12: decrypt brain-secrets blob (API key + storage config) using the
+  // SAME operator signer we already have unlocked.
+  let brainApiKey: string | undefined
+  if (brainSecretsExist(agentId)) {
+    const sBrain = spinner()
+    sBrain.start('Decrypting brain secrets')
+    try {
+      const brainSecrets = await loadBrainSecrets({ signer: operator, agentAddress, agentId })
+      if (brainSecrets) {
+        brainApiKey = brainSecrets.apiKey
+        // Set env so AnthropicBrain reads it (it checks process.env.ANTHROPIC_API_KEY)
+        if (brainSecrets.provider === 'anthropic') {
+          process.env.ANTHROPIC_API_KEY = brainSecrets.apiKey
+        }
+        // Also set IPFS env vars from brain secrets
+        if (brainSecrets.ipfsApiUrl) process.env.PROMUS_IPFS_API_URL = brainSecrets.ipfsApiUrl
+        if (brainSecrets.ipfsGateway) process.env.PROMUS_IPFS_GATEWAY = brainSecrets.ipfsGateway
+        sBrain.stop(`brain secrets loaded (${brainSecrets.provider})`)
+      }
+    } catch (e) {
+      sBrain.stop(`brain secrets decrypt failed: ${(e as Error).message.slice(0, 160)}`)
+    }
   }
 
   // Phase 12: decrypt telegram-secrets blob (if any) using the SAME operator
