@@ -1,5 +1,8 @@
 import { existsSync } from 'node:fs'
-import { cancel, isCancel, note, password, select, text } from '@clack/prompts'
+import { writeFile } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
+import { cancel, confirm, isCancel, note, password, select, text } from '@clack/prompts'
 import {
   type PromusNetwork,
   KeychainOperatorSigner,
@@ -10,6 +13,7 @@ import {
   RawPrivkeyOperatorSigner,
   WalletConnectOperatorSigner,
 } from 'promus-core'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 interface PickerOptions {
   network: PromusNetwork
@@ -33,7 +37,12 @@ export interface OperatorPickResult {
  */
 export async function pickOperatorSigner(opts: PickerOptions): Promise<OperatorPickResult | null> {
   const isMac = process.platform === 'darwin'
-  const choices: { value: OperatorSourceKind; label: string; hint?: string }[] = [
+  const choices: { value: OperatorSourceKind | 'generate'; label: string; hint?: string }[] = [
+    {
+      value: 'generate',
+      label: 'Generate new key',
+      hint: 'creates a fresh testnet wallet (save the key!)',
+    },
     {
       value: 'walletconnect',
       label: 'WalletConnect',
@@ -63,13 +72,34 @@ export async function pickOperatorSigner(opts: PickerOptions): Promise<OperatorP
     message: 'Connect your operator wallet (owns the iNFT)',
     options: choices,
     initialValue: choices[0]!.value,
-  })) as OperatorSourceKind | symbol
+  })) as OperatorSourceKind | 'generate' | symbol
   if (isCancel(source)) {
     cancel('Aborted.')
     return null
   }
 
   switch (source) {
+    case 'generate': {
+      const privkey = generatePrivateKey()
+      const account = privateKeyToAccount(privkey)
+      note(
+        `Generated testnet wallet:\n  address: ${account.address}\n  private key: ${privkey}\n\nSAVE THIS KEY — you'll need it to reconnect later.`,
+        'new wallet',
+      )
+      const saveToFile = await confirm({
+        message: 'Save private key to ~/.promus/operator-key?',
+        initialValue: true,
+      })
+      if (!isCancel(saveToFile) && saveToFile) {
+        const keyPath = join(homedir(), '.promus', 'operator-key')
+        await writeFile(keyPath, privkey, 'utf8')
+        note(`Key saved to ${keyPath}`, 'saved')
+      }
+      return {
+        signer: new RawPrivkeyOperatorSigner({ privkey, sourceLabel: 'generated' }),
+        hint: { source: 'raw-privkey' },
+      }
+    }
     case 'walletconnect':
       return {
         signer: new WalletConnectOperatorSigner({ networks: [opts.network] }),
