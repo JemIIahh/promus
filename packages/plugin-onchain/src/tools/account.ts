@@ -28,7 +28,7 @@ export function makeAccountInfo(ctx: OnchainRuntimeContext): ToolDef<Args> {
             address: ctx.agentEoa,
             mintBlock: ctx.mintBlock,
           }),
-          ctx.brokerLedger?.balance0G().catch(() => null) ?? Promise.resolve(null),
+          ctx.brokerLedger?.balanceETH().catch(() => null) ?? Promise.resolve(null),
           readRecentActivity(ctx.agentDir, 5),
         ])
         return {
