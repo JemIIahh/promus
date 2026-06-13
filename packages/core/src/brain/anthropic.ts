@@ -15,6 +15,7 @@
  *    `tool_result` blocks, as the Messages API expects.
  */
 import Anthropic from '@anthropic-ai/sdk'
+import { sanitizeToolName } from '../tools/sanitize'
 import type { ToolSchema } from '../tools/types'
 import {
   type CompactionOpts,
@@ -330,15 +331,6 @@ export class AnthropicBrain implements Brain {
       },
     }
   }
-}
-
-/**
- * Anthropic tool names must match ^[a-zA-Z0-9_-]{1,128}$ (no dots). anima tool
- * names are `namespace.method` (memory.save), so map every illegal char to '_'
- * for the API. Deterministic; callers keep a sanitized->original map to map back.
- */
-function sanitizeToolName(name: string): string {
-  return name.replace(/[^a-zA-Z0-9_-]/g, '_')
 }
 
 /**

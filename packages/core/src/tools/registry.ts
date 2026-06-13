@@ -1,3 +1,4 @@
+import { sanitizeToolName } from './sanitize'
 import type { ToolCall, ToolDef, ToolResult, ToolSchema } from './types'
 import { zodToJsonSchema } from './zod-schema'
 
@@ -126,7 +127,20 @@ export class ToolRegistry {
   }
 
   async dispatch(call: ToolCall): Promise<ToolResult> {
-    const tool = this.find(call.name)
+    let tool = this.find(call.name)
+    if (!tool) {
+      // The Anthropic brain presents tool names sanitized (dots -> underscores,
+      // e.g. browser_navigate). If a direct lookup misses, match the incoming
+      // name against the sanitized form of a registered name. Matching against
+      // real names (not de-sanitizing the input) avoids the ambiguity of
+      // method names that already contain underscores (e.g. agent.contact_add).
+      for (const def of this.tools.values()) {
+        if (this.isEnabled(def.name) && sanitizeToolName(def.name) === call.name) {
+          tool = def
+          break
+        }
+      }
+    }
     if (!tool) return { ok: false, error: `Unknown tool: ${call.name}` }
     const parsed = tool.schema.safeParse(call.args)
     if (!parsed.success) {
