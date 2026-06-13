@@ -49,6 +49,8 @@ export interface RestoreMemoryOpts {
    * `no-profile-key` — sandbox cold-start case before operator unlock.
    */
   profileKey?: Buffer
+  /** Per-attempt blob-download timeout (ms). Defaults to BLOB_FETCH_TIMEOUT_MS. */
+  blobTimeoutMs?: number
 }
 
 export type RestoreStatus = 'restored' | 'skipped' | 'failed'
@@ -62,6 +64,40 @@ export interface RestoreOutcome {
 }
 
 const ZERO_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+/**
+ * Per-attempt cap on a single blob download. A blob whose CID isn't reachable
+ * (e.g. an old slot whose content was never pinned to the local IPFS node)
+ * otherwise hangs ~80s on a DHT lookup before failing, and three such attempts
+ * per slot turn a cold boot into a multi-minute wait. With this cap a hung
+ * fetch fails fast (and we don't retry it — a hang won't resolve within the
+ * boot window), while a *quick* null (transient indexer degradation) still
+ * retries as before. Tunable via PROMUS_RESTORE_BLOB_TIMEOUT_MS.
+ */
+const BLOB_FETCH_TIMEOUT_MS = Number(process.env.PROMUS_RESTORE_BLOB_TIMEOUT_MS) || 6000
+
+class BlobFetchTimeout extends Error {
+  constructor() {
+    super('blob fetch timed out')
+    this.name = 'BlobFetchTimeout'
+  }
+}
+
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new BlobFetchTimeout()), ms)
+    p.then(
+      v => {
+        clearTimeout(timer)
+        resolve(v)
+      },
+      e => {
+        clearTimeout(timer)
+        reject(e)
+      },
+    )
+  })
+}
 
 /**
  * Slots whose dataHash points at a memory file we should restore on boot.
@@ -87,10 +123,12 @@ export async function restoreMemoryFromChain(opts: RestoreMemoryOpts): Promise<R
   // Slots are independent (different paths, different rootHashes). Run them
   // in parallel: a chain-degraded indexer typically takes 3-5s per blob, so
   // serial across 4 slots is 12-20s of boot time vs ~5s parallel.
+  const blobTimeoutMs = opts.blobTimeoutMs ?? BLOB_FETCH_TIMEOUT_MS
   const tasks = slots.map(async entry =>
     restoreSlot(entry, opts.agentDir, downloadBlob, memoryKey, {
       network: opts.network,
       profileKey: opts.profileKey,
+      blobTimeoutMs,
     }),
   )
   const outcomes = (await Promise.all(tasks)).filter((o): o is RestoreOutcome => o !== null)
@@ -110,8 +148,9 @@ async function restoreSlot(
   agentDir: string,
   downloadBlob: (rootHash: string) => Promise<Uint8Array | null>,
   memoryKey: Buffer,
-  profileCtx: { network: PromusNetwork; profileKey: Buffer | undefined },
+  profileCtx: { network: PromusNetwork; profileKey: Buffer | undefined; blobTimeoutMs: number },
 ): Promise<RestoreOutcome | null> {
+  const blobTimeoutMs = profileCtx.blobTimeoutMs
   const target = RESTORE_TARGETS[entry.dataDescription]
   if (!target) return null
   const path = target(agentDir)
@@ -139,12 +178,20 @@ async function restoreSlot(
       return { slot: 'profile', path, status: 'skipped', reason: 'no-profile-key' }
     }
     let lastReason: string | null = null
+    let profileTimedOut = false
+    const boundedDownload = (root: string) =>
+      withTimeout(downloadBlob(root), blobTimeoutMs).catch(err => {
+        if (err instanceof BlobFetchTimeout) profileTimedOut = true
+        return null
+      })
     for (let attempt = 1; attempt <= 3; attempt++) {
+      profileTimedOut = false
       const res = await restoreProfile({
         network: profileCtx.network,
         rootHash: entry.dataHash as `0x${string}`,
         profileKey: profileCtx.profileKey,
         profilePath: path,
+        downloadBlob: boundedDownload,
       })
       if (res.status === 'restored') {
         // v0.24.0: profile blob may carry a v2 pack envelope. Detect by reading
@@ -169,6 +216,8 @@ async function restoreSlot(
         return { slot: 'profile', path, status: 'restored', bytes: res.bytes }
       }
       lastReason = res.reason ?? 'unknown'
+      // A hung fetch (CID not reachable) won't resolve on retry — fail fast.
+      if (profileTimedOut) break
       if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 2000))
     }
     console.warn(
@@ -186,10 +235,13 @@ async function restoreSlot(
   let lastError: Error | null = null
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      ciphertext = await downloadBlob(entry.dataHash)
+      ciphertext = await withTimeout(downloadBlob(entry.dataHash), blobTimeoutMs)
       if (ciphertext) break
     } catch (err) {
       lastError = err as Error
+      // A hung fetch (CID not reachable) won't resolve on retry within the boot
+      // window — fail this slot fast rather than burning 3× the timeout.
+      if (err instanceof BlobFetchTimeout) break
     }
     if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 2000))
   }

@@ -301,4 +301,44 @@ describe('restoreMemoryFromChain', () => {
     // Should surface the last error message, not 'blob-not-found'
     expect(outcomes[0]!.reason).toContain('network blip 3')
   }, 15_000)
+
+  // A blob whose CID isn't reachable hangs the fetch; the per-attempt timeout
+  // must fail the slot fast (one attempt) instead of burning 3× the timeout.
+  test('fails a slot fast on a hung fetch instead of retrying 3 times', async () => {
+    const dir = await setupAgentDir()
+    let attempts = 0
+    const outcomes = await restoreMemoryFromChain({
+      ...baseOpts(
+        dir,
+        async () => [{ dataDescription: 'identity', dataHash: HASH_A }],
+        () => {
+          attempts++
+          return new Promise<Uint8Array | null>(() => {}) // never resolves
+        },
+      ),
+      blobTimeoutMs: 50,
+    })
+    expect(attempts).toBe(1)
+    expect(outcomes[0]!.status).toBe('failed')
+    expect(outcomes[0]!.reason).toContain('timed out')
+  }, 10_000)
+
+  test('profile slot also fails fast on a hung fetch', async () => {
+    const dir = await setupAgentDir()
+    let attempts = 0
+    const outcomes = await restoreMemoryFromChain({
+      ...baseOpts(
+        dir,
+        async () => [{ dataDescription: 'profile', dataHash: HASH_A }],
+        () => {
+          attempts++
+          return new Promise<Uint8Array | null>(() => {})
+        },
+      ),
+      profileKey: Buffer.alloc(32, 7),
+      blobTimeoutMs: 50,
+    })
+    expect(attempts).toBe(1)
+    expect(outcomes[0]!.status).toBe('failed')
+  }, 10_000)
 })
