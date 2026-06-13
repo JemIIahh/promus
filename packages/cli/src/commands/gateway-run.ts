@@ -8,7 +8,7 @@
  */
 
 import { spawn } from 'node:child_process'
-import { join } from 'node:path'
+import { agentPaths } from 'promus-core'
 import { resolveLocalBin } from '../util/gateway-spawn'
 
 export interface GatewayRunOpts {
@@ -18,9 +18,11 @@ export interface GatewayRunOpts {
 export async function runGatewayForeground(opts: GatewayRunOpts): Promise<void> {
   const env = { ...process.env }
   if (opts.agentId) env.PROMUS_AGENT_ID = opts.agentId
-  // Default PROMUS_CONFIG to ~/.promus/config.ts if not already set.
+  // Default PROMUS_CONFIG to the resolved agent config path. agentPaths honors
+  // PROMUS_ROOT, so a custom root (e.g. an existing ~/.anima from before the
+  // rename) is respected instead of hard-coding ~/.promus/config.ts.
   if (!env.PROMUS_CONFIG) {
-    env.PROMUS_CONFIG = join(env.HOME ?? '', '.promus', 'config.ts')
+    env.PROMUS_CONFIG = agentPaths.config
   }
 
   const localBin = resolveLocalBin()
