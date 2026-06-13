@@ -38,7 +38,7 @@ export interface TelegramRuntimeContext {
   debug?: boolean
   /**
    * Optional pairing store. When present, unknown senders get a pairing code
-   * via DM and the operator approves via `anima pairing approve telegram <code>`.
+   * via DM and the operator approves via `promus pairing approve telegram <code>`.
    * When absent, the listener uses static allowlist only (default-deny on empty).
    */
   pairingStore?: PairingStore
