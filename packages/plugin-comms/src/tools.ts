@@ -71,9 +71,10 @@ export async function resolveAddrOrName(
 
 /**
  * Resolve recipient (label/0x/.0g) → encrypt → send. ECIES needs the recipient's
- * uncompressed pubkey, which lives only on .promus.0g text records (forward-only),
- * so we always need a .0g name to look up. Raw 0x without a known label fails
- * fast since there's no reverse mapping.
+ * uncompressed pubkey. For a raw 0x address (or a contact label that resolves to
+ * one) the resolver recovers that pubkey trustlessly from the peer's on-chain
+ * PromusInbox activity — no name service required. A `.promus.0g` name resolves
+ * via its SANN text record instead. Raw 0x is the primary, nameless path.
  */
 async function sendCore(deps: CommsDeps, to: string, plaintext: Uint8Array, forceStorage = false) {
   const r = await resolveAddrOrName(deps, to)
@@ -119,7 +120,12 @@ async function sendCore(deps: CommsDeps, to: string, plaintext: Uint8Array, forc
 // ─── 1. agent.message ───────────────────────────────────────────────────────
 
 const MessageSchema = z.object({
-  to: z.string().min(1).describe('Recipient: an .promus.0g name. Raw EOAs require name resolution.'),
+  to: z
+    .string()
+    .min(1)
+    .describe(
+      "Recipient: a raw 0x agent address (preferred), a contact label, or a .promus.0g name. A raw 0x address resolves trustlessly — the recipient's encryption key is recovered from its on-chain PromusInbox activity, so no name service is needed.",
+    ),
   content: z.string().min(1).describe('Plain-text message body.'),
   in_reply_to: z
     .string()
@@ -132,7 +138,7 @@ export function makeMessage(deps: CommsDeps): ToolDef<MessageArgs> {
   return {
     name: 'agent.message',
     description:
-      'Send a private encrypted message to another promus agent by `.promus.0g` name. Routes through PromusInbox singleton on Arbitrum. Content is ECIES-encrypted to the recipient pubkey; chain only sees ciphertext.',
+      'Send a private encrypted message to another Promus agent — addressed by raw 0x address (preferred), a contact label, or a .promus.0g name. Routes through the PromusInbox singleton on Arbitrum. Content is ECIES-encrypted to the recipient pubkey (recovered from the peer\'s on-chain inbox activity for raw addresses); the chain only sees ciphertext.',
     searchHint: 'message send a2a chat encrypted dm',
     schema: MessageSchema,
     handler: async args => {

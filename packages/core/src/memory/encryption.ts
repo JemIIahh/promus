@@ -6,7 +6,7 @@ import { hexToBytes } from 'viem'
 /**
  * Phase 6.7 memory file encryption.
  *
- * Key derivation: HKDF-SHA256(ikm = agent privkey bytes, info = "promus-memory-aead-v1")
+ * Key derivation: HKDF-SHA256(ikm = agent privkey bytes, info = "anima-memory-aead-v1")
  *   → 32-byte AES-256-GCM key.
  *
  * Why agent privkey (not operator wallet)? Memory writes happen mid-chat —
@@ -30,7 +30,12 @@ import { hexToBytes } from 'viem'
 export const MEMORY_BLOB_VERSION = 1 as const
 export const MEMORY_BLOB_VERSION_GZIP = 2 as const
 
-const HKDF_INFO = Buffer.from('promus-memory-aead-v1', 'utf8')
+// DO NOT RENAME. This string is the HKDF domain separator that derives the
+// AES-256-GCM key for every memory blob. Existing memory blobs were encrypted
+// under 'anima-memory-aead-v1'; renaming it (as the anima→promus sweep 42ae2fa
+// did) silently changes the key and breaks decryption of all prior memory with
+// no migration — same class as the keystore break in operator-keystore-crypto.ts.
+const HKDF_INFO = Buffer.from('anima-memory-aead-v1', 'utf8')
 const KEY_LEN = 32
 const IV_LEN = 12
 const TAG_LEN = 16
