@@ -16,7 +16,9 @@ async function main(): Promise<void> {
     case undefined:
     case 'chat': {
       const { runChat } = await import('./commands/chat')
-      await runChat({ yolo: argv.includes('--yolo') })
+      const resumeIdx = argv.indexOf('--resume')
+      const resumeSession = resumeIdx >= 0 ? argv[resumeIdx + 1] : undefined
+      await runChat({ yolo: argv.includes('--yolo'), resume: resumeSession })
       return
     }
     case 'init': {

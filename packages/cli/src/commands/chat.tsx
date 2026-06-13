@@ -98,7 +98,7 @@ import {
 } from './chat-telegram'
 import { loadOrPickOperatorSigner } from './init/operator-picker'
 
-export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<void> {
+export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: string }): Promise<void> {
   const found = await findAndLoadConfig(opts?.cwd)
   if (!found) {
     console.log('No promus.config.ts found. Run `promus init` first.')
@@ -219,6 +219,11 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   const agentId = iNFTAgentId({ contractAddress, tokenId })
   const paths = agentPaths.agent(agentId)
   const agentAddress = config.identity.agent as Address
+
+  // Generate a short session ID for resume support (e.g. "a3f2-k9m1")
+  const sessionId = opts?.resume ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+  const sessionDir = `${paths.dir}/sessions`
+  const sessionFile = `${sessionDir}/${sessionId}.json`
 
   const operator = await loadOrPickOperatorSigner({
     network: config.network,
@@ -1500,9 +1505,42 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       }
       return true
     }
+    if (cmd === '/sessions') {
+      try {
+        const { readdirSync, readFileSync } = require('node:fs')
+        if (!existsSync(sessionDir)) {
+          state.pushRow({ role: 'system', text: 'no sessions found.' })
+        } else {
+          const files = readdirSync(sessionDir)
+            .filter((f: string) => f.endsWith('.json'))
+            .sort()
+            .reverse()
+            .slice(0, 10)
+          if (files.length === 0) {
+            state.pushRow({ role: 'system', text: 'no sessions found.' })
+          } else {
+            const sessions = files.map((f: string) => {
+              try {
+                const data = JSON.parse(readFileSync(join(sessionDir, f), 'utf8'))
+                return `  ${data.sessionId}  ${data.brainProvider ?? '?'}  ${data.startedAt ?? '?'}`
+              } catch {
+                return `  ${f.replace('.json', '')}  (corrupt)`
+              }
+            })
+            state.pushRow({
+              role: 'system',
+              text: `recent sessions:\n${sessions.join('\n')}\n\nresume: promus chat --resume <session-id>`,
+            })
+          }
+        }
+      } catch (e) {
+        state.pushRow({ role: 'system', text: `sessions error: ${(e as Error).message}` })
+      }
+      return true
+    }
     if (cmd === '/help') {
       const builtins =
-        "  /sync                force memory + activity flush to IPFS\n  /jobs                list active escrow jobs\n  /model               switch brain (run promus model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /exit                quit promus (drains IPFS storage flush, releases process)\n  /help                this message"
+        "  /sync                force memory + activity flush to IPFS\n  /jobs                list active escrow jobs\n  /model               switch brain (run promus model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /sessions            list recent sessions (for resume)\n  /exit                quit promus (drains IPFS storage flush, releases process)\n  /help                this message"
       const claudeBlock =
         commandIndex.size === 0
           ? ''
@@ -1571,6 +1609,21 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // returns. Anchor: a never-resolving promise after render(); handleExit is
   // the only escape via process.exit.
   const handleExit = (): void => {
+    // Save session metadata for resume support
+    try {
+      const { mkdirSync, writeFileSync } = require('node:fs')
+      mkdirSync(sessionDir, { recursive: true })
+      writeFileSync(sessionFile, JSON.stringify({
+        sessionId,
+        agentId,
+        agentAddress,
+        network: config.network,
+        brainProvider: config.brain?.provider,
+        brainModel: config.brain?.model,
+        startedAt: new Date().toISOString(),
+      }, null, 2))
+    } catch {}
+    console.log(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n`)
     try {
       renderer.destroy()
     } catch {}
