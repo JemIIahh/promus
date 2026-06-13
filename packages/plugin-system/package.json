@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-system",
-  "version": "0.24.18",
+  "version": "0.24.19",
   "type": "module",
   "description": "Filesystem + shell + browser + skills tools plugin for promus",
   "license": "MIT",

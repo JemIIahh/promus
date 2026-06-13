@@ -1,6 +1,6 @@
 {
   "name": "@promus/core",
-  "version": "0.24.18",
+  "version": "0.24.19",
   "type": "module",
   "description": "Always-on infrastructure for promus, the sovereign agent gateway on Arbitrum (runtime, brain, identity, memory, storage, wallet, tool registry)",
   "license": "MIT",
