@@ -48,7 +48,7 @@ export async function runGatewayStop(opts: GatewayStopOpts): Promise<void> {
     console.log(`anima gateway stop → ${label}${eoaLabel}`)
     console.log(`  config: ${configPath}`)
     console.log(
-      '  if this is not the agent you meant, set ANIMA_ROOT or pass --agent <id> before re-running.',
+      '  if this is not the agent you meant, set PROMUS_ROOT or pass --agent <id> before re-running.',
     )
   }
   const lockFile = findGatewayLock(agentId)

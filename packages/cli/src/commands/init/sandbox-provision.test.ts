@@ -12,15 +12,15 @@ import {
 } from './sandbox-provision'
 
 describe('pickPermissionMode', () => {
-  const original = process.env.ANIMA_PERMISSIONS
+  const original = process.env.PROMUS_PERMISSIONS
 
   function unset(): void {
-    process.env.ANIMA_PERMISSIONS = undefined
+    process.env.PROMUS_PERMISSIONS = undefined
   }
 
   afterEach(() => {
     if (original === undefined) unset()
-    else process.env.ANIMA_PERMISSIONS = original
+    else process.env.PROMUS_PERMISSIONS = original
   })
 
   test('default is off when env unset', () => {
@@ -29,18 +29,18 @@ describe('pickPermissionMode', () => {
   })
 
   test('accepts prompt + strict + off, case-insensitive, trimmed', () => {
-    process.env.ANIMA_PERMISSIONS = 'prompt'
+    process.env.PROMUS_PERMISSIONS = 'prompt'
     expect(pickPermissionMode()).toBe('prompt')
-    process.env.ANIMA_PERMISSIONS = '  STRICT  '
+    process.env.PROMUS_PERMISSIONS = '  STRICT  '
     expect(pickPermissionMode()).toBe('strict')
-    process.env.ANIMA_PERMISSIONS = 'Off'
+    process.env.PROMUS_PERMISSIONS = 'Off'
     expect(pickPermissionMode()).toBe('off')
   })
 
   test('falls back to off on unknown value (no crash)', () => {
-    process.env.ANIMA_PERMISSIONS = 'yolo'
+    process.env.PROMUS_PERMISSIONS = 'yolo'
     expect(pickPermissionMode()).toBe('off')
-    process.env.ANIMA_PERMISSIONS = ''
+    process.env.PROMUS_PERMISSIONS = ''
     expect(pickPermissionMode()).toBe('off')
   })
 })

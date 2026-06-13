@@ -1,7 +1,7 @@
 import { type GitHubFetchOpts, resolveLatestRelease } from './github-releases'
 
 /** Canonical Promus repo. Override via {@link ResolvePromusRefOpts.repoUrl}. */
-export const ANIMA_REPO_URL = 'https://github.com/JemIIahh/promus.git'
+export const PROMUS_REPO_URL = 'https://github.com/JemIIahh/promus.git'
 
 /** Magic ref keyword that triggers GitHub `releases/latest` resolution. */
 export const LATEST_KEYWORD = 'latest'
@@ -23,7 +23,7 @@ export interface ResolvePromusRefOpts extends GitHubFetchOpts {
 const TAG_RE = /^v\d+\.\d+\.\d+/
 
 /**
- * Resolve user ref. Priority: rawRef → ANIMA_BOOTSTRAP_REF env → `latest`.
+ * Resolve user ref. Priority: rawRef → PROMUS_BOOTSTRAP_REF env → `latest`.
  * Tag-shaped refs pass through. Branch / SHA refs return isTag=false (no
  * version verification possible).
  */
@@ -32,10 +32,10 @@ export async function resolvePromusRef(
   opts: ResolvePromusRefOpts = {},
 ): Promise<ResolvedRef> {
   const env = opts.env ?? process.env
-  const arg = rawRef ?? env.ANIMA_BOOTSTRAP_REF ?? LATEST_KEYWORD
+  const arg = rawRef ?? env.PROMUS_BOOTSTRAP_REF ?? LATEST_KEYWORD
 
   if (arg === LATEST_KEYWORD) {
-    const release = await resolveLatestRelease(opts.repoUrl ?? ANIMA_REPO_URL, opts)
+    const release = await resolveLatestRelease(opts.repoUrl ?? PROMUS_REPO_URL, opts)
     return { ref: release.tagName, isTag: true, resolvedFromLatest: true }
   }
   if (TAG_RE.test(arg)) {

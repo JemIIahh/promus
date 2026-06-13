@@ -180,7 +180,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     'mkdir -p "$HOME/anima-logs" "$HOME/workspace"',
     '',
     `export SANDBOX_ID=${shQuote(opts.sandboxId)}`,
-    `export ANIMA_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
+    `export PROMUS_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
     `export HARNESS_PORT=${shQuote(String(port))}`,
     "export HARNESS_HOST='0.0.0.0'",
     '',
@@ -234,11 +234,11 @@ function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
   const installLines = [
     `echo "  ref=${opts.ref}"`,
     `echo "  repo=${repoUrl}"`,
-    'ANIMA_DIR="$HOME/anima"',
+    'PROMUS_DIR="$HOME/anima"',
     `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.animaInstall} (git ${opts.ref})"`,
-    `git_clone_one() { rm -rf "$ANIMA_DIR"; git clone --depth 1 --branch ${shQuote(opts.ref)} ${shQuote(cloneUrl)} "$ANIMA_DIR"; }`,
+    `git_clone_one() { rm -rf "$PROMUS_DIR"; git clone --depth 1 --branch ${shQuote(opts.ref)} ${shQuote(cloneUrl)} "$PROMUS_DIR"; }`,
     `retry 'git clone' git_clone_one || { echo "git-clone-failed" > ${FAIL_MARKER}; exit 14; }`,
-    `cd "$ANIMA_DIR" && git remote set-url origin ${shQuote(repoUrl)}`,
+    `cd "$PROMUS_DIR" && git remote set-url origin ${shQuote(repoUrl)}`,
     `retry 'bun deps' bun install --frozen-lockfile || { echo "bun-install-failed" > ${FAIL_MARKER}; exit 17; }`,
     '',
     // Install Chrome-for-Testing for browser tools. `agent-browser install`
@@ -258,7 +258,7 @@ function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     'fi',
     '',
   ]
-  const launch = buildLaunchLines(opts, 'bun "$ANIMA_DIR/packages/gateway/bin/anima-gateway"')
+  const launch = buildLaunchLines(opts, 'bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
   return [...preamble, ...installLines, ...launch].join('\n')
 }
 

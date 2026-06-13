@@ -86,7 +86,7 @@ export async function runPairingApprove(opts: RunPairingApproveOpts): Promise<vo
   }
 
   // Local deploy: operate directly on the host's PairingStore (same path as
-  // the daemon process when ANIMA_FORCE_EMBEDDED or local-mode chat.tsx).
+  // the daemon process when PROMUS_FORCE_EMBEDDED or local-mode chat.tsx).
   const inftContract = getAddress(config.identity.iNFT.contract) as `0x${string}`
   const tokenId = BigInt(config.identity.iNFT.tokenId)
   const agentId = iNFTAgentId({ contractAddress: inftContract, tokenId })

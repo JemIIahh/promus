@@ -26,11 +26,11 @@ import { sniffMimeFromBytes } from './vision'
  * hermes-grade resilience: PATH-walker for unlinked Homebrew node@N installs,
  * per-session AGENT_BROWSER_SOCKET_DIR (sidesteps macOS 104-byte AF_UNIX
  * limit), stdout/stderr to temp files (avoids daemon-fd pipe deadlock),
- * optional `ANIMA_BROWSER_CDP_URL` override for connecting to a user-supplied
+ * optional `PROMUS_BROWSER_CDP_URL` override for connecting to a user-supplied
  * CDP endpoint, and on-exit cleanup of the spawned daemon.
  *
  * Defaults to local headless Chromium via `agent-browser --session`. Set
- * `ANIMA_BROWSER_CDP_URL` to opt into CDP override (e.g. qutebrowser proxy,
+ * `PROMUS_BROWSER_CDP_URL` to opt into CDP override (e.g. qutebrowser proxy,
  * Browserbase websocket).
  */
 
@@ -223,7 +223,7 @@ function registerCleanup(): void {
     try {
       const bin = findAgentBrowser()
       const sess = cachedSessionName
-      if (bin && sess && !process.env.ANIMA_BROWSER_CDP_URL) {
+      if (bin && sess && !process.env.PROMUS_BROWSER_CDP_URL) {
         try {
           // spawnSync so the daemon actually receives `close` before we exit.
           // Async + detached drops the message: the parent exits before the
@@ -324,7 +324,7 @@ async function runAgentBrowserOnce(
   // it as a single argv0 since spawn() doesn't shell-tokenize.
   const cmdParts = [bin]
 
-  const cdpOverride = process.env.ANIMA_BROWSER_CDP_URL
+  const cdpOverride = process.env.PROMUS_BROWSER_CDP_URL
   const backendArgs = cdpOverride ? ['--cdp', cdpOverride] : ['--session', getSessionName()]
 
   const socketDir = getSocketDir()

@@ -159,7 +159,7 @@ describe('buildUpgradeScript', () => {
     expect(inner).toContain("'https://x.test/foo.git'")
     expect(inner).toContain(`'${baseOpts.ref}'`)
     expect(inner).toContain(`export SANDBOX_ID='${baseOpts.sandboxId}'`)
-    expect(inner).toContain(`export ANIMA_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
+    expect(inner).toContain(`export PROMUS_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
   })
 
   test('honors custom port via env export', () => {
@@ -167,12 +167,12 @@ describe('buildUpgradeScript', () => {
     expect(inner).toContain("export HARNESS_PORT='9090'")
   })
 
-  test('exports the standard harness env vars (HARNESS_HOST, HARNESS_PORT, SANDBOX_ID, ANIMA_OPERATOR_ADDRESS)', () => {
+  test('exports the standard harness env vars (HARNESS_HOST, HARNESS_PORT, SANDBOX_ID, PROMUS_OPERATOR_ADDRESS)', () => {
     const inner = decodeInner()
     expect(inner).toContain("export HARNESS_HOST='0.0.0.0'")
     expect(inner).toContain("export HARNESS_PORT='8080'")
     expect(inner).toContain(`export SANDBOX_ID='${baseOpts.sandboxId}'`)
-    expect(inner).toContain(`export ANIMA_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
+    expect(inner).toContain(`export PROMUS_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
   })
 
   test('shell-quotes injection-prone fields safely', () => {

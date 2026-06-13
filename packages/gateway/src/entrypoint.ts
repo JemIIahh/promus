@@ -21,13 +21,13 @@ function envOrDie(name: string): string {
 const port = Number.parseInt(process.env.HARNESS_PORT ?? '8080', 10)
 const host = process.env.HARNESS_HOST ?? '0.0.0.0'
 const sandboxId = envOrDie('SANDBOX_ID')
-const operatorAddrRaw = envOrDie('ANIMA_OPERATOR_ADDRESS')
+const operatorAddrRaw = envOrDie('PROMUS_OPERATOR_ADDRESS')
 
 let expectedOperatorAddress: Address
 try {
   expectedOperatorAddress = getAddress(operatorAddrRaw)
 } catch (e) {
-  console.error(`harness: invalid ANIMA_OPERATOR_ADDRESS: ${(e as Error).message}`)
+  console.error(`harness: invalid PROMUS_OPERATOR_ADDRESS: ${(e as Error).message}`)
   process.exit(1)
 }
 

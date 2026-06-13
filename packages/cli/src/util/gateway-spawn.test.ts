@@ -61,8 +61,8 @@ describe('spawnGatewayDaemon', () => {
       stub,
       `import { writeFileSync } from 'node:fs'
 writeFileSync(${JSON.stringify(envOut)}, JSON.stringify({
-  agent: process.env.ANIMA_AGENT_ID,
-  config: process.env.ANIMA_CONFIG,
+  agent: process.env.PROMUS_AGENT_ID,
+  config: process.env.PROMUS_CONFIG,
 }))
 writeFileSync(${JSON.stringify(sock)}, '')
 setTimeout(() => process.exit(0), 200)

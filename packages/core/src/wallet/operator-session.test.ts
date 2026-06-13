@@ -37,28 +37,28 @@ import {
   writeOperatorSession,
 } from './index'
 
-// Pin agentPaths to a tmp dir via ANIMA_ROOT (paths.ts respects this).
+// Pin agentPaths to a tmp dir via PROMUS_ROOT (paths.ts respects this).
 const TEST_AGENT_ID = 'feedfeedfeedfeed'
-const ORIGINAL_ANIMA_ROOT = process.env.ANIMA_ROOT
+const ORIGINAL_PROMUS_ROOT = process.env.PROMUS_ROOT
 
 const hex32 = (byte: number): Hex => `0x${byte.toString(16).padStart(2, '0').repeat(32)}` as Hex
 
 beforeEach(() => {
   const tmp = join(tmpdir(), `anima-op-session-test-${process.pid}-${Date.now().toString(36)}`)
   mkdirSync(join(tmp, 'agents', TEST_AGENT_ID), { recursive: true })
-  process.env.ANIMA_ROOT = tmp
+  process.env.PROMUS_ROOT = tmp
 })
 
 afterEach(() => {
-  if (process.env.ANIMA_ROOT?.includes('anima-op-session-test')) {
+  if (process.env.PROMUS_ROOT?.includes('anima-op-session-test')) {
     try {
-      rmSync(process.env.ANIMA_ROOT, { recursive: true, force: true })
+      rmSync(process.env.PROMUS_ROOT, { recursive: true, force: true })
     } catch {
       /* ignore */
     }
   }
-  if (ORIGINAL_ANIMA_ROOT === undefined) process.env.ANIMA_ROOT = undefined
-  else process.env.ANIMA_ROOT = ORIGINAL_ANIMA_ROOT
+  if (ORIGINAL_PROMUS_ROOT === undefined) process.env.PROMUS_ROOT = undefined
+  else process.env.PROMUS_ROOT = ORIGINAL_PROMUS_ROOT
 })
 
 describe('operatorSessionPath', () => {
@@ -259,7 +259,7 @@ describe('v0.21.12: requiredScopesForAgent + isOperatorSessionComplete', () => {
   })
 
   test('requiredScopesForAgent adds telegram scope when telegram-secrets.encrypted exists', () => {
-    const dir = join(process.env.ANIMA_ROOT ?? '', 'agents', TEST_AGENT_ID)
+    const dir = join(process.env.PROMUS_ROOT ?? '', 'agents', TEST_AGENT_ID)
     writeFileSync(join(dir, 'telegram-secrets.encrypted'), Buffer.from('placeholder'))
     const required = requiredScopesForAgent(TEST_AGENT_ID)
     expect(required).toEqual(['keystore', OPERATOR_BLOB_SCOPES.TELEGRAM])

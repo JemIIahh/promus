@@ -1,5 +1,5 @@
 import type { Address, Hex, PublicClient } from 'viem'
-import { ANIMA_MARKET_ABI, type PromusMarketClient, type JobCreatedEvent } from './market'
+import { PROMUS_MARKET_ABI, type PromusMarketClient, type JobCreatedEvent } from './market'
 
 type LifecycleEventName =
   | 'JobMarkedDone'
@@ -268,7 +268,7 @@ export class MarketListener {
     this.unwatchers.push(
       this.opts.publicClient.watchContractEvent({
         address: market.address,
-        abi: ANIMA_MARKET_ABI,
+        abi: PROMUS_MARKET_ABI,
         eventName: 'JobCreated',
         args: { buyer: this.opts.agentEoa },
         onLogs: logs => {
@@ -290,7 +290,7 @@ export class MarketListener {
     this.unwatchers.push(
       this.opts.publicClient.watchContractEvent({
         address: market.address,
-        abi: ANIMA_MARKET_ABI,
+        abi: PROMUS_MARKET_ABI,
         eventName: 'JobCreated',
         args: { provider: this.opts.agentEoa },
         onLogs: logs => {
@@ -323,7 +323,7 @@ export class MarketListener {
       this.unwatchers.push(
         this.opts.publicClient.watchContractEvent({
           address: market.address,
-          abi: ANIMA_MARKET_ABI,
+          abi: PROMUS_MARKET_ABI,
           eventName: name,
           onLogs: logs => {
             for (const l of logs) {

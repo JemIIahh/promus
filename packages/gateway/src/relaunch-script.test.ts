@@ -45,7 +45,7 @@ describe('buildGatewayRelaunchScript', () => {
     // Probe checks both modes BEFORE hard-failing.
     expect(inner).toContain('if [ -x "$GLOBAL_BIN/anima-gateway" ]; then')
     expect(inner).toContain('GATEWAY_MODE="npm"')
-    expect(inner).toContain('elif [ -d "$ANIMA_DIR" ]; then')
+    expect(inner).toContain('elif [ -d "$PROMUS_DIR" ]; then')
     expect(inner).toContain('GATEWAY_MODE="git"')
     // Only fails when NEITHER install is present.
     expect(inner).toContain('echo "anima-not-installed"')
@@ -56,7 +56,7 @@ describe('buildGatewayRelaunchScript', () => {
     expect(inner).toContain('launch_gateway() {')
     expect(inner).toContain('if [ "$GATEWAY_MODE" = "npm" ]; then')
     expect(inner).toContain('nohup "$GLOBAL_BIN/anima-gateway"')
-    expect(inner).toContain('nohup bun "$ANIMA_DIR/packages/gateway/bin/anima-gateway"')
+    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
   })
 
   test('legacy "anima-dir-missing" failure keyword removed in favor of "anima-not-installed"', () => {

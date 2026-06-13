@@ -9,7 +9,7 @@
 // runner watches for the expected response patterns + reports.
 //
 // Usage:
-//   ANIMA_AGENT=specter ANIMA_TG_BOT_USERNAME=anima_specter_bot \
+//   PROMUS_AGENT=specter PROMUS_TG_BOT_USERNAME=anima_specter_bot \
 //     bun test/local/tmux-telegram-drive.ts
 //
 // Watches the activity.jsonl + the tmux pane output for ~5 min, reports which
@@ -28,12 +28,12 @@ import { readFileSync, existsSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 
-const AGENT = process.env.ANIMA_AGENT
-const BOT_USERNAME = process.env.ANIMA_TG_BOT_USERNAME ?? `anima_${AGENT}_bot`
-const DEADLINE_MS = Number(process.env.ANIMA_TG_DEADLINE_MS ?? 5 * 60_000)
+const AGENT = process.env.PROMUS_AGENT
+const BOT_USERNAME = process.env.PROMUS_TG_BOT_USERNAME ?? `anima_${AGENT}_bot`
+const DEADLINE_MS = Number(process.env.PROMUS_TG_DEADLINE_MS ?? 5 * 60_000)
 
 if (!AGENT) {
-  console.error('Set ANIMA_AGENT (e.g. ANIMA_AGENT=specter)')
+  console.error('Set PROMUS_AGENT (e.g. PROMUS_AGENT=specter)')
   process.exit(1)
 }
 

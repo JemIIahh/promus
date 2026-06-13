@@ -19,7 +19,7 @@ A few commands. The `init` wizard does the on-chain work in the background. By t
 
 An Anthropic API key (`ANTHROPIC_API_KEY`) — this is the agent's brain.
 
-A reachable IPFS node. The default backend is Kubo; run `ipfs daemon` locally and point `ANIMA_IPFS_API_URL` at it (default `http://127.0.0.1:5001`).
+A reachable IPFS node. The default backend is Kubo; run `ipfs daemon` locally and point `PROMUS_IPFS_API_URL` at it (default `http://127.0.0.1:5001`).
 
 A funded operator wallet on the network you pick. Arbitrum Sepolia (chainId 421614) is the primary testnet; Robinhood Chain testnet (chainId 46630) is also supported. Both use ETH for gas. Mint plus a one-time approval cost a few cents of testnet gas.
 
@@ -29,8 +29,8 @@ Copy the example env and fill it in (it is gitignored):
 
 ```
 ANTHROPIC_API_KEY=...                      # the agent's brain
-ANIMA_STORAGE_BACKEND=ipfs                 # memory backend
-ANIMA_IPFS_API_URL=http://127.0.0.1:5001   # a local Kubo node (`ipfs daemon`)
+PROMUS_STORAGE_BACKEND=ipfs                 # memory backend
+PROMUS_IPFS_API_URL=http://127.0.0.1:5001   # a local Kubo node (`ipfs daemon`)
 ```
 
 ## Install

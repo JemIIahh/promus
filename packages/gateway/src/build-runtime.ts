@@ -1,8 +1,8 @@
 import { mkdir, readFile } from 'node:fs/promises'
 import {
-  ANIMA_AGENT_NFT_ADDRESS,
-  ANIMA_INBOX_ADDRESS,
-  ANIMA_MARKET_ADDRESS,
+  PROMUS_AGENT_NFT_ADDRESS,
+  PROMUS_INBOX_ADDRESS,
+  PROMUS_MARKET_ADDRESS,
   ActivityLog,
   type AutoTopupEvent,
   AutoTopupManager,
@@ -91,7 +91,7 @@ export interface BuildRuntimeOpts {
    * Optional: workspace cwd for shell.run / code.execute / shell.process_*
    * plus the cwd field exposed to the brain via envInfo. Default
    * `process.cwd()`, matching local-mode chat.tsx. The bootstrap script does
-   * `cd "$ANIMA_DIR"` (= `$HOME/anima` on Daytona) before launching the
+   * `cd "$PROMUS_DIR"` (= `$HOME/anima` on Daytona) before launching the
    * harness, so process.cwd() already points at the cloned repo. Override
    * only for tests or a non-standard layout.
    */
@@ -461,11 +461,11 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
   let comms: CommsRuntimeContext | undefined
   let sann: SannClient | undefined
   if (pluginNames.includes('comms')) {
-    const inboxAddress = ANIMA_INBOX_ADDRESS[network] as Address | undefined
+    const inboxAddress = PROMUS_INBOX_ADDRESS[network] as Address | undefined
     if (!inboxAddress) {
       throw new Error(`PromusInbox missing for network=${network}`)
     }
-    const marketAddress = ANIMA_MARKET_ADDRESS[network] as Address | undefined
+    const marketAddress = PROMUS_MARKET_ADDRESS[network] as Address | undefined
     const ogStorage = createStorage({ network, privkeyHex: agentPrivkey })
     sann = new SannClient({ privkeyHex: agentPrivkey })
     const sannRead = sann
@@ -513,9 +513,9 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
       // 4-char `0x04` prefix to match the body form used in .anima.0g records.
       agentPubkey: derivePubkeyHex(agentPrivkey).slice(4),
       singletons: {
-        inbox: ANIMA_INBOX_ADDRESS[network],
-        market: ANIMA_MARKET_ADDRESS[network],
-        agentNFT: ANIMA_AGENT_NFT_ADDRESS[network],
+        inbox: PROMUS_INBOX_ADDRESS[network],
+        market: PROMUS_MARKET_ADDRESS[network],
+        agentNFT: PROMUS_AGENT_NFT_ADDRESS[network],
       },
       // v0.21.9: surface deployTarget + operator to account.balance so the
       // sandbox billing reserve lookup works under sandbox deployment.
@@ -964,10 +964,10 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
           prompter: (req: PermissionRequest) => Promise<PermissionDecision>
         }
       ).prompter
-      // Honor ANIMA_TG_YOLO=1 to skip the approval dance for end-to-end test
+      // Honor PROMUS_TG_YOLO=1 to skip the approval dance for end-to-end test
       // matrices and trusted-operator scenarios. The flag is read on each turn
       // so it can be flipped without restarting.
-      const tgYolo = process.env.ANIMA_TG_YOLO === '1'
+      const tgYolo = process.env.PROMUS_TG_YOLO === '1'
       const send = !tgYolo ? telegramApprovalBridge?.sendApproval.current : undefined
       if (send) {
         permission.setPrompter(async req => {

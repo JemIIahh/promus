@@ -64,8 +64,8 @@ export async function spawnGatewayDaemon(
   const bin = opts.binPath ?? resolveLocalBin()
   const env: NodeJS.ProcessEnv = {
     ...(opts.env ?? process.env),
-    ANIMA_AGENT_ID: opts.agentId,
-    ANIMA_CONFIG: opts.configPath,
+    PROMUS_AGENT_ID: opts.agentId,
+    PROMUS_CONFIG: opts.configPath,
   }
   const stdioMode = opts.stdio ?? 'log-file'
 

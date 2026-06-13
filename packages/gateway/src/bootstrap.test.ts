@@ -50,7 +50,7 @@ describe('buildBootstrapScript', () => {
     expect(inner).toContain('curl -fsSL https://bun.sh/install')
     expect(inner).toContain('git clone --depth 1 --branch')
     expect(inner).toContain('bun install --frozen-lockfile')
-    expect(inner).toContain('nohup bun "$ANIMA_DIR/packages/gateway/bin/anima-gateway"')
+    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
     expect(inner).toContain(`echo "anima-gateway-pid=$HARNESS_PID" > ${BOOTSTRAP_DONE_MARKER}`)
   })
 
@@ -126,7 +126,7 @@ describe('buildBootstrapScript', () => {
     // Ref interpolated from baseOpts so a future bump doesn't silently desync.
     const refRegex = baseOpts.ref.replace(/[.\\/]/g, '\\$&')
     const helperRegex = new RegExp(
-      `git_clone_one\\(\\) \\{ rm -rf "\\$ANIMA_DIR"; git clone --depth 1 --branch '${refRegex}' .* "\\$ANIMA_DIR"; \\}`,
+      `git_clone_one\\(\\) \\{ rm -rf "\\$PROMUS_DIR"; git clone --depth 1 --branch '${refRegex}' .* "\\$PROMUS_DIR"; \\}`,
     )
     expect(inner).toMatch(helperRegex)
     expect(inner).toMatch(/retry 'git clone' git_clone_one \|\| \{ echo "git-clone-failed"/)
@@ -147,7 +147,7 @@ describe('buildBootstrapScript', () => {
     expect(inner).toContain("'https://x.test/foo.git'")
     expect(inner).toContain(`'${baseOpts.ref}'`)
     expect(inner).toContain(`export SANDBOX_ID='${baseOpts.sandboxId}'`)
-    expect(inner).toContain(`export ANIMA_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
+    expect(inner).toContain(`export PROMUS_OPERATOR_ADDRESS='${baseOpts.operatorAddress}'`)
   })
 
   test('honors custom port', () => {
@@ -211,9 +211,9 @@ describe('buildBootstrapScript', () => {
 
   test('clones to $HOME/anima (not /opt/anima — daytona user has no sudo for /opt)', () => {
     const inner = decodeInner()
-    expect(inner).toContain('ANIMA_DIR="$HOME/anima"')
+    expect(inner).toContain('PROMUS_DIR="$HOME/anima"')
     expect(inner).not.toContain('/opt/anima')
-    expect(inner).toContain('rm -rf "$ANIMA_DIR"')
+    expect(inner).toContain('rm -rf "$PROMUS_DIR"')
   })
 
   describe('mode=npm', () => {
@@ -238,7 +238,7 @@ describe('buildBootstrapScript', () => {
     test('inner subshell launches gateway from global bin (not via bun monorepo path)', () => {
       const inner = decodeInner(npmOpts)
       expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/anima-gateway')
-      expect(inner).not.toContain('bun "$ANIMA_DIR/packages/gateway/bin/anima-gateway"')
+      expect(inner).not.toContain('bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway"')
     })
 
     test('browser deps install uses global bin path', () => {

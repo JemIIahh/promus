@@ -10,7 +10,7 @@
  *  - Binds a unix socket at `~/.anima/agents/<id>/gateway.sock` (perm 0600)
  *    instead of TCP. File-perm-based authentication replaces EIP-191 sig
  *    verification (server-side `trustLocal: true`).
- *  - No Daytona-specific env vars (SANDBOX_ID, ANIMA_OPERATOR_ADDRESS).
+ *  - No Daytona-specific env vars (SANDBOX_ID, PROMUS_OPERATOR_ADDRESS).
  *    Identity is read from `~/.anima/config.ts` and the keystore is
  *    decrypted from the local cache at `~/.anima/agents/<id>/keystore.json`.
  *  - No self-heartbeat (Daytona-only concern).
@@ -18,9 +18,9 @@
  *    `acquireScopedLock` primitive shipped in v0.18.0.
  *
  * Required env (set by the parent `anima gateway` CLI):
- *   ANIMA_AGENT_ID  — 16-char hex iNFTAgentId; pins which agent's identity
+ *   PROMUS_AGENT_ID  — 16-char hex iNFTAgentId; pins which agent's identity
  *                     to load. Falls back to the default agent if unset.
- *   ANIMA_CONFIG    — absolute path to anima.config.ts; default ~/.anima/config.ts
+ *   PROMUS_CONFIG    — absolute path to anima.config.ts; default ~/.anima/config.ts
  */
 
 import { chmodSync, existsSync, unlinkSync } from 'node:fs'
@@ -136,13 +136,13 @@ async function loadLocalTelegramSecrets(opts: {
 }
 
 async function main(): Promise<void> {
-  const configPath = process.env.ANIMA_CONFIG ?? join(process.env.HOME ?? '', '.anima', 'config.ts')
+  const configPath = process.env.PROMUS_CONFIG ?? join(process.env.HOME ?? '', '.anima', 'config.ts')
   if (!existsSync(configPath)) die(`config not found at ${configPath}`)
 
   const config = await loadConfig(configPath)
   const contractAddress = getAddress(config.identity.iNFT.contract)
   const tokenId = BigInt(config.identity.iNFT.tokenId)
-  const agentId = process.env.ANIMA_AGENT_ID ?? iNFTAgentId({ contractAddress, tokenId })
+  const agentId = process.env.PROMUS_AGENT_ID ?? iNFTAgentId({ contractAddress, tokenId })
   const paths = agentPaths.agent(agentId)
   if (!isAddress(config.identity.agent)) die('config.identity.agent is not a valid address')
   if (!isAddress(config.identity.operator)) die('config.identity.operator is not a valid address')

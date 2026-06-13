@@ -67,11 +67,11 @@ class EphemeralWcStorage {
 /**
  * s0nderlabs-registered WalletConnect v2 project ID. Not a secret (WC project
  * IDs are public client-side identifiers, same category as Stripe publishable
- * keys). Users can override with `ANIMA_WC_PROJECT_ID` env var if they want
+ * keys). Users can override with `PROMUS_WC_PROJECT_ID` env var if they want
  * their own project for isolated rate-limits/analytics.
  */
-export const ANIMA_WC_PROJECT_ID =
-  process.env.ANIMA_WC_PROJECT_ID ?? '974ed7663d88e07086104fa9a73b2d87'
+export const PROMUS_WC_PROJECT_ID =
+  process.env.PROMUS_WC_PROJECT_ID ?? '974ed7663d88e07086104fa9a73b2d87'
 
 type EthProvider = Awaited<ReturnType<typeof EthereumProvider.init>>
 
@@ -111,7 +111,7 @@ export class WalletConnectOperatorSigner implements OperatorSigner {
   constructor(options: WalletConnectOperatorSignerOptions = {}) {
     const networks = options.networks ?? (['0g-mainnet', '0g-testnet'] as PromusNetwork[])
     this.options = {
-      projectId: options.projectId ?? ANIMA_WC_PROJECT_ID,
+      projectId: options.projectId ?? PROMUS_WC_PROJECT_ID,
       networks,
       showQr: options.showQr ?? true,
       onDisplayUri: options.onDisplayUri ?? (() => {}),

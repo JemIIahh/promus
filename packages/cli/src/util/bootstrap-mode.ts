@@ -9,8 +9,8 @@ import type { BootstrapMode } from 'promus-gateway'
  * for several releases before this flip.
  *
  * Resolution order:
- *   1. `ANIMA_BOOTSTRAP_MODE=git|npm` — explicit operator override, wins.
- *   2. `ANIMA_BOOTSTRAP_REF` set without explicit mode → 'git'. The REF env
+ *   1. `PROMUS_BOOTSTRAP_MODE=git|npm` — explicit operator override, wins.
+ *   2. `PROMUS_BOOTSTRAP_REF` set without explicit mode → 'git'. The REF env
  *      is a git-mode concept (branch tip / commit SHA); auto-implying git
  *      preserves the existing "deploy main", "deploy <sha>" dev workflows.
  *   3. Otherwise → 'npm'.
@@ -18,8 +18,8 @@ import type { BootstrapMode } from 'promus-gateway'
  * Callers pass `opts.mode` directly to bypass this resolver entirely.
  */
 export function resolveBootstrapMode(env: NodeJS.ProcessEnv = process.env): BootstrapMode {
-  if (env.ANIMA_BOOTSTRAP_MODE === 'git') return 'git'
-  if (env.ANIMA_BOOTSTRAP_MODE === 'npm') return 'npm'
-  if (env.ANIMA_BOOTSTRAP_REF) return 'git'
+  if (env.PROMUS_BOOTSTRAP_MODE === 'git') return 'git'
+  if (env.PROMUS_BOOTSTRAP_MODE === 'npm') return 'npm'
+  if (env.PROMUS_BOOTSTRAP_REF) return 'git'
   return 'npm'
 }

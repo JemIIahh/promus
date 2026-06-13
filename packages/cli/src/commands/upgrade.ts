@@ -25,7 +25,7 @@ import { resolveCliVersion } from '../util/cli-version'
 import { checkTagExists } from '../util/github-releases'
 import { loadProfileScopeKeyHex } from '../util/profile-key'
 import {
-  ANIMA_REPO_URL,
+  PROMUS_REPO_URL,
   LATEST_KEYWORD,
   type ResolvedRef,
   expectedVersionFromRef,
@@ -135,7 +135,7 @@ export async function runUpgrade(opts: UpgradeOpts = {}): Promise<void> {
   // `latest` (the API IS the source of truth) or for branch/SHA refs.
   if (resolved.isTag && !resolved.resolvedFromLatest) {
     try {
-      const exists = await checkTagExists(ANIMA_REPO_URL, resolved.ref)
+      const exists = await checkTagExists(PROMUS_REPO_URL, resolved.ref)
       if (!exists) {
         cancel(
           `Tag ${resolved.ref} is not visible on the remote yet (CI may still be propagating).\nTry again in 30s, or run \`anima upgrade ${LATEST_KEYWORD}\` to pick the most recent published release.`,
@@ -144,7 +144,7 @@ export async function runUpgrade(opts: UpgradeOpts = {}): Promise<void> {
       }
     } catch (e) {
       cancel(
-        `tag visibility check failed: ${(e as Error).message.slice(0, 200)}\nGitHub API may be unreachable. Set \`ANIMA_BOOTSTRAP_REF=main\` to skip tag verification for dev builds.`,
+        `tag visibility check failed: ${(e as Error).message.slice(0, 200)}\nGitHub API may be unreachable. Set \`PROMUS_BOOTSTRAP_REF=main\` to skip tag verification for dev builds.`,
       )
       return
     }

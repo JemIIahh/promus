@@ -32,7 +32,7 @@ The package and the binary are both `promus`. Requires bun >= 1.1. Run `promus -
 ## What the agent needs before init
 
 - `ANTHROPIC_API_KEY` in the environment — the brain.
-- A reachable IPFS (Kubo) node, with `ANIMA_IPFS_API_URL` pointing at it — the memory backend. Locally: `ipfs daemon`.
+- A reachable IPFS (Kubo) node, with `PROMUS_IPFS_API_URL` pointing at it — the memory backend. Locally: `ipfs daemon`.
 - A funded operator wallet on the target network (Arbitrum Sepolia 421614, or Robinhood Chain testnet 46630). Both use ETH for gas.
 
 ## What you can do for the user
@@ -67,7 +67,7 @@ There is no non-TUI chat mode. `promus` and `promus chat` both drop into a TUI; 
 
 ## Where state lives
 
-A clean install creates `~/.anima/` with per-agent state: the operator-encrypted keystore, a local cache of IPFS data, the memory partitions (`agent/` travels with the iNFT, `user/` is operator-scoped), runtime state, and the gateway socket when running. The `~/.anima` path and the `ANIMA_` env prefix are unchanged runtime details.
+A clean install creates `~/.anima/` with per-agent state: the operator-encrypted keystore, a local cache of IPFS data, the memory partitions (`agent/` travels with the iNFT, `user/` is operator-scoped), runtime state, and the gateway socket when running. The `~/.anima` path and the `PROMUS_` env prefix are unchanged runtime details.
 
 ## Machine-readable surfaces
 

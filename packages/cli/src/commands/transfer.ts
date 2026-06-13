@@ -27,9 +27,9 @@ export interface TransferOpts {
   ref: string
   /** Recipient operator address (the new owner). */
   to: Address
-  /** Recipient's privkey for re-encryption sig. Falls back to ANIMA_RECIPIENT_PRIVKEY env, then interactive picker. */
+  /** Recipient's privkey for re-encryption sig. Falls back to PROMUS_RECIPIENT_PRIVKEY env, then interactive picker. */
   recipientKey?: Hex
-  /** Oracle privkey for signing the transfer proof when sender does not equal teeOracle. Falls back to ANIMA_ORACLE_PRIVKEY env. */
+  /** Oracle privkey for signing the transfer proof when sender does not equal teeOracle. Falls back to PROMUS_ORACLE_PRIVKEY env. */
   oracleKey?: Hex
   /** Re-encrypt + round-trip verify locally; do not write to chain. */
   dryRun?: boolean
@@ -208,14 +208,14 @@ export async function runTransfer(opts: TransferOpts): Promise<void> {
 
   // -------------------------------------------------------------------------
   // Step 4: resolve recipient signer.
-  //   precedence: --recipient-key > ANIMA_RECIPIENT_PRIVKEY env > picker.
+  //   precedence: --recipient-key > PROMUS_RECIPIENT_PRIVKEY env > picker.
   // -------------------------------------------------------------------------
-  const recipientKey = opts.recipientKey ?? (process.env.ANIMA_RECIPIENT_PRIVKEY as Hex | undefined)
+  const recipientKey = opts.recipientKey ?? (process.env.PROMUS_RECIPIENT_PRIVKEY as Hex | undefined)
   let recipient: OperatorSigner
   if (recipientKey) {
     recipient = new RawPrivkeyOperatorSigner({
       privkey: recipientKey,
-      sourceLabel: opts.recipientKey ? 'flag' : 'env:ANIMA_RECIPIENT_PRIVKEY',
+      sourceLabel: opts.recipientKey ? 'flag' : 'env:PROMUS_RECIPIENT_PRIVKEY',
     })
   } else {
     note('Recipient signer not provided via flag/env. Pick one interactively.', 'recipient')
@@ -282,7 +282,7 @@ export async function runTransfer(opts: TransferOpts): Promise<void> {
   // Determine oracle. Read on-chain teeOracle. If sender == oracle (MVP path
   // where operator is also the oracle), reuse the sender signer. Otherwise
   // resolve a separate oracle signer from --oracle-key flag or
-  // ANIMA_ORACLE_PRIVKEY env. This unblocks back-transfers and any flow where
+  // PROMUS_ORACLE_PRIVKEY env. This unblocks back-transfers and any flow where
   // the iNFT owner differs from the contract's TEE oracle.
   const oracleAddr = (await reader.publicClient.readContract({
     address: parsed.contract,
@@ -291,7 +291,7 @@ export async function runTransfer(opts: TransferOpts): Promise<void> {
   })) as Address
   let oracleSigner: OperatorSigner = sender
   if (oracleAddr.toLowerCase() !== senderAddr.toLowerCase()) {
-    const oracleKey = opts.oracleKey ?? (process.env.ANIMA_ORACLE_PRIVKEY as Hex | undefined)
+    const oracleKey = opts.oracleKey ?? (process.env.PROMUS_ORACLE_PRIVKEY as Hex | undefined)
     if (!oracleKey) {
       await sender.close?.()
       await recipient.close?.()
@@ -303,14 +303,14 @@ export async function runTransfer(opts: TransferOpts): Promise<void> {
           '',
           'Provide an oracle privkey via:',
           '  --oracle-key 0x<hex>',
-          '  ANIMA_ORACLE_PRIVKEY=0x<hex>',
+          '  PROMUS_ORACLE_PRIVKEY=0x<hex>',
         ].join('\n'),
       )
       return
     }
     const candidate: OperatorSigner = new RawPrivkeyOperatorSigner({
       privkey: oracleKey,
-      sourceLabel: opts.oracleKey ? 'flag' : 'env:ANIMA_ORACLE_PRIVKEY',
+      sourceLabel: opts.oracleKey ? 'flag' : 'env:PROMUS_ORACLE_PRIVKEY',
     })
     const candidateAddr = await candidate.address()
     if (candidateAddr.toLowerCase() !== oracleAddr.toLowerCase()) {

@@ -92,7 +92,7 @@ export interface SandboxProvisionOpts {
    * Bootstrap mode: 'git' clones monorepo from GitHub; 'npm' installs
    * promus via `bun add -g`. Defaults to npm (since v0.21.20)
    * because it's ~10x faster (~30-60 sec vs 5-8 min cold start). Falls back
-   * to git when ANIMA_BOOTSTRAP_REF is set or ANIMA_BOOTSTRAP_MODE=git
+   * to git when PROMUS_BOOTSTRAP_REF is set or PROMUS_BOOTSTRAP_MODE=git
    * (unreleased-code testing). See `resolveBootstrapMode` in
    * `cli/src/util/bootstrap-mode.ts` for the full env resolution.
    */
@@ -109,7 +109,7 @@ export interface SandboxProvisionOpts {
   depositOg?: number
   /**
    * GitHub PAT for cloning private anima repo from inside the container.
-   * Falls back to `ANIMA_GITHUB_TOKEN` env var. Public repos can leave unset.
+   * Falls back to `PROMUS_GITHUB_TOKEN` env var. Public repos can leave unset.
    */
   githubToken?: string
   /** Optional progress callback for spinner UX. */
@@ -242,10 +242,10 @@ export async function runSandboxProvision(
   // 60s cap then doesn't bite. We poll the done/fail markers for actual
   // completion before moving on to /bootstrap/pubkey.
   //
-  // For private anima repos, pass a GitHub PAT via ANIMA_GITHUB_TOKEN env (or
+  // For private anima repos, pass a GitHub PAT via PROMUS_GITHUB_TOKEN env (or
   // the explicit `githubToken` opt). Token is embedded in the clone URL inside
   // the bootstrap script. Public repos skip auth entirely.
-  const githubToken = opts.githubToken ?? process.env.ANIMA_GITHUB_TOKEN
+  const githubToken = opts.githubToken ?? process.env.PROMUS_GITHUB_TOKEN
   const mode = opts.mode ?? resolveBootstrapMode()
   const packageVersion =
     opts.packageVersion ?? (mode === 'npm' ? await resolveCliVersion() : undefined)
@@ -1084,9 +1084,9 @@ function formatOg(wei: bigint): string {
   return og.toFixed(4)
 }
 
-/** ANIMA_PERMISSIONS env override; unknown / unset → `off` (autonomous default). */
+/** PROMUS_PERMISSIONS env override; unknown / unset → `off` (autonomous default). */
 export function pickPermissionMode(): PermissionMode {
-  const raw = process.env.ANIMA_PERMISSIONS?.trim().toLowerCase()
+  const raw = process.env.PROMUS_PERMISSIONS?.trim().toLowerCase()
   if (raw === 'prompt' || raw === 'strict' || raw === 'off') return raw
   return 'off'
 }

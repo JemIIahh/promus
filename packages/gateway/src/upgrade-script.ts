@@ -116,7 +116,7 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
     'rm -f "$HOME/.anima/locks/"*.lock 2>/dev/null || true',
     '',
     `export SANDBOX_ID=${shQuote(opts.sandboxId)}`,
-    `export ANIMA_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
+    `export PROMUS_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
     `export HARNESS_PORT=${shQuote(String(port))}`,
     "export HARNESS_HOST='0.0.0.0'",
     '',

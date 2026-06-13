@@ -88,7 +88,7 @@ The harness is replaceable; the agent is not.
 
 ```bash
 bun install
-cp .env.example .env          # set ANTHROPIC_API_KEY + ANIMA_IPFS_API_URL
+cp .env.example .env          # set ANTHROPIC_API_KEY + PROMUS_IPFS_API_URL
 
 promus init                   # mint the agent iNFT on Arbitrum Sepolia (or Robinhood Chain)
 promus                        # chat in the TUI — each turn reasons on Claude, syncs memory to IPFS

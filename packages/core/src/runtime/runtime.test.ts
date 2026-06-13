@@ -9,13 +9,13 @@ import { LocalStubStorage } from '../storage/local-stub'
 import { Runtime } from './runtime'
 
 async function withTempRoot<T>(fn: (root: string) => Promise<T>): Promise<T> {
-  const prev = process.env.ANIMA_ROOT
+  const prev = process.env.PROMUS_ROOT
   const tmp = mkdtempSync(join(tmpdir(), 'anima-root-'))
-  process.env.ANIMA_ROOT = tmp
+  process.env.PROMUS_ROOT = tmp
   try {
     return await fn(tmp)
   } finally {
-    process.env.ANIMA_ROOT = prev
+    process.env.PROMUS_ROOT = prev
     rmSync(tmp, { recursive: true, force: true })
   }
 }

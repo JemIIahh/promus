@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'bun:test'
 import type { Address } from 'viem'
-import { ANIMA_WC_PROJECT_ID, WalletConnectOperatorSigner } from './walletconnect'
+import { PROMUS_WC_PROJECT_ID, WalletConnectOperatorSigner } from './walletconnect'
 
 describe('WalletConnectOperatorSigner', () => {
   test('exports the anima project id as a 32-char hex', () => {
-    expect(ANIMA_WC_PROJECT_ID).toMatch(/^[a-f0-9]{32}$/)
+    expect(PROMUS_WC_PROJECT_ID).toMatch(/^[a-f0-9]{32}$/)
   })
 
   test('constructor sets source label to walletconnect', () => {

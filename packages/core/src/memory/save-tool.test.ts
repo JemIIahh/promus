@@ -13,13 +13,13 @@ import {
 } from './save-tool'
 
 async function withTempRoot<T>(fn: () => Promise<T>): Promise<T> {
-  const prev = process.env.ANIMA_ROOT
+  const prev = process.env.PROMUS_ROOT
   const tmp = mkdtempSync(join(tmpdir(), 'anima-save-'))
-  process.env.ANIMA_ROOT = tmp
+  process.env.PROMUS_ROOT = tmp
   try {
     return await fn()
   } finally {
-    process.env.ANIMA_ROOT = prev
+    process.env.PROMUS_ROOT = prev
     rmSync(tmp, { recursive: true, force: true })
   }
 }

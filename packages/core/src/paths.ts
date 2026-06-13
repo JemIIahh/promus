@@ -1,9 +1,9 @@
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 
-/** Resolve `~/.anima` at call time so tests can override via ANIMA_ROOT or HOME. */
+/** Resolve `~/.anima` at call time so tests can override via PROMUS_ROOT or HOME. */
 function animaRoot(): string {
-  return process.env.ANIMA_ROOT ?? join(homedir(), '.anima')
+  return process.env.PROMUS_ROOT ?? join(homedir(), '.anima')
 }
 
 export interface AgentPaths {

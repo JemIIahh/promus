@@ -65,7 +65,7 @@ function renderSandboxBlock(sandbox: PromusConfig['sandbox']): string {
   //  the sandbox profile/container blocks writes outside an allowlist.
   //  All shell.run / code.execute / shell.process_start spawns route through
   //  the chosen backend. fs.* and browser.* still run on the host (PathGuard
-  //  applies). Override at runtime via ANIMA_SANDBOX_MODE=os|docker|none.
+  //  applies). Override at runtime via PROMUS_SANDBOX_MODE=os|docker|none.
   //
   //  OPTION 1: none (default): passthrough, fastest, permission floor only.
   //

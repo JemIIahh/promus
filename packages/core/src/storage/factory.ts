@@ -10,12 +10,12 @@ import type { Storage } from './types'
  * Construct the active Storage backend. Single chokepoint so call sites don't
  * hardcode a provider. Backend is chosen from env:
  *
- *   ANIMA_STORAGE_BACKEND = 'ipfs' | 'local'   (default: 'ipfs' if an IPFS API
+ *   PROMUS_STORAGE_BACKEND = 'ipfs' | 'local'   (default: 'ipfs' if an IPFS API
  *                                                URL is set, else 'local')
- *   ANIMA_IPFS_API_URL     IPFS HTTP API base   (e.g. http://127.0.0.1:5001)
- *   ANIMA_IPFS_GATEWAY     read gateway + /ipfs/ (e.g. https://ipfs.io/ipfs/)
- *   ANIMA_IPFS_API_TOKEN   optional bearer for hosted pinning endpoints
- *   ANIMA_STORAGE_DIR      local-backend root   (default: ~/.anima/storage)
+ *   PROMUS_IPFS_API_URL     IPFS HTTP API base   (e.g. http://127.0.0.1:5001)
+ *   PROMUS_IPFS_GATEWAY     read gateway + /ipfs/ (e.g. https://ipfs.io/ipfs/)
+ *   PROMUS_IPFS_API_TOKEN   optional bearer for hosted pinning endpoints
+ *   PROMUS_STORAGE_DIR      local-backend root   (default: ~/.anima/storage)
  *
  * `network`/`privkeyHex` are accepted for call-site compatibility (the prior
  * 0G backend keyed off them); the EVM-agnostic backends ignore them.
@@ -26,24 +26,24 @@ export interface CreateStorageOpts {
 }
 
 export function createStorage(_opts: CreateStorageOpts = {}): Storage {
-  const apiUrl = process.env.ANIMA_IPFS_API_URL
-  const backend = process.env.ANIMA_STORAGE_BACKEND ?? (apiUrl ? 'ipfs' : 'local')
+  const apiUrl = process.env.PROMUS_IPFS_API_URL
+  const backend = process.env.PROMUS_STORAGE_BACKEND ?? (apiUrl ? 'ipfs' : 'local')
 
   if (backend === 'ipfs') {
     if (!apiUrl) {
       throw new Error(
-        'ANIMA_STORAGE_BACKEND=ipfs but ANIMA_IPFS_API_URL is unset. Set it to an IPFS HTTP API ' +
-          '(local Kubo: http://127.0.0.1:5001) or use ANIMA_STORAGE_BACKEND=local for dev.',
+        'PROMUS_STORAGE_BACKEND=ipfs but PROMUS_IPFS_API_URL is unset. Set it to an IPFS HTTP API ' +
+          '(local Kubo: http://127.0.0.1:5001) or use PROMUS_STORAGE_BACKEND=local for dev.',
       )
     }
     return new IpfsStorage({
       apiUrl,
-      gatewayUrl: process.env.ANIMA_IPFS_GATEWAY,
-      token: process.env.ANIMA_IPFS_API_TOKEN,
+      gatewayUrl: process.env.PROMUS_IPFS_GATEWAY,
+      token: process.env.PROMUS_IPFS_API_TOKEN,
     })
   }
 
-  return new LocalStubStorage(process.env.ANIMA_STORAGE_DIR ?? join(homedir(), '.anima', 'storage'))
+  return new LocalStubStorage(process.env.PROMUS_STORAGE_DIR ?? join(homedir(), '.anima', 'storage'))
 }
 
 /**

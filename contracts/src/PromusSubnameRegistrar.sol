@@ -27,7 +27,7 @@ interface ISidRegistry {
 /// canonical SANN SidRegistry, an audited trusted party. If a malicious
 /// registry were supplied, the `owner(subnameNode)` pre-check could be
 /// spoofed; since we only accept the canonical address (asserted at deploy
-/// time via `registry.owner(ANIMA_NODE) == animaOwner_`), this is out of scope.
+/// time via `registry.owner(PROMUS_NODE) == animaOwner_`), this is out of scope.
 contract PromusSubnameRegistrar {
     /// @dev SANN namehash for `anima.0g`, precomputed:
     ///   keccak256(abi.encode(
@@ -35,7 +35,7 @@ contract PromusSubnameRegistrar {
     ///       keccak256(abi.encode(bytes32(0), bytes32(TLD_IDENTIFIER))),
     ///       keccak256("0g"))),
     ///     keccak256("anima")))
-    bytes32 public constant ANIMA_NODE =
+    bytes32 public constant PROMUS_NODE =
         0xb8a6c74b0b09d90544912d761c6c285b8d1e4336f3cdd13cfa35469b943ff182;
 
     ISidRegistry public immutable registry;
@@ -55,10 +55,10 @@ contract PromusSubnameRegistrar {
     /// @param resolver_ PublicResolver address (0x6D3B3F99177FB2A5de7F9E928a9BD807bF7b5BAD on 0G mainnet).
     /// @param animaOwner_ Registry owner of anima.0g (must pre-approve this contract).
     /// @dev Asserts at construction that the supplied `animaOwner_` matches
-    /// `registry.owner(ANIMA_NODE)`. Catches namehash typos AND wrong-chain
+    /// `registry.owner(PROMUS_NODE)`. Catches namehash typos AND wrong-chain
     /// deploys in a single revert.
     constructor(address registry_, address resolver_, address animaOwner_) {
-        if (ISidRegistry(registry_).owner(ANIMA_NODE) != animaOwner_) revert PromusOwnerMismatch();
+        if (ISidRegistry(registry_).owner(PROMUS_NODE) != animaOwner_) revert PromusOwnerMismatch();
         registry = ISidRegistry(registry_);
         defaultResolver = resolver_;
         animaOwner = animaOwner_;
@@ -73,10 +73,10 @@ contract PromusSubnameRegistrar {
         if (labelBytes.length > 63) revert LabelTooLong();
 
         bytes32 labelHash = keccak256(labelBytes);
-        subnameNode = keccak256(abi.encode(ANIMA_NODE, labelHash));
+        subnameNode = keccak256(abi.encode(PROMUS_NODE, labelHash));
         if (registry.owner(subnameNode) != address(0)) revert LabelAlreadyTaken();
 
-        registry.setSubnodeRecord(ANIMA_NODE, labelHash, owner_, defaultResolver, 0);
+        registry.setSubnodeRecord(PROMUS_NODE, labelHash, owner_, defaultResolver, 0);
         emit SubnameClaimed(label, subnameNode, owner_, msg.sender);
     }
 
@@ -85,7 +85,7 @@ contract PromusSubnameRegistrar {
     /// dynamically so an anima.0g transfer correctly flips this false until
     /// the new owner re-approves.
     function isOperational() external view returns (bool) {
-        address currentOwner = registry.owner(ANIMA_NODE);
+        address currentOwner = registry.owner(PROMUS_NODE);
         return currentOwner != address(0) && registry.isApprovedForAll(currentOwner, address(this));
     }
 }

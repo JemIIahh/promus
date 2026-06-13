@@ -10,7 +10,7 @@ import {
 /**
  * PromusInbox singleton ABI. Matches `contracts/src/PromusInbox.sol`.
  */
-export const ANIMA_INBOX_ABI = parseAbi([
+export const PROMUS_INBOX_ABI = parseAbi([
   'event Message(address indexed from, address indexed to, bytes payload, bytes32 dataHash)',
   'function sendMessage(address to, bytes payload, bytes32 dataHash) external',
   'function MAX_INLINE_PAYLOAD() view returns (uint256)',
@@ -73,7 +73,7 @@ export class PromusInboxClient {
     const account = this.walletClient.account
     if (!account) throw new Error('walletClient missing account')
     const data = encodeFunctionData({
-      abi: ANIMA_INBOX_ABI,
+      abi: PROMUS_INBOX_ABI,
       functionName: 'sendMessage',
       args: [to, payload, dataHash],
     })
@@ -130,7 +130,7 @@ export class PromusInboxClient {
   watchMessagesFor(recipient: Address, onEvent: (m: InboxMessageEvent) => void): () => void {
     return this.publicClient.watchContractEvent({
       address: this.address,
-      abi: ANIMA_INBOX_ABI,
+      abi: PROMUS_INBOX_ABI,
       eventName: 'Message',
       args: { to: recipient },
       onLogs: logs => {

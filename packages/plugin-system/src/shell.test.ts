@@ -33,16 +33,16 @@ describe('shell.run', () => {
   })
   it('redacts wallet secrets from the spawned environment', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'anima-shell-'))
-    process.env.ANIMA_AGENT_PRIVKEY_HEX = '0xdead'
+    process.env.PROMUS_AGENT_PRIVKEY_HEX = '0xdead'
     try {
       const tool = makeShellRun({ cwd: dir })
-      const out = await tool.handler({ command: 'echo ${ANIMA_AGENT_PRIVKEY_HEX:-MISSING}' })
+      const out = await tool.handler({ command: 'echo ${PROMUS_AGENT_PRIVKEY_HEX:-MISSING}' })
       expect(out.ok).toBe(true)
       const d = out.data as { stdout: string; redactedEnvVars: string[] }
       expect(d.stdout.trim()).toBe('MISSING')
-      expect(d.redactedEnvVars).toContain('ANIMA_AGENT_PRIVKEY_HEX')
+      expect(d.redactedEnvVars).toContain('PROMUS_AGENT_PRIVKEY_HEX')
     } finally {
-      process.env.ANIMA_AGENT_PRIVKEY_HEX = undefined
+      process.env.PROMUS_AGENT_PRIVKEY_HEX = undefined
       await rm(dir, { recursive: true, force: true })
     }
   })

@@ -19,10 +19,10 @@ Agent config is a typed TS module that exports `defineConfig({ ... })`. The wiza
 |---|---|
 | `ANTHROPIC_API_KEY` | The agent's brain. Required. Read at runtime, never on chain. |
 | `ANTHROPIC_MODEL` | Optional model override; defaults to a current Claude model. |
-| `ANIMA_STORAGE_BACKEND` | `ipfs` (default) or `local` for development. |
-| `ANIMA_IPFS_API_URL` | Kubo HTTP API. Local node: `http://127.0.0.1:5001`. |
-| `ANIMA_IPFS_GATEWAY` | Read gateway including the trailing `/ipfs`. Local: `http://127.0.0.1:8080/ipfs`. |
-| `ANIMA_IPFS_API_TOKEN` | Bearer token only for an authenticated hosted endpoint; blank for local Kubo. |
+| `PROMUS_STORAGE_BACKEND` | `ipfs` (default) or `local` for development. |
+| `PROMUS_IPFS_API_URL` | Kubo HTTP API. Local node: `http://127.0.0.1:5001`. |
+| `PROMUS_IPFS_GATEWAY` | Read gateway including the trailing `/ipfs`. Local: `http://127.0.0.1:8080/ipfs`. |
+| `PROMUS_IPFS_API_TOKEN` | Bearer token only for an authenticated hosted endpoint; blank for local Kubo. |
 
 ## Minimal example
 

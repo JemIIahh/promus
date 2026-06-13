@@ -52,12 +52,12 @@ import {
 
 export {
   PromusInboxClient,
-  ANIMA_INBOX_ABI,
+  PROMUS_INBOX_ABI,
   type InboxMessageEvent,
 } from './contract'
 export {
   PromusMarketClient,
-  ANIMA_MARKET_ABI,
+  PROMUS_MARKET_ABI,
   JOB_STATUS,
   JOB_STATUS_LABEL,
   type Job,

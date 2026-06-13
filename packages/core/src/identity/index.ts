@@ -9,9 +9,9 @@ export {
 } from './contract'
 export { AGENT_NFT_ABI } from './abi'
 export {
-  ANIMA_AGENT_NFT_ADDRESS,
-  ANIMA_INBOX_ADDRESS,
-  ANIMA_MARKET_ADDRESS,
+  PROMUS_AGENT_NFT_ADDRESS,
+  PROMUS_INBOX_ADDRESS,
+  PROMUS_MARKET_ADDRESS,
   EXPLORER_BASE,
   type NetworkName,
   explorerTxUrl,

@@ -6,7 +6,7 @@ A ~3-minute walkthrough that shows the agent as an on-chain entity: mint → rea
 
 - `bun` installed
 - A local IPFS node running: `ipfs daemon` (Kubo)
-- `.env` with `ANTHROPIC_API_KEY`, `ANIMA_STORAGE_BACKEND=ipfs`, `ANIMA_IPFS_API_URL=http://127.0.0.1:5001`, and a funded Arbitrum Sepolia operator key
+- `.env` with `ANTHROPIC_API_KEY`, `PROMUS_STORAGE_BACKEND=ipfs`, `PROMUS_IPFS_API_URL=http://127.0.0.1:5001`, and a funded Arbitrum Sepolia operator key
 - `promus` on PATH (or `bun packages/cli/bin/promus`)
 
 ## 1. Mint the agent (the identity is an on-chain token)

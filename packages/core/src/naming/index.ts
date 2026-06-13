@@ -10,7 +10,7 @@ export {
 } from './sann'
 export {
   PromusRegistrarClient,
-  ANIMA_REGISTRAR_ADDRESS,
+  PROMUS_REGISTRAR_ADDRESS,
   isLabelTaken,
   mainnetReadOnlyClient,
   type PromusRegistrarClientOpts,

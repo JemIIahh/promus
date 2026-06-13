@@ -81,7 +81,7 @@ describe('parseAllowedUserIds', () => {
 })
 
 describe('loadTelegramHandoffSecrets', () => {
-  // Each test gets a fresh ANIMA_ROOT tmpdir so `agentPaths.agent(id).dir`
+  // Each test gets a fresh PROMUS_ROOT tmpdir so `agentPaths.agent(id).dir`
   // resolves somewhere isolated, and `afterEach` cleans it up even on failure.
   const TEST_CONTRACT = '0x9e71d79f06f956d4d2666b5c93dafab721c84721' as Address
   const TEST_TOKEN_ID = 6n
@@ -94,15 +94,15 @@ describe('loadTelegramHandoffSecrets', () => {
   let tmpRoot: string
 
   beforeAll(() => {
-    prevPromusRoot = process.env.ANIMA_ROOT
+    prevPromusRoot = process.env.PROMUS_ROOT
   })
   afterAll(() => {
-    if (prevPromusRoot === undefined) Reflect.deleteProperty(process.env, 'ANIMA_ROOT')
-    else process.env.ANIMA_ROOT = prevPromusRoot
+    if (prevPromusRoot === undefined) Reflect.deleteProperty(process.env, 'PROMUS_ROOT')
+    else process.env.PROMUS_ROOT = prevPromusRoot
   })
   beforeEach(() => {
     tmpRoot = mkdtempSync(join(tmpdir(), 'anima-tg-secrets-test-'))
-    process.env.ANIMA_ROOT = tmpRoot
+    process.env.PROMUS_ROOT = tmpRoot
   })
   afterEach(() => {
     rmSync(tmpRoot, { recursive: true, force: true })

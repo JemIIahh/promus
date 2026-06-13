@@ -17,10 +17,10 @@ export interface GatewayRunOpts {
 
 export async function runGatewayForeground(opts: GatewayRunOpts): Promise<void> {
   const env = { ...process.env }
-  if (opts.agentId) env.ANIMA_AGENT_ID = opts.agentId
-  // Default ANIMA_CONFIG to ~/.anima/config.ts if not already set.
-  if (!env.ANIMA_CONFIG) {
-    env.ANIMA_CONFIG = join(env.HOME ?? '', '.anima', 'config.ts')
+  if (opts.agentId) env.PROMUS_AGENT_ID = opts.agentId
+  // Default PROMUS_CONFIG to ~/.anima/config.ts if not already set.
+  if (!env.PROMUS_CONFIG) {
+    env.PROMUS_CONFIG = join(env.HOME ?? '', '.anima', 'config.ts')
   }
 
   const localBin = resolveLocalBin()

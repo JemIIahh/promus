@@ -4,8 +4,8 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { isCancel, select, spinner } from '@clack/prompts'
 import {
-  ANIMA_INBOX_ADDRESS,
-  ANIMA_MARKET_ADDRESS,
+  PROMUS_INBOX_ADDRESS,
+  PROMUS_MARKET_ADDRESS,
   ActivityLog,
   type PromusConfig,
   type BrainMessage,
@@ -125,14 +125,14 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // AUTO-SPAWN the daemon as a child process and attach as thin-client.
   // Without this, embedded TUI fallthrough silently disables (a) Telegram
   // pairing-store wiring (no inbound delivery) and (b) AutoTopupManager
-  // polling. ANIMA_FORCE_EMBEDDED=1 escape hatch keeps the legacy path
+  // polling. PROMUS_FORCE_EMBEDDED=1 escape hatch keeps the legacy path
   // available for tests / debugging.
   {
     const _contractAddr = config.identity.iNFT.contract as Address
     const _tokId = BigInt(config.identity.iNFT.tokenId)
     const _aid = iNFTAgentId({ contractAddress: _contractAddr, tokenId: _tokId })
     const _gatewaySock = join(agentPaths.agent(_aid).dir, 'gateway.sock')
-    const forceEmbedded = process.env.ANIMA_FORCE_EMBEDDED === '1'
+    const forceEmbedded = process.env.PROMUS_FORCE_EMBEDDED === '1'
     let _socketExisted = existsSync(_gatewaySock)
     if (_socketExisted) {
       // v0.23.2: if the running daemon's version differs from the on-disk
@@ -351,10 +351,10 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
 
   // Phase 9.5: build sandbox backend BEFORE plugins load. Tools that spawn
   // subprocesses (shell.run, code.execute, shell.process_start) wrap their
-  // spawn argv through this backend. ANIMA_SANDBOX_MODE env var wins over
+  // spawn argv through this backend. PROMUS_SANDBOX_MODE env var wins over
   // config (matches hermes' TERMINAL_ENV pattern — per-launch override
   // without editing config).
-  const envOverride = process.env.ANIMA_SANDBOX_MODE
+  const envOverride = process.env.PROMUS_SANDBOX_MODE
   const sandboxMode: 'none' | 'os' | 'docker' =
     envOverride === 'none' || envOverride === 'os' || envOverride === 'docker'
       ? envOverride
@@ -492,13 +492,13 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   let comms: CommsRuntimeContext | undefined
   let sann: SannClient | undefined
   if (pluginNames.includes('comms')) {
-    const inboxAddress = ANIMA_INBOX_ADDRESS[config.network] as Address | undefined
+    const inboxAddress = PROMUS_INBOX_ADDRESS[config.network] as Address | undefined
     if (!inboxAddress) {
       throw new Error(
         `PromusInbox address missing for network=${config.network}; check core/identity/deployments.ts`,
       )
     }
-    const marketAddress = ANIMA_MARKET_ADDRESS[config.network] as Address | undefined
+    const marketAddress = PROMUS_MARKET_ADDRESS[config.network] as Address | undefined
     const ogStorage = createStorage({ network: config.network, privkeyHex: agentPrivkey })
     sann = new SannClient({ privkeyHex: agentPrivkey })
     // Listener.catchUp fetches getBlockNumber itself; passing 0n here just
@@ -603,7 +603,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       }
     },
   })
-  if (loadResult.errors.length > 0 || process.env.ANIMA_DEBUG_PLUGINS) {
+  if (loadResult.errors.length > 0 || process.env.PROMUS_DEBUG_PLUGINS) {
     const { writeFile } = await import('node:fs/promises')
     const { join } = await import('node:path')
     await writeFile(
@@ -634,7 +634,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       const mcpResult = await mcpManager.registerAll(def =>
         tools.register(def as Parameters<typeof tools.register>[0]),
       )
-      if (mcpResult.failed.length > 0 || process.env.ANIMA_DEBUG_PLUGINS) {
+      if (mcpResult.failed.length > 0 || process.env.PROMUS_DEBUG_PLUGINS) {
         const { writeFile } = await import('node:fs/promises')
         const { join } = await import('node:path')
         await writeFile(

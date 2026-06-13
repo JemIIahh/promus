@@ -18,7 +18,7 @@ import { readRegistryOwner, subnameNode } from './sann'
  * mainnet. Any EOA with gas can register a label via `claim(label, owner)`.
  * See contracts/src/PromusSubnameRegistrar.sol.
  */
-export const ANIMA_REGISTRAR_ADDRESS: Address = '0x33d9f4ec2bd7e7cb4e288c3bbc3a76be472fdd98'
+export const PROMUS_REGISTRAR_ADDRESS: Address = '0x33d9f4ec2bd7e7cb4e288c3bbc3a76be472fdd98'
 
 const REGISTRAR_ABI = [
   {
@@ -40,7 +40,7 @@ const REGISTRAR_ABI = [
   },
   {
     type: 'function',
-    name: 'ANIMA_NODE',
+    name: 'PROMUS_NODE',
     stateMutability: 'view',
     inputs: [],
     outputs: [{ type: 'bytes32' }],
@@ -76,7 +76,7 @@ export class PromusRegistrarClient {
     this.chain = clients.chain
     this.publicClient = clients.publicClient
     this.walletClient = clients.walletClient
-    this.registrar = opts.registrar ?? ANIMA_REGISTRAR_ADDRESS
+    this.registrar = opts.registrar ?? PROMUS_REGISTRAR_ADDRESS
   }
 
   /**

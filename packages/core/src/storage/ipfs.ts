@@ -118,5 +118,5 @@ function fetchWithTimeout(url: string, init: RequestInit, ms: number): Promise<R
 
 /** Default local cache dir for the IPFS adapter's unused KV/log methods. */
 export function defaultIpfsCacheDir(): string {
-  return process.env.ANIMA_IPFS_CACHE_DIR ?? join(tmpdir(), 'anima-ipfs-cache')
+  return process.env.PROMUS_IPFS_CACHE_DIR ?? join(tmpdir(), 'anima-ipfs-cache')
 }

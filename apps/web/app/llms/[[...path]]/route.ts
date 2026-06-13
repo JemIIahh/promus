@@ -92,7 +92,7 @@ bun add -g promus
 promus init
 \`\`\`
 
-Requires bun >=1.1. Published as \`promus\` on npm; the binary is \`promus\`. Set \`ANTHROPIC_API_KEY\` (the brain) and point \`ANIMA_IPFS_API_URL\` at a Kubo node (the memory backend) before \`promus init\`.
+Requires bun >=1.1. Published as \`promus\` on npm; the binary is \`promus\`. Set \`ANTHROPIC_API_KEY\` (the brain) and point \`PROMUS_IPFS_API_URL\` at a Kubo node (the memory backend) before \`promus init\`.
 
 ## For AI agents
 
@@ -128,7 +128,7 @@ async function renderLlmsFull(): Promise<string> {
 
 > \`promus init\` is interactive: blocking @clack/prompts selects, no full env-var bypass. Two completion paths from an agent: guide the human, or puppet the TUI with \`tmux send-keys\` if you have shell access. Naive stdin piping fails because @clack checks for a real TTY.
 
-> Brain: Claude via \`ANTHROPIC_API_KEY\`. Memory: IPFS via \`ANIMA_IPFS_API_URL\` (a Kubo node). Binary: \`promus\`. Engine: bun >=1.1.`
+> Brain: Claude via \`ANTHROPIC_API_KEY\`. Memory: IPFS via \`PROMUS_IPFS_API_URL\` (a Kubo node). Binary: \`promus\`. Engine: bun >=1.1.`
 
   const sections: string[] = [header]
 

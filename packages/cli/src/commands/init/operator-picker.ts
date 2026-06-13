@@ -126,12 +126,12 @@ export async function pickOperatorSigner(opts: PickerOptions): Promise<OperatorP
       }
     }
     case 'raw-privkey': {
-      if (process.env.ANIMA_OPERATOR_PRIVKEY) {
-        note('Using ANIMA_OPERATOR_PRIVKEY from env.', 'raw-privkey')
+      if (process.env.PROMUS_OPERATOR_PRIVKEY) {
+        note('Using PROMUS_OPERATOR_PRIVKEY from env.', 'raw-privkey')
         return {
           signer: new RawPrivkeyOperatorSigner({
-            privkey: process.env.ANIMA_OPERATOR_PRIVKEY,
-            sourceLabel: 'env:ANIMA_OPERATOR_PRIVKEY',
+            privkey: process.env.PROMUS_OPERATOR_PRIVKEY,
+            sourceLabel: 'env:PROMUS_OPERATOR_PRIVKEY',
           }),
           hint: { source: 'raw-privkey' },
         }
@@ -195,10 +195,10 @@ export async function loadOperatorFromHint(
       })
     }
     case 'raw-privkey': {
-      if (process.env.ANIMA_OPERATOR_PRIVKEY) {
+      if (process.env.PROMUS_OPERATOR_PRIVKEY) {
         return new RawPrivkeyOperatorSigner({
-          privkey: process.env.ANIMA_OPERATOR_PRIVKEY,
-          sourceLabel: 'env:ANIMA_OPERATOR_PRIVKEY',
+          privkey: process.env.PROMUS_OPERATOR_PRIVKEY,
+          sourceLabel: 'env:PROMUS_OPERATOR_PRIVKEY',
         })
       }
       const pk = await password({

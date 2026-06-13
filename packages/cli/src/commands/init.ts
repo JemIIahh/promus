@@ -663,7 +663,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
         brain: { provider: modelPick.provider as Address, model: modelPick.model ?? '' },
         iNFTNetwork: network,
         name: requestedSubname || 'anima',
-        ref: process.env.ANIMA_BOOTSTRAP_REF ?? 'main',
+        ref: process.env.PROMUS_BOOTSTRAP_REF ?? 'main',
         subname: registeredSubname,
         profileScopeKeyHex,
         telegramSecrets: telegramHandoff,

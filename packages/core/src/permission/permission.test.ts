@@ -63,7 +63,7 @@ describe('redactEnv', () => {
     const { env, removed } = redactEnv({
       PATH: '/usr/bin',
       HOME: '/home/me',
-      ANIMA_AGENT_PRIVKEY_HEX: '0xdead',
+      PROMUS_AGENT_PRIVKEY_HEX: '0xdead',
       OPENAI_API_KEY: 'sk-x',
       GH_TOKEN: 'ghp_x',
       AWS_SECRET_ACCESS_KEY: 'secret',
@@ -73,14 +73,14 @@ describe('redactEnv', () => {
     expect(env.PATH).toBe('/usr/bin')
     expect(env.HOME).toBe('/home/me')
     expect(env.GREETING).toBe('hello')
-    expect(env.ANIMA_AGENT_PRIVKEY_HEX).toBeUndefined()
+    expect(env.PROMUS_AGENT_PRIVKEY_HEX).toBeUndefined()
     expect(env.OPENAI_API_KEY).toBeUndefined()
     expect(env.GH_TOKEN).toBeUndefined()
     expect(env.AWS_SECRET_ACCESS_KEY).toBeUndefined()
     expect(env.MY_FAVORITE_PRIVKEY).toBeUndefined()
     expect(removed.sort()).toEqual(
       [
-        'ANIMA_AGENT_PRIVKEY_HEX',
+        'PROMUS_AGENT_PRIVKEY_HEX',
         'AWS_SECRET_ACCESS_KEY',
         'GH_TOKEN',
         'MY_FAVORITE_PRIVKEY',

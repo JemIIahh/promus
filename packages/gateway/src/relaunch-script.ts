@@ -54,7 +54,7 @@ export function buildGatewayRelaunchScript(
   const port = opts.port ?? 8080
   const env: string[] = [
     `export SANDBOX_ID=${shQuote(opts.sandboxId)}`,
-    `export ANIMA_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
+    `export PROMUS_OPERATOR_ADDRESS=${shQuote(opts.operatorAddress)}`,
     `export HARNESS_PORT=${shQuote(String(port))}`,
     "export HARNESS_HOST='0.0.0.0'",
     'export PATH="$HOME/.bun/bin:$PATH"',
@@ -74,18 +74,18 @@ export function buildGatewayRelaunchScript(
     //  - npm mode: ~/.bun/install/global/node_modules/.bin/anima-gateway exists
     // Whichever one is present is what we relaunch. If neither, the container
     // snapshot must have lost its install (rare; usually means manual wipe).
-    'ANIMA_DIR="$HOME/anima"',
+    'PROMUS_DIR="$HOME/anima"',
     'GLOBAL_BIN="$HOME/.bun/install/global/node_modules/.bin"',
     'GATEWAY_MODE=""',
     'if [ -x "$GLOBAL_BIN/anima-gateway" ]; then',
     '  GATEWAY_MODE="npm"',
     '  echo "[mode=npm] launching $GLOBAL_BIN/anima-gateway"',
-    'elif [ -d "$ANIMA_DIR" ]; then',
+    'elif [ -d "$PROMUS_DIR" ]; then',
     '  GATEWAY_MODE="git"',
-    '  echo "[mode=git] launching bun $ANIMA_DIR/packages/gateway/bin/anima-gateway"',
+    '  echo "[mode=git] launching bun $PROMUS_DIR/packages/gateway/bin/anima-gateway"',
     'else',
     `  echo "anima-not-installed" > ${FAIL_MARKER}`,
-    '  echo "[fail] no anima install found at $GLOBAL_BIN/anima-gateway nor $ANIMA_DIR; container snapshot may have been wiped"',
+    '  echo "[fail] no anima install found at $GLOBAL_BIN/anima-gateway nor $PROMUS_DIR; container snapshot may have been wiped"',
     '  exit 21',
     'fi',
     ...env,
@@ -96,7 +96,7 @@ export function buildGatewayRelaunchScript(
     '  if [ "$GATEWAY_MODE" = "npm" ]; then',
     '    nohup "$GLOBAL_BIN/anima-gateway" > "$HOME/anima-logs/anima-gateway.log" 2>&1 &',
     '  else',
-    '    nohup bun "$ANIMA_DIR/packages/gateway/bin/anima-gateway" > "$HOME/anima-logs/anima-gateway.log" 2>&1 &',
+    '    nohup bun "$PROMUS_DIR/packages/gateway/bin/anima-gateway" > "$HOME/anima-logs/anima-gateway.log" 2>&1 &',
     '  fi',
     '  HARNESS_PID=$!',
     '  disown',

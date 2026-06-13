@@ -53,7 +53,7 @@ describe('resolvePromusRef', () => {
     expect(r.ref).toBe('3d6d10f')
     expect(r.isTag).toBe(false)
   })
-  it('respects ANIMA_BOOTSTRAP_REF env override', async () => {
+  it('respects PROMUS_BOOTSTRAP_REF env override', async () => {
     let called = false
     const fetchImpl = (() => {
       called = true
@@ -61,7 +61,7 @@ describe('resolvePromusRef', () => {
     }) as unknown as typeof fetch
     const r = await resolvePromusRef(undefined, {
       fetchImpl,
-      env: { ANIMA_BOOTSTRAP_REF: 'main' },
+      env: { PROMUS_BOOTSTRAP_REF: 'main' },
     })
     expect(r.ref).toBe('main')
     expect(r.isTag).toBe(false)
@@ -69,7 +69,7 @@ describe('resolvePromusRef', () => {
   })
   it('rawRef takes priority over env', async () => {
     const r = await resolvePromusRef('v0.17.8', {
-      env: { ANIMA_BOOTSTRAP_REF: 'main' },
+      env: { PROMUS_BOOTSTRAP_REF: 'main' },
     })
     expect(r.ref).toBe('v0.17.8')
     expect(r.isTag).toBe(true)

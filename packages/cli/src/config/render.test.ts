@@ -25,8 +25,8 @@ describe('renderConfigTs sandbox block', () => {
     expect(out).toContain(`//    mode: 'docker'`)
     expect(out).toContain(`//    dockerImage: 'nikolaik/python-nodejs:python3.11-nodejs20'`)
     expect(out).toContain('//    dockerMountWorkspace: false')
-    // ANIMA_SANDBOX_MODE override hint
-    expect(out).toContain('ANIMA_SANDBOX_MODE')
+    // PROMUS_SANDBOX_MODE override hint
+    expect(out).toContain('PROMUS_SANDBOX_MODE')
   })
 
   test('config with sandbox.mode="os" already set emits the chosen value, not the template', () => {

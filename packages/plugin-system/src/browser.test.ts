@@ -18,7 +18,7 @@ describe('browser parity (task #74)', () => {
   })
   afterEach(() => {
     __test.reset()
-    process.env.ANIMA_BROWSER_CDP_URL = undefined
+    process.env.PROMUS_BROWSER_CDP_URL = undefined
   })
 
   test('socketSafeTmpdir returns /tmp on darwin', () => {
@@ -104,14 +104,14 @@ describe('browser parity (task #74)', () => {
   })
 
   test('buildBrowserEnv injects AGENT_BROWSER_SOCKET_DIR + redacts wallet keys', () => {
-    process.env.ANIMA_OPERATOR_PRIVKEY = '0xdeadbeef'
+    process.env.PROMUS_OPERATOR_PRIVKEY = '0xdeadbeef'
     try {
       const env = __test.buildBrowserEnv('/tmp/test-socket-dir')
       expect(env.AGENT_BROWSER_SOCKET_DIR).toBe('/tmp/test-socket-dir')
       expect(env.PATH).toBeTruthy()
-      expect(env.ANIMA_OPERATOR_PRIVKEY).toBeUndefined()
+      expect(env.PROMUS_OPERATOR_PRIVKEY).toBeUndefined()
     } finally {
-      process.env.ANIMA_OPERATOR_PRIVKEY = undefined
+      process.env.PROMUS_OPERATOR_PRIVKEY = undefined
     }
   })
 

@@ -7,7 +7,7 @@ import type { PromusNetwork } from '../config'
  * networks share the same address; future deploys under different salts
  * would produce different addresses.
  */
-export const ANIMA_AGENT_NFT_ADDRESS: Record<PromusNetwork, Address> = {
+export const PROMUS_AGENT_NFT_ADDRESS: Record<PromusNetwork, Address> = {
   '0g-testnet': '0x9e71d79f06f956d4d2666b5c93dafab721c84721',
   '0g-mainnet': '0x9e71d79f06f956d4d2666b5c93dafab721c84721',
   // PromusAgentNFT, name()="Promus" symbol()="PROMUS", oracle = deployer EOA.
@@ -22,7 +22,7 @@ export const ANIMA_AGENT_NFT_ADDRESS: Record<PromusNetwork, Address> = {
  * emitter (ECIES ciphertext). CREATE2 deterministic via Arachnid's standard
  * factory; no constructor args → identical address on every chain.
  */
-export const ANIMA_INBOX_ADDRESS: Record<PromusNetwork, Address> = {
+export const PROMUS_INBOX_ADDRESS: Record<PromusNetwork, Address> = {
   '0g-testnet': '0xcd92844cc0ec6Be0607B330D4BaCC707339f2589',
   '0g-mainnet': '0xcd92844cc0ec6Be0607B330D4BaCC707339f2589',
   // Deployed on Arbitrum Sepolia + Robinhood Chain testnet 2026-06.
@@ -35,7 +35,7 @@ export const ANIMA_INBOX_ADDRESS: Record<PromusNetwork, Address> = {
  * hire agents). CREATE2 deterministic; same address on every chain.
  * Fee recipient: deployer (immutable).
  */
-export const ANIMA_MARKET_ADDRESS: Record<PromusNetwork, Address> = {
+export const PROMUS_MARKET_ADDRESS: Record<PromusNetwork, Address> = {
   '0g-testnet': '0x3ebD21f5dd67acDeF199fACF28388627212bA2aB',
   '0g-mainnet': '0x3ebD21f5dd67acDeF199fACF28388627212bA2aB',
   // Deployed on Arbitrum Sepolia + Robinhood Chain testnet 2026-06.
