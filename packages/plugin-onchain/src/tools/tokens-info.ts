@@ -30,12 +30,13 @@ export function makeTokensInfo(ctx: OnchainRuntimeContext): ToolDef<Args> {
           return { ok: false, error: 'provide one of `symbol` or `address`' }
         }
         if (isNativeToken(input)) {
-          return { ok: true, data: nativeTokenInfo() }
+          return { ok: true, data: nativeTokenInfo(ctx.network) }
         }
         const token = await resolveToken({
           client: ctx.publicClient,
           agentDir: ctx.agentDir,
           input,
+          network: ctx.network,
         })
         if (!token) {
           return { ok: false, error: `token not found: ${input}` }

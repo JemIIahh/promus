@@ -128,7 +128,7 @@ const WriteSchema = z.object({
     .string()
     .optional()
     .describe(
-      'Native value to send. Accepts decimal 0G ("0.0001") OR wei integer ("100000000000000").',
+      'Native value to send. Accepts a decimal coin amount ("0.0001") OR a wei integer ("100000000000000").',
     ),
 })
 type WriteArgs = z.infer<typeof WriteSchema>

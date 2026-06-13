@@ -31,11 +31,19 @@ describe('isNativeToken', () => {
 })
 
 describe('nativeTokenInfo', () => {
-  test('returns 18-decimal 0G stub', () => {
-    const t = nativeTokenInfo()
-    expect(t.symbol).toBe('0G')
-    expect(t.decimals).toBe(18)
-    expect(t.source).toBe('native')
+  test('labels the native coin per network (0G on 0G chains, ETH on Arbitrum)', () => {
+    const og = nativeTokenInfo('0g-mainnet')
+    expect(og.symbol).toBe('0G')
+    expect(og.name).toBe('ZeroG')
+
+    const arb = nativeTokenInfo('arbitrum-sepolia')
+    expect(arb.symbol).toBe('ETH')
+    expect(arb.name).toBe('Ether')
+
+    for (const t of [og, arb]) {
+      expect(t.decimals).toBe(18)
+      expect(t.source).toBe('native')
+    }
   })
 })
 

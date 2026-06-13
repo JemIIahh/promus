@@ -44,6 +44,7 @@ async function resolveOrNative(
     client: ctx.publicClient,
     agentDir: ctx.agentDir,
     input,
+    network: ctx.network,
   })
   if (!t) return null
   return { token: t, isNative: false }

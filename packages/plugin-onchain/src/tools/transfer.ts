@@ -3,7 +3,7 @@
  */
 
 import type { ToolDef } from 'promus-core'
-import { SANN_SUFFIX, getGasPriceWithFloor, resolveSubnameAddress } from 'promus-core'
+import { SANN_SUFFIX, getGasPriceWithFloor, nativeSymbol, resolveSubnameAddress } from 'promus-core'
 import {
   type Address,
   type PublicClient,
@@ -23,11 +23,11 @@ const Schema = z.object({
     .string()
     .min(1)
     .describe(`Recipient 0x address OR \`<name>${SANN_SUFFIX}\` subname (resolved via SANN).`),
-  amount: z.string().min(1).describe('Amount in token units (e.g. "0.05" for 0.05 0G).'),
+  amount: z.string().min(1).describe('Amount in whole coin/token units, e.g. "0.05".'),
   token: z
     .string()
     .optional()
-    .describe('Symbol or 0x address. Omit / "0G" / "native" for native transfer.'),
+    .describe('Token symbol or 0x address. Omit (or "native") to send the chain\'s native coin.'),
 })
 type Args = z.infer<typeof Schema>
 
@@ -51,9 +51,8 @@ export async function resolveRecipient(to: string, publicClient: PublicClient): 
 export function makeChainSend(ctx: OnchainRuntimeContext): ToolDef<Args> {
   return {
     name: 'chain.send',
-    description:
-      'Transfer 0G or any ERC-20 from your agent EOA. Pass `token` for ERC-20; omit for native 0G. Auto-detects decimals via tokens.info.',
-    searchHint: 'send transfer 0g native erc20 pay',
+    description: `Transfer ${nativeSymbol(ctx.network)} (the native coin) or any ERC-20 from your agent EOA. Pass \`token\` for an ERC-20; omit for a native transfer. Auto-detects decimals via tokens.info.`,
+    searchHint: 'send transfer native eth 0g erc20 pay',
     schema: Schema,
     handler: async args => {
       try {
@@ -79,7 +78,7 @@ export function makeChainSend(ctx: OnchainRuntimeContext): ToolDef<Args> {
               txHash,
               blockNumber: Number(receipt.blockNumber),
               gasUsed: receipt.gasUsed.toString(),
-              token: '0G',
+              token: nativeSymbol(ctx.network),
               amount: args.amount,
               recipient,
               status: receipt.status === 'success' ? 'success' : 'reverted',
@@ -90,6 +89,7 @@ export function makeChainSend(ctx: OnchainRuntimeContext): ToolDef<Args> {
           client: ctx.publicClient,
           agentDir: ctx.agentDir,
           input: args.token!,
+          network: ctx.network,
         })
         if (!token) {
           return { ok: false, error: `unknown token: ${args.token}` }

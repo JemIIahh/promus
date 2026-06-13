@@ -353,3 +353,13 @@ export const NETWORK_CURRENCY: Record<PromusNetwork, string> = {
 export function isOgNetwork(network: PromusNetwork): boolean {
   return network === '0g-mainnet' || network === '0g-testnet'
 }
+
+/**
+ * Display symbol for a network's native coin: `0G` on the 0G chains, `ETH` on
+ * the Arbitrum-family L2s. Single source of truth for user/brain-facing amount
+ * labels — mirrors the `nativeCurrency.symbol` that `ogChain()` puts on the viem
+ * chain. Use this instead of hardcoding "0G" in tool output.
+ */
+export function nativeSymbol(network: PromusNetwork): string {
+  return isOgNetwork(network) ? '0G' : 'ETH'
+}

@@ -16,6 +16,7 @@ import {
   encodeFunctionData,
   getAddress,
 } from 'viem'
+import { type PromusNetwork, nativeSymbol } from 'promus-core'
 import jaineTokenList from '../data/tokens.json' with { type: 'json' }
 import { ERC20_ABI, MULTICALL3_ABI } from './abis'
 import { MULTICALL3, NATIVE_ALIASES } from './constants'
@@ -48,8 +49,14 @@ export function isNativeToken(input: string | undefined): boolean {
   return NATIVE_ALIASES.has(input.trim())
 }
 
-export function nativeTokenInfo(): TokenInfo {
-  return { ...NATIVE }
+/**
+ * Native-coin TokenInfo for the given network. The symbol/name follow the
+ * network's actual native currency (ETH on Arbitrum-family L2s, 0G on the 0G
+ * chains) so balances and transfers never mislabel ETH as "0G".
+ */
+export function nativeTokenInfo(network: PromusNetwork): TokenInfo {
+  const symbol = nativeSymbol(network)
+  return { ...NATIVE, symbol, name: symbol === 'ETH' ? 'Ether' : 'ZeroG' }
 }
 
 function tokensCachePath(agentDir: string): string {
@@ -193,9 +200,10 @@ export async function resolveToken(opts: {
   client: PublicClient
   agentDir: string
   input: string
+  network: PromusNetwork
 }): Promise<TokenInfo | null> {
-  const { client, agentDir, input } = opts
-  if (isNativeToken(input)) return nativeTokenInfo()
+  const { client, agentDir, input, network } = opts
+  if (isNativeToken(input)) return nativeTokenInfo(network)
   const cache = loadTokenCache(agentDir)
   const local = lookupFromList(input, cache)
   if (local) return local

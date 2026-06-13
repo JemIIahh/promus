@@ -59,7 +59,7 @@ export function makeChainGas(ctx: OnchainRuntimeContext): ToolDef<GasArgs> {
   return {
     name: 'chain.gas',
     description:
-      'Current 0G gas price with the network floor applied (4 gwei min). Use to estimate cost or detect spikes.',
+      'Current network gas price with the chain floor applied. Use to estimate cost or detect spikes.',
     searchHint: 'gas price gwei fee estimate',
     schema: GasSchema,
     handler: async () => {

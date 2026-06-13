@@ -41,7 +41,7 @@ describe('PromusInboxClient.listSelfRegistered', () => {
       [A, 200],
       [B, 150],
     ])
-    expect(agents[0].pubkey).toBe(PUBKEY_A)
+    expect(agents[0]?.pubkey).toBe(PUBKEY_A)
   })
 
   test('skips non-self messages (from != to) and malformed pubkey payloads', async () => {
@@ -70,7 +70,7 @@ describe('PromusInboxClient.listSelfRegistered', () => {
     const agents = await inbox.listSelfRegistered()
     expect(calls).toBe(2)
     expect(agents.map(a => a.address)).toEqual([B])
-    expect(agents[0].pubkey).toBe(PUBKEY_B)
+    expect(agents[0]?.pubkey).toBe(PUBKEY_B)
   })
 
   test('returns empty list when no agents have registered', async () => {
