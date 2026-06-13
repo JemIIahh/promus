@@ -23,11 +23,11 @@ Install bun first. Always.
 
 ```
 curl -fsSL https://bun.sh/install | bash
-bun add -g promus
+npm i -g @promus/cli        # or: yarn global add @promus/cli, bun add -g @promus/cli
 promus init
 ```
 
-The package and the binary are both `promus`. Requires bun >= 1.1. Run `promus --version` so you know the surface you are working against.
+The package is `@promus/cli`; the binary is `promus`. Requires bun >= 1.1. Run `promus --version` so you know the surface you are working against.
 
 ## What the agent needs before init
 
@@ -37,7 +37,7 @@ The package and the binary are both `promus`. Requires bun >= 1.1. Run `promus -
 
 ## What you can do for the user
 
-- Install the package (`bun add -g promus`) and bun itself if missing.
+- Install the package (`npm i -g @promus/cli`) and bun itself if missing.
 - Set up `ANTHROPIC_API_KEY` and the IPFS env vars in the user's environment.
 - Read and write the agent config. The type is `defineConfig` from `promus-core`. See [Configuration](/docs/configuration).
 - Explain commands. The most-used are `promus init`, `promus` (TUI), `promus status`, `promus logs --tail N`, `promus inspect`.

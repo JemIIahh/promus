@@ -88,11 +88,11 @@ bun is REQUIRED. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` put
 
 \`\`\`
 curl -fsSL https://bun.sh/install | bash
-bun add -g promus
+npm i -g @promus/cli        # or: yarn global add @promus/cli, bun add -g @promus/cli
 promus init
 \`\`\`
 
-Requires bun >=1.1. Published as \`promus\` on npm; the binary is \`promus\`. Set \`ANTHROPIC_API_KEY\` (the brain) and point \`PROMUS_IPFS_API_URL\` at a Kubo node (the memory backend) before \`promus init\`.
+Requires bun >=1.1. Published as \`@promus/cli\` on npm; the binary is \`promus\`. Set \`ANTHROPIC_API_KEY\` (the brain) and point \`PROMUS_IPFS_API_URL\` at a Kubo node (the memory backend) before \`promus init\`.
 
 ## For AI agents
 
@@ -124,7 +124,7 @@ async function renderLlmsFull(): Promise<string> {
 
 > Sovereign AI agents on Arbitrum. This file inlines every documentation page plus the repo README. Sections separated by horizontal rules. Each doc body is preceded by a source pointer when frontmatter declares one.
 
-> Single most common install failure: bun must be installed FIRST. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` succeeds and the binary lands on PATH, but it exits at runtime with \`env: bun: No such file or directory\`. Always run \`curl -fsSL https://bun.sh/install | bash\` then \`bun add -g promus\`.
+> Single most common install failure: bun must be installed FIRST. The CLI shebangs \`#!/usr/bin/env bun\`. \`npm install -g\` succeeds and the binary lands on PATH, but it exits at runtime with \`env: bun: No such file or directory\`. Always run \`curl -fsSL https://bun.sh/install | bash\` then \`npm i -g @promus/cli\`.
 
 > \`promus init\` is interactive: blocking @clack/prompts selects, no full env-var bypass. Two completion paths from an agent: guide the human, or puppet the TUI with \`tmux send-keys\` if you have shell access. Naive stdin piping fails because @clack checks for a real TTY.
 

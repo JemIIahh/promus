@@ -340,7 +340,7 @@ function RunPanel({
           </span>
         </motion.p>
         <motion.div style={ctaStage} className="mt-7 flex flex-col items-center gap-4">
-          <CommandPill command="bun add -g promus" />
+          <CommandPill command="npm i -g @promus/cli" />
           <DocsLink />
         </motion.div>
       </div>
@@ -519,7 +519,7 @@ function StackedFallback() {
             Mint once. Walk away. The agent persists.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4">
-            <CommandPill command="bun add -g promus" />
+            <CommandPill command="npm i -g @promus/cli" />
             <DocsLink />
           </div>
         </article>

@@ -122,7 +122,7 @@ function findAgentBrowser(override?: string, cwdOverride?: string): string | nul
   }
 
   // Bun global install layout (npm-bootstrapped sandbox containers + any
-  // `bun add -g promus` install). Bun symlinks third-party bins
+  // `npm i -g @promus/cli` install). Bun symlinks third-party bins
   // here but does NOT add this dir to $PATH automatically, so the PATH walk
   // below would miss it. Probe explicitly.
   const homeDir = process.env.HOME

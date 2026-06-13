@@ -36,10 +36,10 @@ PROMUS_IPFS_API_URL=http://127.0.0.1:5001   # a local Kubo node (`ipfs daemon`)
 ## Install
 
 ```
-bun add -g promus
+npm i -g @promus/cli        # or: yarn global add @promus/cli, bun add -g @promus/cli
 ```
 
-That installs the `promus` binary on your PATH and pulls every workspace package (`promus-core`, `promus-plugin-onchain`, `promus-plugin-comms`, `promus-plugin-system`, `promus-plugin-telegram`, plus the gateway) as transitive deps.
+That installs the `promus` binary on your PATH and pulls every workspace package (`@promus/core`, `@promus/plugin-onchain`, `@promus/plugin-comms`, `@promus/plugin-system`, `@promus/plugin-telegram`, plus the gateway) as transitive deps.
 
 ## Init
 

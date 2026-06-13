@@ -3,7 +3,7 @@
  * and a running gateway daemon.
  *
  * Scenario this fixes:
- *   1. Operator runs `bun add -g promus@<new>` — global binary
+ *   1. Operator runs `npm i -g @promus/cli@<new>` — global binary
  *      swaps on disk.
  *   2. The previously-running gateway daemon was spawned from the OLD binary
  *      and pinned its node_modules at boot. `/healthz` reports the old version

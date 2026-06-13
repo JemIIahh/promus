@@ -11,7 +11,7 @@
  *
  * Two modes (mirror bootstrap.ts):
  *  - 'git' (default): cd $HOME/promus && git fetch + checkout + bun install
- *  - 'npm': bun add -g promus@<version> (overwrites global install)
+ *  - 'npm': npm i -g @promus/cli@<version> (overwrites global install)
  *
  * Mode is set by the caller, NOT auto-detected (would push the script over
  * Daytona's 5KB request-size cap). The CLI probes the container filesystem

@@ -138,7 +138,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
     let _socketExisted = existsSync(_gatewaySock)
     if (_socketExisted) {
       // v0.23.2: if the running daemon's version differs from the on-disk
-      // CLI binary's version, the operator just ran `bun add -g promus@N`
+      // CLI binary's version, the operator just ran `npm i -g @promus/cli@N`
       // and expects the new behavior. Auto-restart the daemon so resume always
       // resolves to the latest version.
       const { ensureGatewayVersionMatchesCli } = await import('../util/gateway-version')

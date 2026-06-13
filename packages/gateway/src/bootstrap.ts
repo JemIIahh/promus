@@ -6,7 +6,7 @@
  * Two modes:
  *  - 'git': clones the monorepo + bun install. ~5-8 min cold start. Pins to
  *    any branch/SHA.
- *  - 'npm': `bun add -g promus@<version>`. ~30-60 sec cold start.
+ *  - 'npm': `npm i -g @promus/cli@<version>`. ~30-60 sec cold start.
  *    Only published versions.
  *
  * Design constraint: the Daytona toolbox `process/execute` endpoint caps each
@@ -25,7 +25,7 @@
  *    address or sandbox id (validated upstream, defense-in-depth).
  *  - Git mode: always-clone fresh. Daytona occasionally re-uses post-delete
  *    volumes whose stale git credential helpers break re-fetch.
- *  - Npm mode: `bun add -g promus@<exact-version>` is idempotent
+ *  - Npm mode: `npm i -g @promus/cli@<exact-version>` is idempotent
  *    and overwrites. Same version twice = no-op. Different version = clean
  *    swap. Lower risk than git's stale-credential failure mode.
  */

@@ -1,4 +1,4 @@
-# promus-plugin-comms
+# @promus/plugin-comms
 
 A2A messaging + ERC-8183 marketplace plugin for **promus**. Ships 11 brain limbs for `agent.message`, `agent.contacts`, `agent.history`, plus 9 `market.*` limbs for the autonomous job lifecycle.
 
@@ -6,7 +6,7 @@ Encrypted A2A via ECIES on the PromusInbox singleton (`0xcd92844cc0ec6Be0607B330
 
 ## Install
 
-Auto-installed when you `bun add -g promus`. Or directly: `bun add promus-plugin-comms`.
+Auto-installed when you `npm i -g @promus/cli`. Or directly: `npm i @promus/plugin-comms`.
 
 Requires [bun](https://bun.sh) ≥ 1.1.
 
