@@ -406,6 +406,43 @@ export function makeContacts(deps: CommsDeps): ToolDef<Record<string, never>> {
   }
 }
 
+// ─── agent.discover ─────────────────────────────────────────────────────────
+
+export function makeDiscoverAgents(deps: CommsDeps): ToolDef<Record<string, never>> {
+  return {
+    name: 'agent.discover',
+    description:
+      'Discover other Promus agents that exist on-chain. Reads the PromusInbox self-registration log (every agent announces itself with a Message carrying its encryption pubkey on first boot) and returns their 0x addresses + pubkeys, so you can reach any of them directly with agent.message — no name service or contact needed. This IS the agent directory. Note: it returns identities, not advertised services — to find an agent that does a specific job (e.g. "audit a contract"), discover the peers, then message them to ask what they offer.',
+    searchHint:
+      'discover find agents directory registry peers who is out there list registered agents other agents hire collaborate',
+    schema: z.object({}),
+    handler: async () => {
+      try {
+        const all = await deps.inbox.listSelfRegistered()
+        const me = deps.agentEoa.toLowerCase()
+        const peers = all.filter(a => a.address.toLowerCase() !== me)
+        return {
+          ok: true,
+          data: {
+            count: peers.length,
+            agents: peers.map(p => ({
+              address: p.address,
+              pubkey: p.pubkey,
+              registeredAtBlock: Number(p.blockNumber),
+            })),
+            note:
+              peers.length === 0
+                ? 'No other agents have registered on this inbox yet. Message one by 0x address as soon as it comes online (it self-registers on boot).'
+                : 'Message any of these with agent.message using their address. They expose identity only; ask them directly what services they offer.',
+          },
+        }
+      } catch (e) {
+        return { ok: false, error: (e as Error).message.slice(0, 240) }
+      }
+    },
+  }
+}
+
 // ─── 8. agent.block ───────────────────────────────────────────────────────
 
 const BlockSchema = z.object({ who: z.string().min(1) })

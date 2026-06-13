@@ -145,6 +145,46 @@ export class PromusInboxClient {
   }
 
   /**
+   * Enumerate agents that have self-registered on this inbox. Self-registration
+   * (A2AListener.ensureRegistered) is a Message with `from == to` whose payload
+   * is the sender's 65-byte uncompressed secp256k1 pubkey. Returns one entry per
+   * distinct agent (latest self-register wins), pubkey included — so a discovered
+   * agent can be ECIES-messaged immediately, no separate recovery needed. This is
+   * the on-chain agent directory: the inbox log IS the registry.
+   */
+  async listSelfRegistered(): Promise<{ address: Address; pubkey: Hex; blockNumber: bigint }[]> {
+    const run = (fromBlock: bigint | 'earliest') =>
+      this.publicClient.getLogs({
+        address: this.address,
+        event: PROMUS_INBOX_ABI[0],
+        fromBlock,
+        toBlock: 'latest',
+      })
+    let logs: Awaited<ReturnType<typeof run>>
+    try {
+      logs = await run('earliest')
+    } catch {
+      // Some RPCs cap getLogs ranges; retry over a recent window.
+      const latest = await this.publicClient.getBlockNumber()
+      logs = await run(latest > 500_000n ? latest - 500_000n : 0n)
+    }
+    const byAddr = new Map<string, { address: Address; pubkey: Hex; blockNumber: bigint }>()
+    for (const l of logs) {
+      const from = l.args.from as Address | undefined
+      const to = l.args.to as Address | undefined
+      const payload = l.args.payload as Hex | undefined
+      // Self-register only: from == to, payload is the uncompressed pubkey (0x04 + 64 bytes).
+      if (!from || !to || from.toLowerCase() !== to.toLowerCase()) continue
+      if (!payload || payload.length !== 2 + 130) continue
+      const bn = l.blockNumber ?? 0n
+      const key = from.toLowerCase()
+      const prev = byAddr.get(key)
+      if (!prev || bn >= prev.blockNumber) byAddr.set(key, { address: from, pubkey: payload, blockNumber: bn })
+    }
+    return [...byAddr.values()].sort((a, b) => Number(b.blockNumber - a.blockNumber))
+  }
+
+  /**
    * Subscribe live to Message events targeting `recipient`. Returns an
    * unwatch handle.
    */

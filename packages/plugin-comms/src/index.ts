@@ -41,6 +41,7 @@ import {
   makeContactAdd,
   makeContactRemove,
   makeContacts,
+  makeDiscoverAgents,
   makeFetchFile,
   makeHistory,
   makeMessage,
@@ -153,6 +154,7 @@ const plugin: NativePlugin = {
     }
 
     ctx.registerTool(makeMessage(deps) as ToolDef)
+    ctx.registerTool(makeDiscoverAgents(deps) as ToolDef)
     ctx.registerTool(makeSendFile(deps) as ToolDef)
     ctx.registerTool(makeFetchFile(deps) as ToolDef)
     ctx.registerTool(makeHistory(deps) as ToolDef)
