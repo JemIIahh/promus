@@ -9,15 +9,18 @@ const MESSAGE_EVENT = parseAbiItem(
 )
 
 /**
- * Resolve a recipient identifier (name or raw EOA) to its EOA address +
+ * Resolve a recipient identifier (raw EOA or name) to its EOA address +
  * uncompressed secp256k1 pubkey for ECIES encryption.
  *
- * Primary path: `.0g` text records. Promus publishes both `address` and `pubkey`
- * on its subname during init (Phase 7+). Lookup is one SANN resolver call.
+ * Primary (nameless) path: a raw 0x address. We find a Message the peer sent
+ * through PromusInbox (`from` is indexed) and recover its secp256k1 pubkey from
+ * that tx's signature — a Promus agent's ECIES key IS its EOA keypair, so the
+ * recovered key is exactly what we encrypt to. No name service required; the
+ * peer only needs to have sent ≥1 inbox message (agents self-register on boot).
  *
- * Raw-EOA input is supported only for diagnostic / debug paths today; pubkey
- * recovery from chain history is not in MVP scope. The resolver emits a clear
- * error directing the operator to use a `.promus.0g` name instead.
+ * Legacy path: a `.promus.0g` name resolved via SANN text records. SANN lives on
+ * 0G, which Promus has migrated off of — kept only for back-compat, not the
+ * recommended way to address a peer on Arbitrum.
  */
 
 export interface ResolvedRecipient {
