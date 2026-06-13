@@ -49,9 +49,9 @@ describe('buildUpgradeScript', () => {
     expect(inner).toContain('git fetch --tags --depth 50 origin')
     expect(inner).toContain(`git checkout '${baseOpts.ref}'`)
     expect(inner).toContain('bun install --frozen-lockfile')
-    expect(inner).toContain('pkill -f promus-gateway')
-    expect(inner).toContain('nohup bun "$HOME/promus/packages/gateway/bin/promus-gateway"')
-    expect(inner).toContain(`echo "promus-gateway-pid=$HARNESS_PID" > ${UPGRADE_DONE_MARKER}`)
+    expect(inner).toContain('pkill -f @promus/gateway')
+    expect(inner).toContain('nohup bun "$HOME/promus/packages/gateway/bin/@promus/gateway"')
+    expect(inner).toContain(`echo "@promus/gateway-pid=$HARNESS_PID" > ${UPGRADE_DONE_MARKER}`)
   })
 
   test('inner subshell does NOT do bootstrap-only steps (apt / clone / bun-binary)', () => {
@@ -108,9 +108,9 @@ describe('buildUpgradeScript', () => {
     const inner = decodeInner()
     // The kill→clear-locks→relaunch ordering is critical: we wipe locks
     // ONLY after the prior harness is dead so we never race a live writer.
-    const killIdx = inner.indexOf('pkill -f promus-gateway')
+    const killIdx = inner.indexOf('pkill -f @promus/gateway')
     const lockIdx = inner.indexOf('rm -f "$HOME/.promus/locks/"*.lock')
-    const launchIdx = inner.indexOf('nohup bun "$HOME/promus/packages/gateway/bin/promus-gateway"')
+    const launchIdx = inner.indexOf('nohup bun "$HOME/promus/packages/gateway/bin/@promus/gateway"')
     expect(killIdx).toBeGreaterThan(0)
     expect(lockIdx).toBeGreaterThan(killIdx)
     expect(launchIdx).toBeGreaterThan(lockIdx)
@@ -181,7 +181,7 @@ describe('buildUpgradeScript', () => {
   })
 
   test('exposes UPGRADE_SUCCESS_MARKER_PREFIX matching bootstrap (callers grep done file)', () => {
-    expect(UPGRADE_SUCCESS_MARKER_PREFIX).toBe('promus-gateway-pid=')
+    expect(UPGRADE_SUCCESS_MARKER_PREFIX).toBe('@promus/gateway-pid=')
   })
 
   test('outer script stays under Daytona request-size ceiling (<5000 bytes)', () => {
@@ -224,8 +224,8 @@ describe('buildUpgradeScript', () => {
 
     test('inner subshell launches gateway from global bin', () => {
       const inner = decodeInner(npmOpts)
-      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/promus-gateway')
-      expect(inner).not.toContain('nohup bun "$HOME/promus/packages/gateway/bin/promus-gateway"')
+      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/@promus/gateway')
+      expect(inner).not.toContain('nohup bun "$HOME/promus/packages/gateway/bin/@promus/gateway"')
     })
 
     test('throws when packageVersion is missing for npm mode', () => {
@@ -251,7 +251,7 @@ describe('buildUpgradeScript', () => {
 
     test('still does the harness pkill + restart sequence', () => {
       const inner = decodeInner(npmOpts)
-      expect(inner).toContain('pkill -f promus-gateway')
+      expect(inner).toContain('pkill -f @promus/gateway')
       expect(inner).toContain('for h_attempt in 1 2 3; do')
       expect(inner).toContain('clear stale agent locks')
     })

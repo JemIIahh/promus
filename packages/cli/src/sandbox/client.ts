@@ -1,4 +1,4 @@
-import type { PermissionDecision } from 'promus-core'
+import type { PermissionDecision } from '@promus/core'
 import {
   type GatewayEventKind,
   type ProvisionEnvelope,
@@ -7,7 +7,7 @@ import {
   approvalResponseHash,
   chatMessageHash,
   provisionMessageHash,
-} from 'promus-gateway'
+} from '@promus/gateway'
 import type { Address, Hex, LocalAccount } from 'viem'
 
 export interface SandboxClientOpts {

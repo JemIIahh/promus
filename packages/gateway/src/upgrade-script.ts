@@ -104,7 +104,7 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
     '',
     'echo "[restart gateway]"',
     'pkill -f promus-harness 2>/dev/null || true',
-    'pkill -f promus-gateway 2>/dev/null || true',
+    'pkill -f @promus/gateway 2>/dev/null || true',
     `fuser -k ${port}/tcp 2>/dev/null || true`,
     'sleep 3',
     '',
@@ -127,7 +127,7 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
     '  echo "[launch attempt $h_attempt/3]"',
     `  fuser -k ${port}/tcp 2>/dev/null || true`,
     '  sleep 1',
-    `  nohup ${gatewayLaunchCmd} > "$HOME/promus-logs/promus-gateway.log" 2>&1 &`,
+    `  nohup ${gatewayLaunchCmd} > "$HOME/promus-logs/@promus/gateway.log" 2>&1 &`,
     '  HARNESS_PID=$!',
     '  disown',
     '  sleep 10',
@@ -136,7 +136,7 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
     '    break',
     '  fi',
     '  echo "[harness died on attempt $h_attempt, log tail:]"',
-    '  tail -n 50 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 50 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     '  if [ $h_attempt -lt 3 ]; then',
     '    echo "[retrying in 5s]"',
     '    sleep 5',
@@ -144,11 +144,11 @@ function buildRestartLines(opts: BuildUpgradeScriptOpts, gatewayLaunchCmd: strin
     'done',
     'if [ "$HARNESS_OK" -ne 1 ]; then',
     '  echo "[all 3 harness launch attempts failed, full log dump:]"',
-    '  tail -n 200 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 200 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     `  echo "harness-died-early" > ${FAIL_MARKER}`,
     '  exit 24',
     'fi',
-    `echo "promus-gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
+    `echo "@promus/gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
     'echo "[$(date -u +%FT%TZ)] upgrade-done pid=$HARNESS_PID"',
     '',
   ]
@@ -173,7 +173,7 @@ function buildGitInnerScript(opts: BuildUpgradeScriptOpts): string {
     `  retry 'browser deps' node_modules/.bin/agent-browser install --with-deps || { echo "browser-install-failed" > ${FAIL_MARKER}; exit 25; }`,
     'fi',
   ]
-  const restart = buildRestartLines(opts, 'bun "$HOME/promus/packages/gateway/bin/promus-gateway"')
+  const restart = buildRestartLines(opts, 'bun "$HOME/promus/packages/gateway/bin/@promus/gateway"')
   return [...preamble, ...installLines, ...restart].join('\n')
 }
 
@@ -195,7 +195,7 @@ function buildNpmInnerScript(opts: BuildUpgradeScriptOpts): string {
     `  retry 'browser deps' ${BUN_GLOBAL_BIN_SHELL}/agent-browser install --with-deps || { echo "browser-install-failed" > ${FAIL_MARKER}; exit 25; }`,
     'fi',
   ]
-  const restart = buildRestartLines(opts, `${BUN_GLOBAL_BIN_SHELL}/promus-gateway`)
+  const restart = buildRestartLines(opts, `${BUN_GLOBAL_BIN_SHELL}/@promus/gateway`)
   return [...preamble, ...installLines, ...restart].join('\n')
 }
 
@@ -223,7 +223,7 @@ export function buildUpgradeScript(opts: BuildUpgradeScriptOpts): BuildUpgradeSc
 export const UPGRADE_DONE_MARKER = DONE_MARKER
 export const UPGRADE_FAIL_MARKER = FAIL_MARKER
 export const UPGRADE_PROGRESS_LOG = PROGRESS_LOG
-export const UPGRADE_SUCCESS_MARKER_PREFIX = 'promus-gateway-pid='
+export const UPGRADE_SUCCESS_MARKER_PREFIX = '@promus/gateway-pid='
 
 /** Substring keywords the inner subshell writes to FAIL_MARKER on failure. */
 export const UPGRADE_FAIL_KEYWORDS = [

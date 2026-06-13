@@ -17,7 +17,7 @@ import {
   coerceBool,
   coerceInt,
   redactEnv,
-} from 'promus-core'
+} from '@promus/core'
 import { z } from 'zod'
 import { sniffMimeFromBytes } from './vision'
 

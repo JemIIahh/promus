@@ -62,7 +62,7 @@ import {
   requiredScopesForAgent,
   runEscalation,
   scanSkills,
-} from 'promus-core'
+} from '@promus/core'
 import {
   type CommsRuntimeContext,
   type DeliveredMessage,
@@ -74,18 +74,18 @@ import {
   formatJobEventForBrain,
   isParticipant,
   jobEventShouldWakeBrain,
-} from 'promus-plugin-comms'
+} from '@promus/plugin-comms'
 import {
   ONCHAIN_GUIDANCE,
   type OnchainRuntimeContext,
   discoverMintBlock,
-} from 'promus-plugin-onchain'
+} from '@promus/plugin-onchain'
 import {
   TELEGRAM_GUIDANCE,
   type TelegramApprovalBridge,
   type TelegramRuntimeContext,
   formatInboundPreview as formatTelegramInboundPreview,
-} from 'promus-plugin-telegram'
+} from '@promus/plugin-telegram'
 import { type Address, type Hex, formatEther } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'
@@ -144,7 +144,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       const { ensureGatewayVersionMatchesCli } = await import('../util/gateway-version')
       const { createHash } = await import('node:crypto')
       const _identityHash = createHash('sha256').update(_aid).digest('hex').slice(0, 16)
-      const _lockFile = join(homedir(), '.promus', 'locks', `promus-gateway-${_identityHash}.lock`)
+      const _lockFile = join(homedir(), '.promus', 'locks', `@promus/gateway-${_identityHash}.lock`)
       const drift = await ensureGatewayVersionMatchesCli({
         socketPath: _gatewaySock,
         lockFile: _lockFile,
@@ -354,7 +354,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
   // delegate.task only when isolation matters.
   // Brain backend: Claude when ANTHROPIC_API_KEY is set, else Promus Brain.
   const useAnthropic = !!process.env.ANTHROPIC_API_KEY
-  const delegateFactory: import('promus-core').DelegateBrainFactory = async ({
+  const delegateFactory: import('@promus/core').DelegateBrainFactory = async ({
     systemPrompt,
     tools: subTools,
   }) => {
@@ -377,7 +377,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
           prefix: subPrefix,
         })
     await subBrain.init()
-    return subBrain as unknown as import('promus-core').DelegateBrainHandle
+    return subBrain as unknown as import('@promus/core').DelegateBrainHandle
   }
 
   // Phase 9.5: build sandbox backend BEFORE plugins load. Tools that spawn
@@ -622,13 +622,13 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
     resolve: async name => {
       switch (name) {
         case 'system':
-          return await import('promus-plugin-system')
+          return await import('@promus/plugin-system')
         case 'comms':
-          return await import('promus-plugin-comms')
+          return await import('@promus/plugin-comms')
         case 'onchain':
-          return await import('promus-plugin-onchain')
+          return await import('@promus/plugin-onchain')
         case 'telegram':
-          return await import('promus-plugin-telegram')
+          return await import('@promus/plugin-telegram')
         default:
           throw new Error(`unknown first-party plugin: ${name}`)
       }
@@ -1633,7 +1633,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
     process.stderr.write(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n\n`)
     // Best-effort: kill any background processes registered via shell.process.
     try {
-      const { killAllProcesses } = require('promus-plugin-system') as {
+      const { killAllProcesses } = require('@promus/plugin-system') as {
         killAllProcesses: () => void
       }
       killAllProcesses()

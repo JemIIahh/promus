@@ -1,5 +1,5 @@
 import { cancel, intro, log, outro, spinner } from '@clack/prompts'
-import { iNFTAgentId } from 'promus-core'
+import { iNFTAgentId } from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import {

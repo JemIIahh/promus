@@ -1,5 +1,5 @@
 /**
- * promus-plugin-comms
+ * @promus/plugin-comms
  *
  * A2A messaging via PromusInbox singleton on Arbitrum. Encrypts to recipient
  * pubkey published via .0g text record; decrypts inbound via the agent's own
@@ -19,7 +19,7 @@
  * unit-test loaders that don't supply the extras).
  */
 
-import type { NativePlugin, ToolDef } from 'promus-core'
+import type { NativePlugin, ToolDef } from '@promus/core'
 import { PromusInboxClient } from './contract'
 import { A2AListener } from './listener'
 import { PromusMarketClient } from './market'

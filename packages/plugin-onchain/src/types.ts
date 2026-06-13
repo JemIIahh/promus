@@ -5,7 +5,7 @@
  * `(ctx as any).onchain`. Keeps PluginContext clean of plugin-specific fields.
  */
 
-import type { PromusNetwork } from 'promus-core'
+import type { PromusNetwork } from '@promus/core'
 import type { Address } from 'viem'
 
 export interface OnchainRuntimeContext {

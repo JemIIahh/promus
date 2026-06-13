@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'bun:test'
-import type { SandboxRecord } from 'promus-core'
+import type { SandboxRecord } from '@promus/core'
 import {
   type ResumeArchivedSandboxOpts,
   type SandboxProvisionOpts,

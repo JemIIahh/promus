@@ -4,7 +4,7 @@ import {
   SANDBOX_BURN_RATE_OG_PER_HOUR,
   SANDBOX_DEFAULT_INITIAL_DEPOSIT_OG,
   isOgNetwork,
-} from 'promus-core'
+} from '@promus/core'
 import { formatEther } from 'viem'
 
 export { SANDBOX_BURN_RATE_OG_PER_HOUR, SANDBOX_DEFAULT_INITIAL_DEPOSIT_OG }

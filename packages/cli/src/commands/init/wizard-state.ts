@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { PromusNetwork } from 'promus-core'
+import type { PromusNetwork } from '@promus/core'
 
 /**
  * Pattern B resumable-init state file (Apr 24 2026 session design).

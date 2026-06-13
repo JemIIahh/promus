@@ -7,7 +7,7 @@
  * - `address` arg: read for any address (default = agent EOA).
  */
 
-import type { ToolDef } from 'promus-core'
+import type { ToolDef } from '@promus/core'
 import { type Address, formatEther, formatUnits, getAddress } from 'viem'
 import { z } from 'zod'
 import { ERC20_ABI } from '../abis'

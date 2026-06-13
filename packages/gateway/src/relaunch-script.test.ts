@@ -35,7 +35,7 @@ describe('buildGatewayRelaunchScript', () => {
   })
 
   test('exposes RELAUNCH_SUCCESS_MARKER_PREFIX matching success line', () => {
-    expect(RELAUNCH_SUCCESS_MARKER_PREFIX).toBe('promus-gateway-pid=')
+    expect(RELAUNCH_SUCCESS_MARKER_PREFIX).toBe('@promus/gateway-pid=')
     const inner = decodeInner()
     expect(inner).toContain(`echo "${RELAUNCH_SUCCESS_MARKER_PREFIX}$HARNESS_PID" >`)
   })
@@ -43,7 +43,7 @@ describe('buildGatewayRelaunchScript', () => {
   test('auto-detects bootstrap mode by probing filesystem (no hard $HOME/promus check)', () => {
     const inner = decodeInner()
     // Probe checks both modes BEFORE hard-failing.
-    expect(inner).toContain('if [ -x "$GLOBAL_BIN/promus-gateway" ]; then')
+    expect(inner).toContain('if [ -x "$GLOBAL_BIN/@promus/gateway" ]; then')
     expect(inner).toContain('GATEWAY_MODE="npm"')
     expect(inner).toContain('elif [ -d "$PROMUS_DIR" ]; then')
     expect(inner).toContain('GATEWAY_MODE="git"')
@@ -55,8 +55,8 @@ describe('buildGatewayRelaunchScript', () => {
     const inner = decodeInner()
     expect(inner).toContain('launch_gateway() {')
     expect(inner).toContain('if [ "$GATEWAY_MODE" = "npm" ]; then')
-    expect(inner).toContain('nohup "$GLOBAL_BIN/promus-gateway"')
-    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
+    expect(inner).toContain('nohup "$GLOBAL_BIN/@promus/gateway"')
+    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/@promus/gateway"')
   })
 
   test('legacy "promus-dir-missing" failure keyword removed in favor of "promus-not-installed"', () => {

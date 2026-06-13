@@ -35,7 +35,7 @@ export interface MakeMemoryReadToolArgs {
   agentId: string
   /**
    * Override the on-disk agent dir. Gateway daemon writes restored memory
-   * under `${TMPDIR}/promus-gateway/<id>/` while local-mode chat.tsx uses
+   * under `${TMPDIR}/@promus/gateway/<id>/` while local-mode chat.tsx uses
    * `~/.promus/agents/<id>/`. Pass the daemon's true agentDir so the brain's
    * memory.read resolves against the same path the gateway just wrote to —
    * otherwise files restored from chain return "not found" because the tool

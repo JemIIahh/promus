@@ -2,8 +2,8 @@
  * `chain.wrap` + `chain.unwrap` — native ↔ WETH via WETH9 deposit/withdraw.
  */
 
-import type { ToolDef } from 'promus-core'
-import { getGasPriceWithFloor } from 'promus-core'
+import type { ToolDef } from '@promus/core'
+import { getGasPriceWithFloor } from '@promus/core'
 import { type Address, formatEther, parseEther } from 'viem'
 import { z } from 'zod'
 import { WETH9_ABI } from '../abis'

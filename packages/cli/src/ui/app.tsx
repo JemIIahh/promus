@@ -1,5 +1,5 @@
 import { useKeyboard, useTerminalDimensions } from '@opentui/solid'
-import { type SlashCommand, suggestForPrefix } from 'promus-core'
+import { type SlashCommand, suggestForPrefix } from '@promus/core'
 import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
 import { summarizeApprovalSubject } from './approval-summary'
 import { MarkdownSegments } from './markdown'

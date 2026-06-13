@@ -82,7 +82,7 @@ export interface BuildBootstrapScriptResult {
   script: string
   /**
    * Path the caller should poll via `execInToolbox(id, { command: cat <path> })`
-   * to detect bootstrap completion. Returns success line `promus-gateway-pid=<N>`
+   * to detect bootstrap completion. Returns success line `@promus/gateway-pid=<N>`
    * once everything is up; absent until then.
    */
   doneMarkerPath: string
@@ -194,7 +194,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     '  echo "[launch attempt $h_attempt/3]"',
     `  fuser -k ${port}/tcp 2>/dev/null || true`,
     '  sleep 1',
-    `  nohup ${gatewayLaunchCmd} > "$HOME/promus-logs/promus-gateway.log" 2>&1 &`,
+    `  nohup ${gatewayLaunchCmd} > "$HOME/promus-logs/@promus/gateway.log" 2>&1 &`,
     '  HARNESS_PID=$!',
     '  disown',
     '  sleep 10',
@@ -203,7 +203,7 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     '    break',
     '  fi',
     '  echo "[harness died on attempt $h_attempt, log tail:]"',
-    '  tail -n 50 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 50 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     '  if [ $h_attempt -lt 3 ]; then',
     '    echo "[retrying in 5s]"',
     '    sleep 5',
@@ -211,12 +211,12 @@ function buildLaunchLines(opts: BuildBootstrapScriptOpts, gatewayLaunchCmd: stri
     'done',
     'if [ "$HARNESS_OK" -ne 1 ]; then',
     '  echo "[all 3 harness launch attempts failed, full log dump:]"',
-    '  tail -n 200 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 200 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     `  echo "harness-died-early" > ${FAIL_MARKER}`,
     '  exit 18',
     'fi',
     `echo "STAGE: ${BOOTSTRAP_STAGE_MARKERS.harnessReady}"`,
-    `echo "promus-gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
+    `echo "@promus/gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
     'echo "[$(date -u +%FT%TZ)] bootstrap-done pid=$HARNESS_PID"',
     '',
   ]
@@ -258,7 +258,7 @@ function buildGitInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     'fi',
     '',
   ]
-  const launch = buildLaunchLines(opts, 'bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
+  const launch = buildLaunchLines(opts, 'bun "$PROMUS_DIR/packages/gateway/bin/@promus/gateway"')
   return [...preamble, ...installLines, ...launch].join('\n')
 }
 
@@ -274,7 +274,7 @@ function buildNpmInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     // and overwrites whatever is in the global store. Atomic on success; on
     // failure the prior version remains (which may be empty on a fresh container).
     `retry 'promus install' bun add -g ${shQuote(`promus@${opts.packageVersion}`)} || { echo "promus-install-failed" > ${FAIL_MARKER}; exit 14; }`,
-    // Add Bun's global package binaries to PATH so promus-gateway + agent-browser
+    // Add Bun's global package binaries to PATH so @promus/gateway + agent-browser
     // resolve. ~/.bun/bin only contains bun's own binary, NOT third-party global
     // package bins (those live at ~/.bun/install/global/node_modules/.bin/).
     `export PATH="${BUN_GLOBAL_BIN_SHELL}:$PATH"`,
@@ -290,7 +290,7 @@ function buildNpmInnerScript(opts: BuildBootstrapScriptOpts, aptList: string): s
     'fi',
     '',
   ]
-  const launch = buildLaunchLines(opts, `${BUN_GLOBAL_BIN_SHELL}/promus-gateway`)
+  const launch = buildLaunchLines(opts, `${BUN_GLOBAL_BIN_SHELL}/@promus/gateway`)
   return [...preamble, ...installLines, ...launch].join('\n')
 }
 
@@ -333,7 +333,7 @@ export function buildBootstrapScript(opts: BuildBootstrapScriptOpts): BuildBoots
 export const BOOTSTRAP_DONE_MARKER = DONE_MARKER
 export const BOOTSTRAP_FAIL_MARKER = FAIL_MARKER
 export const BOOTSTRAP_PROGRESS_LOG = PROGRESS_LOG
-export const BOOTSTRAP_SUCCESS_MARKER_PREFIX = 'promus-gateway-pid='
+export const BOOTSTRAP_SUCCESS_MARKER_PREFIX = '@promus/gateway-pid='
 
 /**
  * The exact strings the inner subshell writes to FAIL_MARKER on each step

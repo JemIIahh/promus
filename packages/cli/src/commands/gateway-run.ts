@@ -1,14 +1,14 @@
 /**
  * `promus gateway run` — foreground daemon (blocks; Ctrl+C to stop).
  *
- * Spawns `promus-gateway-local` (the bin in promus-gateway) with
+ * Spawns `@promus/gateway-local` (the bin in @promus/gateway) with
  * inherit stdio so the user sees logs live. Reads operator-session for the
  * cached AES keys; fails loud if no session exists ("run promus gateway start
  * first").
  */
 
 import { spawn } from 'node:child_process'
-import { agentPaths } from 'promus-core'
+import { agentPaths } from '@promus/core'
 import { resolveLocalBin } from '../util/gateway-spawn'
 
 export interface GatewayRunOpts {

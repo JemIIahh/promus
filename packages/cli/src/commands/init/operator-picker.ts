@@ -12,7 +12,7 @@ import {
   type OperatorSourceKind,
   RawPrivkeyOperatorSigner,
   WalletConnectOperatorSigner,
-} from 'promus-core'
+} from '@promus/core'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 interface PickerOptions {

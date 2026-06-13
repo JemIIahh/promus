@@ -1,5 +1,5 @@
 {
-  "name": "promus-plugin-onchain",
+  "name": "@promus/plugin-onchain",
   "version": "0.24.17",
   "type": "module",
   "description": "On-chain wallet + chain ops plugin for promus (JAINE swap, Gimo LST, Multicall3 discovery)",
@@ -28,7 +28,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "promus-core": "workspace:*",
+    "@promus/core": "workspace:*",
     "viem": "^2.21.55",
     "zod": "^3.23.8"
   }

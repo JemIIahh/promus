@@ -1,8 +1,8 @@
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { type PromusNetwork, applyPerms, applyYolo, explorerTxUrl, newEventId } from 'promus-core'
-import { type ParsedBypass, parseBypassCommand } from 'promus-plugin-telegram'
+import { type PromusNetwork, applyPerms, applyYolo, explorerTxUrl, newEventId } from '@promus/core'
+import { type ParsedBypass, parseBypassCommand } from '@promus/plugin-telegram'
 import type { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import type { ApprovalRelay } from './approval-relay'
@@ -62,7 +62,7 @@ type DrainSource = 'a2a' | 'market'
 /**
  * v0.24.16: shared drain-failure logger. Publishes a structured EventHub
  * `log` event AND mirrors to daemon stderr so silent failures surface in
- * `~/promus-logs/promus-gateway.log` without an SSE subscriber attached.
+ * `~/promus-logs/@promus/gateway.log` without an SSE subscriber attached.
  *
  * Stderr is rate-limited per source: identical messages within
  * `STDERR_DEDUP_WINDOW_MS` only print once, so a stuck drain loop on a
@@ -89,7 +89,7 @@ function logTurnFailure(
 
 export interface RealRuntimeOpts {
   approvals: ApprovalRelay
-  /** Optional override of the agent state directory. Default `${TMPDIR}/promus-gateway/<agentId>`. */
+  /** Optional override of the agent state directory. Default `${TMPDIR}/@promus/gateway/<agentId>`. */
   agentDirRoot?: string
 }
 
@@ -136,7 +136,7 @@ export class RealRuntime implements RuntimeAdapter {
 
   constructor(opts: RealRuntimeOpts) {
     this.#approvals = opts.approvals
-    this.#agentDirRoot = opts.agentDirRoot ?? join(tmpdir(), 'promus-gateway')
+    this.#agentDirRoot = opts.agentDirRoot ?? join(tmpdir(), '@promus/gateway')
   }
 
   async start(opts: {
@@ -540,7 +540,7 @@ export class RealRuntime implements RuntimeAdapter {
   }
 
   async #agentIdFromConfig(config: RuntimeConfig): Promise<string> {
-    const { iNFTAgentId } = await import('promus-core')
+    const { iNFTAgentId } = await import('@promus/core')
     return iNFTAgentId({
       contractAddress: config.identity.iNFT.contract,
       tokenId: BigInt(config.identity.iNFT.tokenId),

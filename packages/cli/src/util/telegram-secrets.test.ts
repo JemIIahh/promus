@@ -8,7 +8,7 @@ import {
   agentPaths,
   deriveBlobKey,
   iNFTAgentId,
-} from 'promus-core'
+} from '@promus/core'
 import { type Address, generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import {
   loadTelegramHandoffSecrets,

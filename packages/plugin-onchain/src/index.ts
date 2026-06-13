@@ -1,5 +1,5 @@
 /**
- * promus-plugin-onchain
+ * @promus/plugin-onchain
  *
  * Brain limbs for on-chain operations (EVM, network-aware):
  *
@@ -22,7 +22,7 @@
  * nothing — graceful no-op for unit-test loaders.
  */
 
-import type { NativePlugin, ToolDef } from 'promus-core'
+import type { NativePlugin, ToolDef } from '@promus/core'
 import { GIMO_BY_NETWORK, JAINE_BY_NETWORK } from './constants'
 import { makeAccountInfo } from './tools/account'
 import { makeAccountBalance } from './tools/account-balance'

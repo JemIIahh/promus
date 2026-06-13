@@ -1,5 +1,5 @@
 import { cancel, isCancel, select, spinner } from '@clack/prompts'
-import { type PromusNetwork, NETWORK_RPC, OGComputeBrain } from 'promus-core'
+import { type PromusNetwork, NETWORK_RPC, OGComputeBrain } from '@promus/core'
 import { formatEther } from 'viem'
 import { shortAddr } from '../../util/format'
 import { withSilencedConsole } from '../../util/silence-console'

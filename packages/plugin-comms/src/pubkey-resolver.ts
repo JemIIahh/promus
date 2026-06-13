@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { type SannClient, derivePubkeyHex, recoverPubkeyFromTx, subnameNode } from 'promus-core'
+import { type SannClient, derivePubkeyHex, recoverPubkeyFromTx, subnameNode } from '@promus/core'
 import { type Address, type Hex, type PublicClient, getAddress, parseAbiItem } from 'viem'
 
 /** PromusInbox `Message` event — `from` is indexed, so logs filter by sender. */

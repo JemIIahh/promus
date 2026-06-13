@@ -10,7 +10,7 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { agentPaths, iNFTAgentId } from 'promus-core'
+import { agentPaths, iNFTAgentId } from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 
@@ -37,7 +37,7 @@ export async function runGatewayLogs(opts: GatewayLogsOpts): Promise<void> {
     console.log(`gateway log not found at ${logFile}`)
     console.log('v0.19.x: gateway daemon logs to stdout when run via `promus gateway run`.')
     console.log(
-      'Background it with: nohup bun packages/gateway/bin/promus-gateway-local > ~/promus-logs/gateway.log 2>&1 &',
+      'Background it with: nohup bun packages/gateway/bin/@promus/gateway-local > ~/promus-logs/gateway.log 2>&1 &',
     )
     return
   }

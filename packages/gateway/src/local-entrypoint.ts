@@ -39,7 +39,7 @@ import {
   getSessionKey,
   iNFTAgentId,
   readOperatorSession,
-} from 'promus-core'
+} from '@promus/core'
 import { type Address, type Hex, getAddress, isAddress } from 'viem'
 import { ApprovalRelay } from './approval-relay'
 import { EventHub } from './events'
@@ -206,7 +206,7 @@ async function main(): Promise<void> {
   // entirely when no telegram secrets present.
   if (secrets?.telegram?.botToken) {
     try {
-      const { clearStaleTelegramTokenLock } = await import('promus-plugin-telegram')
+      const { clearStaleTelegramTokenLock } = await import('@promus/plugin-telegram')
       const cleanup = clearStaleTelegramTokenLock(secrets.telegram.botToken, { agentId })
       if (cleanup.cleared) {
         process.stdout.write(
@@ -225,7 +225,7 @@ async function main(): Promise<void> {
   // Acquire host-wide gateway lock so two `promus gateway run` calls for the
   // same agent can't both bind the socket. 5-minute TTL with refresh below.
   const lockResult = acquireScopedLock({
-    scope: 'promus-gateway',
+    scope: '@promus/gateway',
     identity: agentId,
     ttl: 5 * 60,
   })

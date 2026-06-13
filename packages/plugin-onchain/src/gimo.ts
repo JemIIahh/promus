@@ -9,7 +9,7 @@
  *   - stOG.getRate()           1.281648 ETH per stOG (1e18 fixed-point).
  */
 
-import { getGasPriceWithFloor } from 'promus-core'
+import { getGasPriceWithFloor } from '@promus/core'
 import { type Address, type PublicClient, type WalletClient, pad, parseEventLogs } from 'viem'
 import { GIMO_POOL_ABI, STOG_ABI } from './abis'
 import {

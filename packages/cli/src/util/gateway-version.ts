@@ -43,10 +43,10 @@ export interface VersionCheckResult {
   note?: string
 }
 
-/** Read the version baked into the promus-gateway package on disk. */
+/** Read the version baked into the @promus/gateway package on disk. */
 export function readLocalGatewayVersion(): string | undefined {
   try {
-    const pkgUrl = import.meta.resolve('promus-gateway/package.json')
+    const pkgUrl = import.meta.resolve('@promus/gateway/package.json')
     const pkgPath = fileURLToPath(pkgUrl)
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { version?: string }
     return pkg.version

@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, unlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { agentPaths, iNFTAgentId } from 'promus-core'
+import { agentPaths, iNFTAgentId } from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 
@@ -16,7 +16,7 @@ export interface GatewayStopOpts {
 
 function lockPath(_agentId: string): string {
   // Mirror packages/core/src/locks.ts — `~/.promus/locks/<scope>-<sha256(identity).slice(0,16)>.lock`
-  // For 'promus-gateway' scope. We compute the same hash as the lock module.
+  // For '@promus/gateway' scope. We compute the same hash as the lock module.
   // Easiest: read all lock files and find one matching the agent.
   return join(homedir(), '.promus', 'locks')
 }
@@ -25,7 +25,7 @@ function findGatewayLock(agentId: string): string | null {
   // The lock filename embeds sha256(agentId).slice(0, 16). Compute it.
   const { createHash } = require('node:crypto')
   const identityHash = createHash('sha256').update(agentId).digest('hex').slice(0, 16)
-  const lockFile = join(lockPath(agentId), `promus-gateway-${identityHash}.lock`)
+  const lockFile = join(lockPath(agentId), `@promus/gateway-${identityHash}.lock`)
   return existsSync(lockFile) ? lockFile : null
 }
 

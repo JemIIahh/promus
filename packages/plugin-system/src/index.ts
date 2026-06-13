@@ -1,5 +1,5 @@
 /**
- * promus-plugin-system: battery-included filesystem + shell + skills tools.
+ * @promus/plugin-system: battery-included filesystem + shell + skills tools.
  *
  * Native plugin shape: exports a default `register(ctx)` consumed by promus's
  * loader. The ctx exposes `registerTool`, `registerListener`, `addHook`. Tools
@@ -7,7 +7,7 @@
  * registered tool; chat.tsx hooks `pre_tool_call` to enforce.
  */
 
-import { LocalBackend, type NativePlugin, type ToolDef } from 'promus-core'
+import { LocalBackend, type NativePlugin, type ToolDef } from '@promus/core'
 import {
   findAgentBrowserOrNull,
   makeBrowserBack,

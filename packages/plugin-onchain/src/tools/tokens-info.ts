@@ -5,7 +5,7 @@
  * (cache-write-through). Returns `{symbol, name, address, decimals, source}`.
  */
 
-import type { ToolDef } from 'promus-core'
+import type { ToolDef } from '@promus/core'
 import { z } from 'zod'
 import { isNativeToken, nativeTokenInfo, resolveToken } from '../tokens'
 import type { OnchainRuntimeContext } from '../types'

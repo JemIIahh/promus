@@ -8,7 +8,7 @@ import {
 } from './cost'
 
 describe('estimateCosts (0G stack)', () => {
-  // NOTE: the 0G network path still exists in promus-core but the display
+  // NOTE: the 0G network path still exists in @promus/core but the display
   // strings have been migrated to ETH / Arbitrum branding.
   it('local target: zero sandbox fields', () => {
     const c = estimateCosts({

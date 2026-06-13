@@ -1,4 +1,4 @@
-import type { PermissionRequest } from 'promus-core'
+import type { PermissionRequest } from '@promus/core'
 import { shortAddr } from '../util/format'
 
 /**

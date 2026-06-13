@@ -1,7 +1,7 @@
 /**
  * Bundle B unit tests: spawnGatewayDaemon path. Uses a tiny shell-stub bin
  * that "binds" the socket by simply touching the path then sleeping. We
- * avoid spinning up the real `bun packages/gateway/bin/promus-gateway-local`
+ * avoid spinning up the real `bun packages/gateway/bin/@promus/gateway-local`
  * because that pulls in keystore + viem + 0G SDKs.
  */
 

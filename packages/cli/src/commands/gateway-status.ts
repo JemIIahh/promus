@@ -12,7 +12,7 @@ import {
   iNFTAgentId,
   isOperatorSessionFresh,
   readOperatorSession,
-} from 'promus-core'
+} from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 
@@ -44,7 +44,7 @@ export async function runGatewayStatus(opts: GatewayStatusOpts): Promise<void> {
   const paths = agentPaths.agent(agentId)
   const socketPath = join(paths.dir, 'gateway.sock')
   const identityHash = createHash('sha256').update(agentId).digest('hex').slice(0, 16)
-  const lockFile = join(homedir(), '.promus', 'locks', `promus-gateway-${identityHash}.lock`)
+  const lockFile = join(homedir(), '.promus', 'locks', `@promus/gateway-${identityHash}.lock`)
 
   console.log(`agent:        ${agentId}`)
   console.log(`socket:       ${socketPath} ${existsSync(socketPath) ? '(present)' : '(absent)'}`)

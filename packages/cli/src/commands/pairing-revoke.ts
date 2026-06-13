@@ -1,5 +1,5 @@
 import { confirm, isCancel } from '@clack/prompts'
-import { PairingStore, agentPaths, iNFTAgentId } from 'promus-core'
+import { PairingStore, agentPaths, iNFTAgentId } from '@promus/core'
 import { getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 

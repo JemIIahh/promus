@@ -39,7 +39,7 @@ export interface MemorySyncManagerOpts {
   tokenId: bigint
   /**
    * Override the activity-log path. The gateway daemon writes its live
-   * activity log under `${TMPDIR}/promus-gateway/<id>/activity.jsonl`, not
+   * activity log under `${TMPDIR}/@promus/gateway/<id>/activity.jsonl`, not
    * the legacy `~/.promus/agents/<id>/activity.jsonl`. Without this override
    * /sync would upload the stale legacy file (often megabytes of dead data)
    * and ignore the fresh runtime log. Pass whenever the daemon's agentDir
@@ -49,7 +49,7 @@ export interface MemorySyncManagerOpts {
   /**
    * Override the memory directory base. Same rationale as `activityLogPath`:
    * defaults to `~/.promus/agents/<id>/memory/`, but the daemon writes to
-   * `${TMPDIR}/promus-gateway/<id>/memory/`. Pass the daemon's memoryDir
+   * `${TMPDIR}/@promus/gateway/<id>/memory/`. Pass the daemon's memoryDir
    * here so /sync uploads the live MEMORY.md + agent/identity.md +
    * agent/persona.md, not the legacy on-disk copies.
    */

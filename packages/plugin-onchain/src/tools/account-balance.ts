@@ -12,8 +12,8 @@ import {
   format0G,
   getLedgerDetailReadOnly,
   getSandboxBillingReserve,
-} from 'promus-core'
-import type { ToolDef } from 'promus-core'
+} from '@promus/core'
+import type { ToolDef } from '@promus/core'
 import { http, type Address, createPublicClient } from 'viem'
 import { z } from 'zod'
 import type { OnchainRuntimeContext } from '../types'

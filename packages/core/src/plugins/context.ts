@@ -192,7 +192,7 @@ export async function loadPlugins(
     try {
       const mod = deps.resolve
         ? await deps.resolve(name)
-        : ((await import(`promus-plugin-${name}`)) as {
+        : ((await import(`@promus/plugin-${name}`)) as {
             default?: NativePlugin
           } & Partial<NativePlugin>)
       const plugin: NativePlugin | undefined =

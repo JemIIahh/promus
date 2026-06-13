@@ -16,7 +16,7 @@ import { type ChildProcess, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, openSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { agentPaths } from 'promus-core'
+import { agentPaths } from '@promus/core'
 
 export interface SpawnGatewayDaemonOpts {
   agentId: string
@@ -49,9 +49,9 @@ export interface SpawnGatewayDaemonResult {
 }
 
 export function resolveLocalBin(): string {
-  const pkgUrl = import.meta.resolve('promus-gateway/package.json')
+  const pkgUrl = import.meta.resolve('@promus/gateway/package.json')
   const pkgRoot = dirname(fileURLToPath(pkgUrl))
-  return join(pkgRoot, 'bin', 'promus-gateway-local')
+  return join(pkgRoot, 'bin', '@promus/gateway-local')
 }
 
 export async function spawnGatewayDaemon(

@@ -50,8 +50,8 @@ describe('buildBootstrapScript', () => {
     expect(inner).toContain('curl -fsSL https://bun.sh/install')
     expect(inner).toContain('git clone --depth 1 --branch')
     expect(inner).toContain('bun install --frozen-lockfile')
-    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
-    expect(inner).toContain(`echo "promus-gateway-pid=$HARNESS_PID" > ${BOOTSTRAP_DONE_MARKER}`)
+    expect(inner).toContain('nohup bun "$PROMUS_DIR/packages/gateway/bin/@promus/gateway"')
+    expect(inner).toContain(`echo "@promus/gateway-pid=$HARNESS_PID" > ${BOOTSTRAP_DONE_MARKER}`)
   })
 
   test('frees port 8080 via fuser before harness launch (Daytona snapshot guard)', () => {
@@ -197,7 +197,7 @@ describe('buildBootstrapScript', () => {
   })
 
   test('exposes BOOTSTRAP_SUCCESS_MARKER_PREFIX for callers that grep done file', () => {
-    expect(BOOTSTRAP_SUCCESS_MARKER_PREFIX).toBe('promus-gateway-pid=')
+    expect(BOOTSTRAP_SUCCESS_MARKER_PREFIX).toBe('@promus/gateway-pid=')
   })
 
   test('outer script stays under Daytona request-size ceiling (v0.16.5 was 5340 OK, v0.16.6 was 6136 BROKEN)', () => {
@@ -230,15 +230,15 @@ describe('buildBootstrapScript', () => {
       expect(inner).not.toContain('bun install --frozen-lockfile')
     })
 
-    test('inner subshell exports bun global bin to PATH so promus-gateway resolves', () => {
+    test('inner subshell exports bun global bin to PATH so @promus/gateway resolves', () => {
       const inner = decodeInner(npmOpts)
       expect(inner).toContain('export PATH="$HOME/.bun/install/global/node_modules/.bin:$PATH"')
     })
 
     test('inner subshell launches gateway from global bin (not via bun monorepo path)', () => {
       const inner = decodeInner(npmOpts)
-      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/promus-gateway')
-      expect(inner).not.toContain('bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway"')
+      expect(inner).toContain('nohup $HOME/.bun/install/global/node_modules/.bin/@promus/gateway')
+      expect(inner).not.toContain('bun "$PROMUS_DIR/packages/gateway/bin/@promus/gateway"')
     })
 
     test('browser deps install uses global bin path', () => {

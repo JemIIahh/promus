@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { type PromusConfig, agentPaths } from 'promus-core'
+import { type PromusConfig, agentPaths } from '@promus/core'
 
 /**
  * Load the user's `promus.config.ts`.

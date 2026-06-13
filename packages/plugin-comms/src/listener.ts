@@ -1,4 +1,4 @@
-import { derivePubkeyHex } from 'promus-core'
+import { derivePubkeyHex } from '@promus/core'
 import type { Address, Hex, PublicClient } from 'viem'
 import { ContactStore } from './contacts'
 import type { PromusInboxClient, InboxMessageEvent } from './contract'

@@ -1,4 +1,4 @@
-import { buildSandboxEndpoint } from 'promus-core'
+import { buildSandboxEndpoint } from '@promus/core'
 
 export interface StartHeartbeatOpts {
   sandboxId: string

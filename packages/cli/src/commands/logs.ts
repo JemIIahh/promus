@@ -3,7 +3,7 @@ import {
   SANDBOX_PROVIDER_URL_GALILEO,
   SandboxProviderClient,
   agentPaths,
-} from 'promus-core'
+} from '@promus/core'
 import { findAndLoadConfig } from '../config/load'
 import { pickDefaultAgent } from './_agents'
 import { loadOrPickOperatorSigner } from './init/operator-picker'
@@ -11,7 +11,7 @@ import { extractExecOutput } from './init/sandbox-provision'
 
 export async function runLogs(opts: { agent?: string; tail?: number } = {}): Promise<void> {
   // Phase 11: in sandbox mode the activity log lives in the container at
-  // /var/log/promus-gateway.log. Tail it via toolbox exec.
+  // /var/log/@promus/gateway.log. Tail it via toolbox exec.
   const found = await findAndLoadConfig().catch(() => null)
   if (
     found?.config.deployTarget === 'sandbox' &&
@@ -37,7 +37,7 @@ export async function runLogs(opts: { agent?: string; tail?: number } = {}): Pro
         // Harness logs to ~/promus-logs/ inside the container (daytona user;
         // /var/log needs root). bash -c needed because Daytona exec splits
         // argv-style without a shell.
-        command: `bash -c 'tail -n ${tail} ~/promus-logs/promus-gateway.log'`,
+        command: `bash -c 'tail -n ${tail} ~/promus-logs/@promus/gateway.log'`,
         timeout: 60,
       })
       const out = extractExecOutput(r)

@@ -33,7 +33,7 @@ import {
   decryptOperatorBlob,
   encodeOperatorBlobBytes,
   encryptOperatorBlob,
-} from 'promus-core'
+} from '@promus/core'
 import type { Address } from 'viem'
 
 export interface BrainSecretsPlaintext {

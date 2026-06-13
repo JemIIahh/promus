@@ -1,4 +1,4 @@
-import type { BootstrapMode } from 'promus-gateway'
+import type { BootstrapMode } from '@promus/gateway'
 
 /**
  * Resolve the sandbox bootstrap mode from operator env.

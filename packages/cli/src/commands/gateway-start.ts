@@ -9,7 +9,7 @@
  *   4. Pick operator signer + interactive Touch ID via existing operator-picker
  *   5. Pre-derive scope keys via precomputeAllScopes (keystore + telegram)
  *   6. Write operator-session file (perm 0600, 24h TTL)
- *   7. Spawn promus-gateway-local detached + wait for socket to become readable
+ *   7. Spawn @promus/gateway-local detached + wait for socket to become readable
  *      (proves the daemon booted cleanly)
  *   8. Print pid + socket path
  */
@@ -32,7 +32,7 @@ import {
   tryDecryptKeystoreWithKey,
   tryDecryptOperatorBlobWithKey,
   writeOperatorSession,
-} from 'promus-core'
+} from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { spawnGatewayDaemon } from '../util/gateway-spawn'
@@ -66,7 +66,7 @@ export async function runGatewayStart(opts: GatewayStartOpts): Promise<void> {
     const { createHash } = await import('node:crypto')
     const { homedir } = await import('node:os')
     const identityHash = createHash('sha256').update(agentId).digest('hex').slice(0, 16)
-    const lockFile = join(homedir(), '.promus', 'locks', `promus-gateway-${identityHash}.lock`)
+    const lockFile = join(homedir(), '.promus', 'locks', `@promus/gateway-${identityHash}.lock`)
     const { ensureGatewayVersionMatchesCli } = await import('../util/gateway-version')
     const drift = await ensureGatewayVersionMatchesCli({ socketPath, lockFile })
     if (drift.action === 'ok' || drift.action === 'no-cli-version') {

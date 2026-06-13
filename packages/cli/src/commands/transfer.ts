@@ -16,7 +16,7 @@ import {
   signTransferProof,
   slotIndex,
   waitForReceiptResilient,
-} from 'promus-core'
+} from '@promus/core'
 import { type Address, type Hex, isAddress, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { type ParsedINFTRef, parseINFTRef } from './_inft-ref'

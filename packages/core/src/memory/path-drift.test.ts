@@ -7,7 +7,7 @@ import { makeMemorySaveTool } from './save-tool'
 
 // v0.23.0 Bundle A regression test.
 //
-// Gateway daemon writes restored memory under `${TMPDIR}/promus-gateway/<id>/`
+// Gateway daemon writes restored memory under `${TMPDIR}/@promus/gateway/<id>/`
 // while `agentPaths.agent(id).memoryDir` resolves to `~/.promus/agents/<id>/`.
 // Before the fix, memory.read / memory.save resolved against agentPaths
 // unconditionally, so files the gateway just restored to disk were invisible

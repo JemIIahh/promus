@@ -34,7 +34,7 @@ export interface BuildRelaunchScriptResult {
   script: string
   /** File the caller can tail to read relaunch progress. */
   progressLogPath: string
-  /** File written when relaunch succeeds (line: `promus-gateway-pid=<N>`). */
+  /** File written when relaunch succeeds (line: `@promus/gateway-pid=<N>`). */
   doneMarkerPath: string
   /** File written when relaunch fails. Body contains a short failure keyword. */
   failMarkerPath: string
@@ -71,21 +71,21 @@ export function buildGatewayRelaunchScript(
     'echo "[$(date -u +%FT%TZ)] relaunch-start"',
     // Bootstrap-mode probe. Each container was bootstrapped one of two ways:
     //  - git mode: $HOME/promus/ has the cloned monorepo
-    //  - npm mode: ~/.bun/install/global/node_modules/.bin/promus-gateway exists
+    //  - npm mode: ~/.bun/install/global/node_modules/.bin/@promus/gateway exists
     // Whichever one is present is what we relaunch. If neither, the container
     // snapshot must have lost its install (rare; usually means manual wipe).
     'PROMUS_DIR="$HOME/promus"',
     'GLOBAL_BIN="$HOME/.bun/install/global/node_modules/.bin"',
     'GATEWAY_MODE=""',
-    'if [ -x "$GLOBAL_BIN/promus-gateway" ]; then',
+    'if [ -x "$GLOBAL_BIN/@promus/gateway" ]; then',
     '  GATEWAY_MODE="npm"',
-    '  echo "[mode=npm] launching $GLOBAL_BIN/promus-gateway"',
+    '  echo "[mode=npm] launching $GLOBAL_BIN/@promus/gateway"',
     'elif [ -d "$PROMUS_DIR" ]; then',
     '  GATEWAY_MODE="git"',
-    '  echo "[mode=git] launching bun $PROMUS_DIR/packages/gateway/bin/promus-gateway"',
+    '  echo "[mode=git] launching bun $PROMUS_DIR/packages/gateway/bin/@promus/gateway"',
     'else',
     `  echo "promus-not-installed" > ${FAIL_MARKER}`,
-    '  echo "[fail] no promus install found at $GLOBAL_BIN/promus-gateway nor $PROMUS_DIR; container snapshot may have been wiped"',
+    '  echo "[fail] no promus install found at $GLOBAL_BIN/@promus/gateway nor $PROMUS_DIR; container snapshot may have been wiped"',
     '  exit 21',
     'fi',
     ...env,
@@ -94,9 +94,9 @@ export function buildGatewayRelaunchScript(
     'echo "[launch harness daemon]"',
     'launch_gateway() {',
     '  if [ "$GATEWAY_MODE" = "npm" ]; then',
-    '    nohup "$GLOBAL_BIN/promus-gateway" > "$HOME/promus-logs/promus-gateway.log" 2>&1 &',
+    '    nohup "$GLOBAL_BIN/@promus/gateway" > "$HOME/promus-logs/@promus/gateway.log" 2>&1 &',
     '  else',
-    '    nohup bun "$PROMUS_DIR/packages/gateway/bin/promus-gateway" > "$HOME/promus-logs/promus-gateway.log" 2>&1 &',
+    '    nohup bun "$PROMUS_DIR/packages/gateway/bin/@promus/gateway" > "$HOME/promus-logs/@promus/gateway.log" 2>&1 &',
     '  fi',
     '  HARNESS_PID=$!',
     '  disown',
@@ -114,7 +114,7 @@ export function buildGatewayRelaunchScript(
     '    break',
     '  fi',
     '  echo "[harness died on attempt $h_attempt, log tail:]"',
-    '  tail -n 50 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 50 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     '  if [ $h_attempt -lt 3 ]; then',
     '    echo "[retrying in 5s]"',
     '    sleep 5',
@@ -122,11 +122,11 @@ export function buildGatewayRelaunchScript(
     'done',
     'if [ "$HARNESS_OK" -ne 1 ]; then',
     '  echo "[all 3 harness launch attempts failed, full log dump:]"',
-    '  tail -n 200 "$HOME/promus-logs/promus-gateway.log" 2>/dev/null',
+    '  tail -n 200 "$HOME/promus-logs/@promus/gateway.log" 2>/dev/null',
     `  echo "harness-died-early" > ${FAIL_MARKER}`,
     '  exit 22',
     'fi',
-    `echo "promus-gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
+    `echo "@promus/gateway-pid=$HARNESS_PID" > ${DONE_MARKER}`,
     'echo "[$(date -u +%FT%TZ)] relaunch-done pid=$HARNESS_PID mode=$GATEWAY_MODE"',
   ].join('\n')
 
@@ -149,4 +149,4 @@ export function buildGatewayRelaunchScript(
 export const RELAUNCH_DONE_MARKER = DONE_MARKER
 export const RELAUNCH_FAIL_MARKER = FAIL_MARKER
 export const RELAUNCH_PROGRESS_LOG = PROGRESS_LOG
-export const RELAUNCH_SUCCESS_MARKER_PREFIX = 'promus-gateway-pid='
+export const RELAUNCH_SUCCESS_MARKER_PREFIX = '@promus/gateway-pid='

@@ -1,5 +1,5 @@
 import { cancel, intro, note, outro } from '@clack/prompts'
-import { iNFTAgentId } from 'promus-core'
+import { iNFTAgentId } from '@promus/core'
 import { type Address, getAddress } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { loadOrPickOperatorSigner } from './init/operator-picker'

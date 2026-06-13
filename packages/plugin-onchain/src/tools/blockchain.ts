@@ -2,8 +2,8 @@
  * `chain.block` + `chain.gas` — passive RPC introspection.
  */
 
-import type { ToolDef } from 'promus-core'
-import { getGasPriceWithFloor } from 'promus-core'
+import type { ToolDef } from '@promus/core'
+import { getGasPriceWithFloor } from '@promus/core'
 import { formatGwei } from 'viem'
 import { z } from 'zod'
 import type { OnchainRuntimeContext } from '../types'

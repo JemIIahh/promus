@@ -1,5 +1,5 @@
 import { cancel, intro, outro } from '@clack/prompts'
-import { defineConfig } from 'promus-core'
+import { defineConfig } from '@promus/core'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'
 import { pickBrainModel } from './init/model-picker'

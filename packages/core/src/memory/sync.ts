@@ -25,7 +25,7 @@ export function defaultMemorySyncTargets(
   memoryDirOverride?: string,
 ): SyncTarget[] {
   // Callers in the gateway daemon write memory under a tmpdir-based agent
-  // state path (`${TMPDIR}/promus-gateway/<id>/memory/`), not the legacy
+  // state path (`${TMPDIR}/@promus/gateway/<id>/memory/`), not the legacy
   // `~/.promus/agents/<id>/memory/`. When the daemon's agentDir differs,
   // pass `memoryDirOverride` so /sync reads + uploads the live memory tree
   // instead of stale on-disk leftovers from a prior embedded run.

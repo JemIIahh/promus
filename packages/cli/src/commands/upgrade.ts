@@ -6,7 +6,7 @@ import {
   SANDBOX_PROVIDER_URL_GALILEO,
   SandboxProviderClient,
   iNFTAgentId,
-} from 'promus-core'
+} from '@promus/core'
 import {
   type BootstrapMode,
   UPGRADE_DONE_MARKER,
@@ -15,7 +15,7 @@ import {
   UPGRADE_PROGRESS_LOG,
   UPGRADE_SUCCESS_MARKER_PREFIX,
   buildUpgradeScript,
-} from 'promus-gateway'
+} from '@promus/gateway'
 import type { Address, Hex } from 'viem'
 import { findAndLoadConfig } from '../config/load'
 import { writeConfigTs } from '../config/render'
@@ -289,7 +289,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
     sBox.stop('cannot determine container bootstrap mode (no promus install detected)')
     note(
       [
-        'Container has neither $HOME/promus/.git/ nor a global promus-gateway binary.',
+        'Container has neither $HOME/promus/.git/ nor a global @promus/gateway binary.',
         'The container may have been wiped or never bootstrapped successfully.',
         'Try `promus upgrade --reprovision` to spin a fresh container.',
       ].join('\n'),
@@ -384,7 +384,7 @@ async function runInPlaceUpgrade(args: InPlaceUpgradeArgs): Promise<void> {
   if (expected !== null) {
     const verifyPath =
       probedMode === 'npm'
-        ? '$HOME/.bun/install/global/node_modules/promus-gateway/package.json'
+        ? '$HOME/.bun/install/global/node_modules/@promus/gateway/package.json'
         : '$HOME/promus/packages/gateway/package.json'
     const verifyOut = await execRead(`grep '"version"' ${verifyPath} | head -1`)
     const m = verifyOut.match(/"version"\s*:\s*"([^"]+)"/)
@@ -667,7 +667,7 @@ function sleep(ms: number): Promise<void> {
 /**
  * Single execInToolbox round-trip that probes the container's bootstrap mode
  * by checking filesystem state. Returns 'git' if `$HOME/promus/.git/` exists,
- * 'npm' if global promus-gateway binary exists, or null if neither.
+ * 'npm' if global @promus/gateway binary exists, or null if neither.
  *
  * Used by `runInPlaceUpgrade` so the upgrade script ships only the path it
  * actually needs (auto-detect inside the script blew the 5KB Daytona cap).
@@ -682,7 +682,7 @@ export async function probeContainerBootstrapMode(
   // exec errors, returning '' on failure — matches the previous catch arm.
   const execRead = makeExecRead(provider, sandboxId)
   const out = await execRead(
-    `if [ -d "$HOME/promus/.git" ]; then echo MODE=git; elif [ -x "$HOME/.bun/install/global/node_modules/.bin/promus-gateway" ]; then echo MODE=npm; else echo MODE=none; fi`,
+    `if [ -d "$HOME/promus/.git" ]; then echo MODE=git; elif [ -x "$HOME/.bun/install/global/node_modules/.bin/@promus/gateway" ]; then echo MODE=npm; else echo MODE=none; fi`,
   )
   if (out.includes('MODE=git')) return 'git'
   if (out.includes('MODE=npm')) return 'npm'
