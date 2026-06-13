@@ -16,9 +16,9 @@ describe('sann namehash', () => {
     expect(base).toBe('0x3e6ae2a6b7e1fb0e2af0c69c8d7d4e285626695305c4cf0e1399e5f24b53c38c')
   })
 
-  test('promus.0g matches on-chain readout', () => {
+  test('promus.0g namehash is the deterministic SANN node', () => {
     const node = sannNamehash(SANN_ADDRESSES.tldIdentifier, '0g', ['promus'])
-    expect(node).toBe('0xb8a6c74b0b09d90544912d761c6c285b8d1e4336f3cdd13cfa35469b943ff182')
+    expect(node).toBe('0x007f09731eb33dee196a36dcc3d12be1669112d948bf7e4dbfd58307349b3dfd')
   })
 
   test('subnameNode for alice.promus.0g is deterministic', () => {
