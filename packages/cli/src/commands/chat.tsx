@@ -156,7 +156,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       console.log(`note: ${drift.note}`)
       _socketExisted = false
     }
-    if (!_socketExisted && !forceEmbedded) {
+    if (!_socketExisted && !forceEmbedded && process.env.PROMUS_GATEWAY_AUTO_SPAWN !== '0') {
       // v0.21.12: only auto-spawn the gateway daemon when the cached session
       // contains every scope key the daemon will need. A "fresh by ts" session
       // missing the TELEGRAM scope causes the daemon to silently drop all
@@ -173,7 +173,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
             agentId: _aid,
             configPath: configPath ?? '',
             socketPath: _gatewaySock,
-            timeoutMs: 12_000,
+            timeoutMs: 5_000,
           })
           if (result.ready) {
             sBoot.stop(`gateway running pid=${result.pid}`)
@@ -183,11 +183,11 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
           const reason = result.reason ?? 'unknown'
           const detail = result.error ? `: ${result.error}` : ''
           sBoot.stop(
-            `gateway auto-spawn failed (${reason}${detail}); falling back to embedded mode`,
+            `gateway skipped (${reason}${detail}); running embedded`,
           )
         } catch (err) {
           sBoot.stop(
-            `gateway auto-spawn errored: ${(err as Error).message?.slice(0, 160)}; falling back to embedded mode`,
+            `gateway skipped: ${(err as Error).message?.slice(0, 160)}; running embedded`,
           )
         }
       } else if (isOperatorSessionFresh(_aid)) {
@@ -1623,13 +1623,14 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
         startedAt: new Date().toISOString(),
       }, null, 2))
     } catch {}
-    console.log(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n`)
     try {
       renderer.destroy()
     } catch {}
     try {
       mcpManager?.closeAll()
     } catch {}
+    // Print session info AFTER renderer destroy so it appears on the normal terminal
+    console.log(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n`)
     // Best-effort: kill any background processes registered via shell.process.
     try {
       const { killAllProcesses } = require('promus-plugin-system') as {
