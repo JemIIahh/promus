@@ -6,7 +6,7 @@ import {
   type WalletClient,
   createPublicClient,
 } from 'viem'
-import { NETWORK_RPC } from '../config'
+import { NETWORK_RPC } from '../../config'
 import { SANDBOX_SERVING_ABI, SANDBOX_SETTLEMENT_GALILEO } from './abi'
 
 export interface SettlementClientOpts {
