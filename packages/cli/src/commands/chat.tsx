@@ -156,7 +156,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       console.log(`note: ${drift.note}`)
       _socketExisted = false
     }
-    if (!_socketExisted && !forceEmbedded && process.env.PROMUS_GATEWAY_AUTO_SPAWN === '1') {
+    if (!_socketExisted && !forceEmbedded) {
       // v0.21.12: only auto-spawn the gateway daemon when the cached session
       // contains every scope key the daemon will need. A "fresh by ts" session
       // missing the TELEGRAM scope causes the daemon to silently drop all
