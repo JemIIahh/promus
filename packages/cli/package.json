@@ -1,0 +1,52 @@
+{
+  "name": "@s0nderlabs/promus",
+  "version": "0.24.17",
+  "type": "module",
+  "description": "Promus CLI: sovereign agent gateway on Arbitrum. Runs `promus init` to mint an iNFT and bring up your agent",
+  "license": "MIT",
+  "homepage": "https://github.com/JemIIahh/promus",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JemIIahh/promus.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/JemIIahh/promus/issues"
+  },
+  "keywords": ["arbitrum", "promus", "agent", "ai", "cli", "tui", "sovereign", "gateway", "inft"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "bun": ">=1.1"
+  },
+  "files": ["src", "bin", "README.md"],
+  "bin": {
+    "promus": "./bin/promus",
+    "anima": "./bin/promus"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.8.2",
+    "@opentui/core": "^0.1.97",
+    "@opentui/solid": "^0.1.97",
+    "@s0nderlabs/promus-core": "workspace:*",
+    "@s0nderlabs/promus-gateway": "workspace:*",
+    "@s0nderlabs/promus-plugin-comms": "workspace:*",
+    "@s0nderlabs/promus-plugin-onchain": "workspace:*",
+    "@s0nderlabs/promus-plugin-system": "workspace:*",
+    "@s0nderlabs/promus-plugin-telegram": "workspace:*",
+    "picocolors": "^1.1.1",
+    "qrcode-terminal": "^0.12.0",
+    "solid-js": "^1.9.12",
+    "viem": "^2.21.55"
+  },
+  "devDependencies": {
+    "@types/qrcode-terminal": "^0.12.2"
+  }
+}

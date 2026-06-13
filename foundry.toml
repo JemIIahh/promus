@@ -1,0 +1,31 @@
+[profile.default]
+src = "contracts/src"
+out = "contracts/out"
+libs = ["contracts/lib"]
+cache_path = "contracts/cache"
+test = "contracts/test"
+script = "contracts/script"
+solc = "0.8.28"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+evm_version = "cancun"
+
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = true
+
+[rpc_endpoints]
+og_mainnet = "https://evmrpc.0g.ai"
+og_testnet = "https://evmrpc-testnet.0g.ai"
+arbitrum_sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
+robinhood_testnet = "https://rpc.testnet.chain.robinhood.com"
+
+[etherscan]
+# Chainscan (0G) doesn't expose a verify API. Arbitrum Sepolia verifies via
+# Arbiscan (Etherscan V2 API, needs ARBISCAN_API_KEY); Robinhood verifies via
+# Blockscout (no API key). See docs/ARBITRUM-DEPLOY.md for the exact commands.
+arbitrum_sepolia = { key = "${ARBISCAN_API_KEY}", chain = 421614, url = "https://api-sepolia.arbiscan.io/api" }
+
+# See https://book.getfoundry.sh for config reference

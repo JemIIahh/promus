@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Bun
+# NOTE: commit bun.lock for reproducible CI installs (frozen-lockfile)
+# bun.lock
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+broadcast/
+lcov.info
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+
+# Claude context (local only)
+.claude/
+CLAUDE.md
+
+# Logs
+*.log
+
+# Local agent state (per-machine, never committed)
+.anima/
+anima.config.ts
+
+# Test fixtures with private keys
+test/fixtures/keys/
+
+# Local integration tests (real API calls, may contain secrets/findings).
+# tmux-*.ts drivers + the _tmux.ts helper ARE committed — they're CI gates
+# that drive real `anima` sessions via tmux send-keys. Everything else
+# (phase scripts, fund-audit, swap-keystore, findings dumps) stays local.
+test/local/*
+!test/local/tmux-*.ts
+!test/local/_tmux.ts
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Local design mocks (HTML/CSS prototypes, not part of the published harness)
+mock/
+
+# Next.js build outputs (apps/web)
+apps/web/.next/
+apps/web/.vercel/
+apps/web/out/
+.vercel

@@ -1,0 +1,45 @@
+{
+  "name": "anima",
+  "version": "0.24.17",
+  "private": true,
+  "type": "module",
+  "description": "Sovereign AI agents on Arbitrum — identity, memory, brain, and wallet as an on-chain entity",
+  "repository": "github.com/JemIIahh/anima",
+  "license": "MIT",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "bun run --filter='*' build",
+    "typecheck": "tsc -b",
+    "test": "bun test --timeout 30000 packages/*/src",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "fix": "biome check --write .",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "bun run build && changeset publish",
+    "anima": "bun packages/cli/bin/anima",
+    "test:cache": "bun test/local/prompt-cache.test.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.10",
+    "@types/bun": "^1.1.14",
+    "@types/node": "^22.10.2",
+    "@s0nderlabs/promus-core": "workspace:*",
+    "@s0nderlabs/promus-plugin-telegram": "workspace:*",
+    "@0glabs/0g-serving-broker": "^0.7.5",
+    "@opentui/core": "^0.1.97",
+    "@opentui/solid": "^0.1.97",
+    "ethers": "^6.13.0",
+    "solid-js": "^1.9.12",
+    "viem": "^2.21.55",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@0gfoundation/0g-ts-sdk": "1.2.6",
+    "agent-browser": "^0.26.0"
+  },
+  "overrides": {
+    "viem": "2.48.8"
+  }
+}
