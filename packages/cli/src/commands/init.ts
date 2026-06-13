@@ -9,53 +9,42 @@ import {
   log,
   note,
   outro,
+  password,
   select,
   spinner,
   text,
 } from '@clack/prompts'
 import {
   type PromusNetwork,
-  PromusRegistrarClient,
   NETWORK_CHAIN_ID,
   NETWORK_CURRENCY,
   NETWORK_RPC,
   OPERATOR_BLOB_SCOPES,
   type OperatorSessionKeys,
-  SannClient,
   agentPaths,
   buildOperatorSession,
   defineConfig,
-  derivePubkeyHex,
   explorerTokenUrl,
   explorerTxUrl,
   generateAgentWallet,
   getGasPriceWithFloor,
   iNFTAgentId,
-  isLabelTaken,
-  isOgNetwork,
-  mainnetReadOnlyClient,
   mintAgent,
-  openComputeLedger,
   placeholderAgentId,
   precomputeAllScopes,
   saveKeystoreLocally,
-  subnameNode,
   uploadAndAnchorKeystore,
-  validateSubnameLabel,
   waitForReceiptResilient,
   writeOperatorSession,
 } from 'promus-core'
 import { type Address, type Hex, formatEther, hexToBytes, parseEther } from 'viem'
 import { writeConfigTs } from '../config/render'
-import { BootstrapProgressController } from '../util/bootstrap-progress-box'
-import { resolveCliVersion } from '../util/cli-version'
 import { withSilencedConsole } from '../util/silence-console'
+import { saveBrainSecrets } from '../util/brain-secrets'
 import { loadTelegramHandoffSecrets } from '../util/telegram-secrets'
 import { estimateCosts, renderCostSummary } from './init/cost'
 import { fundingGate } from './init/funding-gate'
-import { pickBrainModel } from './init/model-picker'
 import { pickOperatorSigner } from './init/operator-picker'
-import { type SandboxProvisionResult, runSandboxProvision } from './init/sandbox-provision'
 import { initialWizardState, updateWizardState, writeWizardState } from './init/wizard-state'
 
 export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promise<void> {
@@ -80,10 +69,6 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
 
   // ─── Phase A: local prompts (no chain, no wallet) ───────────────────────
 
-  // Brain backend: Claude when ANTHROPIC_API_KEY is set (Arbitrum-native path),
-  // else the legacy 0G Compute flow.
-  const useAnthropic = !!process.env.ANTHROPIC_API_KEY
-
   const network = (await select({
     message: 'Which network?',
     options: [
@@ -97,124 +82,67 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     return
   }
 
-  // Phase A.5 (Phase 11): pick deploy target. local = harness on this machine
-  // while CLI runs; sandbox = harness in 0G Sandbox TDX TEE on Galileo testnet
-  // (Hybrid Path 1 — iNFT/wallet/Storage/Compute on mainnet, container on
-  // Galileo). Sandbox mode requires the operator to also hold testnet 0G for
-  // the provider deposit (~1 0G initial, ~0.09 0G/hour burn; free via faucet).
-  // 0G Sandbox (TDX TEE) is a 0G-only deploy target; on the Anthropic/Arbitrum
-  // path the harness runs locally.
-  const deployTarget: 'local' | 'sandbox' | symbol = useAnthropic
-    ? 'local'
-    : await select({
-        message: 'Where will this agent run?',
-        options: [
-          { value: 'local' as const, label: 'Local (this machine, always-on while CLI is open)' },
-          {
-            value: 'sandbox' as const,
-            label: '0G Sandbox (Galileo TDX TEE, persistent)',
-            hint: 'free testnet 0G via faucet (~1 0G initial, ~0.09 0G/h burn)',
-          },
-        ],
-        initialValue: 'local',
-      })
-  if (isCancel(deployTarget)) {
+  // Deploy target is always local on the Arbitrum path.
+  const deployTarget = 'local' as const
+  const requestedSubname = ''
+
+  // ─── Brain provider + model picker ──────────────────────────────────────
+  const brainProvider = (await select({
+    message: 'Which AI provider?',
+    options: [
+      { value: 'anthropic' as const, label: 'Anthropic (Claude)' },
+      { value: 'openai' as const, label: 'OpenAI (GPT)' },
+      { value: 'google' as const, label: 'Google (Gemini)' },
+    ],
+    initialValue: 'anthropic' as const,
+  })) as 'anthropic' | 'openai' | 'google' | symbol
+  if (isCancel(brainProvider)) {
     cancel('Aborted.')
     return
   }
 
-  // The `.promus.0g` subname is a 0G Space ID name service. It only exists on
-  // the 0G chains, so skip the whole step on Arbitrum-family networks.
-  let requestedSubname = ''
-  if (isOgNetwork(network)) {
-    const sub = (await text({
-      message: 'Subname under promus.0g (leave blank to skip)',
-      placeholder: 'e.g. alice',
-      validate: v => {
-        if (!v) return undefined
-        const r = validateSubnameLabel(v)
-        return r.ok ? undefined : `Subname invalid: ${r.reason ?? 'rejected'}`
-      },
-    })) as string | symbol
-    if (isCancel(sub)) {
-      cancel('Aborted.')
-      return
-    }
-    requestedSubname = (sub as string) || ''
+  const modelPick = { provider: brainProvider, model: null as string | null }
 
-    if (requestedSubname) {
-      const sAvail = spinner()
-      sAvail.start(`Checking ${requestedSubname}.promus.0g availability on mainnet`)
-      try {
-        const taken = await isLabelTaken(mainnetReadOnlyClient(), requestedSubname)
-        if (taken) {
-          sAvail.stop(`${requestedSubname}.promus.0g is already claimed`)
-          cancel('Pick a different subname and re-run.')
-          return
-        }
-        sAvail.stop(`${requestedSubname}.promus.0g is available`)
-      } catch (e) {
-        sAvail.stop(`availability check failed: ${(e as Error).message.slice(0, 80)}`)
-        const proceedAnyway = await confirm({
-          message: 'Availability check failed. Proceed anyway?',
-          initialValue: false,
-        })
-        if (isCancel(proceedAnyway) || !proceedAnyway) {
-          cancel('Aborted.')
-          return
-        }
-      }
-    }
-  }
-
-  // The Claude brain reads its key + model from the environment — no 0G
-  // provider/model catalog to fetch or pick.
-  const modelPick = useAnthropic ? null : await pickBrainModel({ network })
-  if (!useAnthropic && !modelPick) {
-    const keepGoing = await confirm({
-      message: 'Model catalog unavailable; continue and pick later?',
-      initialValue: true,
-    })
-    if (isCancel(keepGoing) || !keepGoing) {
-      cancel('Aborted.')
-      return
-    }
-  }
-
-  // No 0G compute ledger on the Anthropic path — inference is billed off-chain.
-  const ledgerChoice: number | symbol = useAnthropic
-    ? 0
-    : await select({
-        message: 'How much to deposit in your compute ledger?',
-        options: [
-          { value: 3, label: 'Starter  3 0G', hint: 'contract minimum, just trying it' },
-          { value: 10, label: 'Standard 10 0G', hint: 'comfortable first-month runway' },
-          { value: 30, label: 'Extended 30 0G', hint: 'multi-month float, heavy users' },
-          { value: -1, label: 'Custom' },
-        ],
-        initialValue: 10,
-      })
-  if (isCancel(ledgerChoice)) {
+  // ─── Brain API key (encrypted at rest) ──────────────────────────────────
+  const providerLabel = brainProvider === 'anthropic' ? 'Anthropic' : brainProvider === 'openai' ? 'OpenAI' : 'Google'
+  const apiKeyPrompt = (await password({
+    message: `${providerLabel} API key (stored encrypted, never in .env)`,
+    mask: '*',
+  })) as string | symbol
+  if (isCancel(apiKeyPrompt) || !apiKeyPrompt) {
     cancel('Aborted.')
     return
   }
-  let ledgerSize: number = ledgerChoice as number
-  if (ledgerSize === -1) {
-    const custom = (await text({
-      message: 'Custom deposit amount (0G, minimum 3)',
-      placeholder: '10',
-      validate: v => {
-        const n = Number(v)
-        if (!Number.isFinite(n)) return 'Must be a number.'
-        if (n < 3) return 'Minimum 3 0G (contract enforced).'
-        return undefined
-      },
+
+  // ─── Storage backend picker ─────────────────────────────────────────────
+  const storageBackend = (await select({
+    message: 'Storage backend?',
+    options: [
+      { value: 'ipfs' as const, label: 'IPFS (Kubo local node)' },
+    ],
+    initialValue: 'ipfs' as const,
+  })) as 'ipfs' | symbol
+  if (isCancel(storageBackend)) {
+    cancel('Aborted.')
+    return
+  }
+
+  let ipfsApiUrl = 'http://127.0.0.1:5001'
+  let ipfsGateway = 'http://127.0.0.1:8080/ipfs'
+  if (storageBackend === 'ipfs') {
+    const customUrl = (await text({
+      message: 'IPFS API URL',
+      initialValue: 'http://127.0.0.1:5001',
     })) as string | symbol
-    if (isCancel(custom)) {
-      cancel('Aborted.')
-      return
-    }
-    ledgerSize = Number(custom)
+    if (isCancel(customUrl)) { cancel('Aborted.'); return }
+    ipfsApiUrl = customUrl || 'http://127.0.0.1:5001'
+
+    const customGw = (await text({
+      message: 'IPFS gateway URL (trailing /ipfs)',
+      initialValue: 'http://127.0.0.1:8080/ipfs',
+    })) as string | symbol
+    if (isCancel(customGw)) { cancel('Aborted.'); return }
+    ipfsGateway = customGw || 'http://127.0.0.1:8080/ipfs'
   }
 
   // ─── Phase B: wallet gate ────────────────────────────────────────────────
@@ -236,21 +164,16 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   }
 
   const costs = estimateCosts({
-    ledgerSizeOg: ledgerSize,
-    withSubname: !!requestedSubname,
-    deployTarget: deployTarget as 'local' | 'sandbox',
+    ledgerSizeOg: 0,
+    withSubname: false,
+    deployTarget: 'local',
     network,
   })
-  note(
-    renderCostSummary(costs),
-    costs.lean ? `cost summary (${costs.currency} L2 gas)` : 'cost summary (0G ~$0.50)',
-  )
+  note(renderCostSummary(costs), `cost summary (${costs.currency} L2 gas)`)
 
   const publicClient = await operator.publicClient(network)
   const operatorBalance = await publicClient.getBalance({ address: operatorAddress })
 
-  // The Anthropic path never opens a 0G compute ledger.
-  let skipLedger = useAnthropic
   if (operatorBalance < costs.totalOperator) {
     const need = costs.totalOperator - operatorBalance
     note(
@@ -267,7 +190,6 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
       await operator.close?.()
       return
     }
-    if (gate.kind === 'skip-ledger') skipLedger = true
   }
 
   const proceed = await confirm({ message: 'Proceed?', initialValue: true })
@@ -342,13 +264,16 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   let operatorKeys: OperatorSessionKeys
   let keystoreKeyBuf: Buffer
   let profileScopeKeyHex: `0x${string}` | undefined
+  let brainScopeKeyHex: `0x${string}` | undefined
   try {
     operatorKeys = await precomputeAllScopes(operator, agent.address as Address, [
       OPERATOR_BLOB_SCOPES.PROFILE,
+      OPERATOR_BLOB_SCOPES.BRAIN,
     ])
     keystoreKeyBuf = Buffer.from(hexToBytes(operatorKeys.keystore))
     const profileHex = operatorKeys[OPERATOR_BLOB_SCOPES.PROFILE]
     profileScopeKeyHex = profileHex as `0x${string}` | undefined
+    brainScopeKeyHex = operatorKeys[OPERATOR_BLOB_SCOPES.BRAIN] as `0x${string}` | undefined
     sKeys.stop('scope keys derived')
   } catch (e) {
     sKeys.stop(`scope key derive failed: ${(e as Error).message.slice(0, 160)}`)
@@ -382,12 +307,34 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     return
   }
 
+  // ─── Save encrypted brain secrets ────────────────────────────────────────
+  const sBrain = spinner()
+  sBrain.start('Encrypting brain secrets (API key + storage config)')
+  try {
+    const brainKeyBuf = brainScopeKeyHex
+      ? Buffer.from(hexToBytes(brainScopeKeyHex))
+      : undefined
+    await saveBrainSecrets({
+      signer: operator,
+      agentAddress: agent.address as Address,
+      agentId: finalAgentId,
+      plaintext: {
+        provider: brainProvider,
+        apiKey: apiKeyPrompt,
+        model: modelPick.model ?? undefined,
+        ipfsApiUrl,
+        ipfsGateway,
+      },
+      precomputedKey: brainKeyBuf,
+    })
+    sBrain.stop('brain secrets encrypted')
+  } catch (e) {
+    sBrain.stop(`brain secrets save failed: ${(e as Error).message.slice(0, 120)}`)
+    // Non-fatal: user can re-run init or set .env as fallback
+  }
+
   const sFund = spinner()
-  // Lean stack: seed the small ETH float from the cost model (the agent EOA pays
-  // its own anchors). 0G stack: the legacy 0.1 0G + compute-ledger size.
-  const fundingAmount = costs.lean
-    ? costs.agentFloat
-    : parseEther('0.1') + parseEther(String(ledgerSize))
+  const fundingAmount = costs.agentFloat
   sFund.start(`Funding agent ${agent.address} with ${formatEther(fundingAmount)} ${costs.currency}`)
   try {
     const opWc = await operator.walletClient(network)
@@ -417,7 +364,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
 
   const sPersist = spinner()
   sPersist.start(
-    `Uploading keystore to ${costs.lean ? 'IPFS' : '0G Storage'} + anchoring on chain`,
+    `Uploading keystore to IPFS + anchoring on chain`,
   )
   let keystorePersisted = false
   try {
@@ -446,7 +393,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
         `iNFT #${mintedTokenId!.toString()} is minted, agent EOA is funded with ${formatEther(fundingAmount)} ${costs.currency},`,
         `and the encrypted keystore is on disk at ${paths.keystore}.`,
         '',
-        `The ${costs.lean ? 'IPFS' : '0G Storage'} upload + chain anchor failed, so this machine has`,
+        `The IPFS upload + chain anchor failed, so this machine has`,
         'a working agent but no on-chain recovery path yet. The funds at',
         `${agent.address} are NOT stranded; operator wallet ${operatorAddress}`,
         'can decrypt the local keystore and resume the agent.',
@@ -477,85 +424,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     console.warn(`operator-session write skipped: ${(e as Error).message.slice(0, 160)}`)
   }
 
-  if (!skipLedger) {
-    const sLedger = spinner()
-    sLedger.start(`Opening 0G Compute ledger with ${ledgerSize} 0G`)
-    try {
-      const status = await withSilencedConsole(() =>
-        openComputeLedger({
-          network,
-          privkeyHex: agent.privkeyHex as Hex,
-          initialBalance: ledgerSize,
-          providerAddress: modelPick?.provider,
-        }),
-      )
-      await updateWizardState(paths.dir, draft => {
-        draft.steps.ledgerOpenedTx = true
-      })
-      sLedger.stop(
-        status.alreadyExisted
-          ? `ledger topped up: ${formatEther(status.totalBalanceAfter)} 0G`
-          : `ledger opened: ${formatEther(status.totalBalanceAfter)} 0G`,
-      )
-    } catch (e) {
-      sLedger.stop(`ledger open failed: ${(e as Error).message.slice(0, 120)}`)
-    }
-  }
-
-  let registeredSubname: string | null = null
-  if (requestedSubname && mintedTokenId !== null && contractAddress) {
-    const sSub = spinner()
-    sSub.start(`Registering ${requestedSubname}.promus.0g on mainnet`)
-    try {
-      registeredSubname = await withSilencedConsole(async () => {
-        const registrar = new PromusRegistrarClient({ privkeyHex: agent.privkeyHex as Hex })
-        const sann = new SannClient({ privkeyHex: agent.privkeyHex as Hex })
-        if (await registrar.isLabelTaken(requestedSubname)) return null
-        const claimTx = await registrar.claim(requestedSubname, agent.address as Address)
-        await registrar.waitForReceipt(claimTx)
-        await updateWizardState(paths.dir, draft => {
-          draft.steps.subnameClaimedTx = claimTx
-        })
-        const node = subnameNode(requestedSubname)
-        const addrTx = await sann.setText(node, 'address', agent.address)
-        await sann.waitForReceipt(addrTx)
-        const inftTx = await sann.setText(
-          node,
-          'agent:inft',
-          `eip155:${NETWORK_CHAIN_ID[network]}:${contractAddress}:${mintedTokenId.toString()}`,
-        )
-        await sann.waitForReceipt(inftTx)
-        // Publish the agent's secp256k1 uncompressed pubkey so other agents
-        // can ECIES-encrypt to this agent for A2A messaging (Phase 7).
-        const pubkeyTx = await sann.setText(
-          node,
-          'pubkey',
-          derivePubkeyHex(agent.privkeyHex as Hex),
-        )
-        await sann.waitForReceipt(pubkeyTx)
-        await updateWizardState(paths.dir, draft => {
-          draft.steps.textRecordsSetTx = pubkeyTx
-        })
-        sSub.stop(
-          `${requestedSubname}.promus.0g registered → ${explorerTxUrl('0g-mainnet', claimTx)}`,
-        )
-        return requestedSubname
-      })
-      if (registeredSubname === null) {
-        sSub.stop(`skipping: ${requestedSubname}.promus.0g was claimed mid-flow`)
-      }
-    } catch (e) {
-      sSub.stop(`subname registration failed: ${(e as Error).message.slice(0, 120)}`)
-    }
-  }
-
-  // v0.24.17: seed canonical memory starter files AFTER the SANN claim resolves
-  // so identity.md + persona.md reflect the VERIFIED subname, not the operator's
-  // intent. If the claim races or reverts, registeredSubname stays null and the
-  // seed falls back to the generic "I am promus" template. Prior to v0.24.17 the
-  // seed ran before the claim with `requestedSubname`, so a failed claim left
-  // the agent confidently anchoring "I am chou" on slots 1+2 during the first
-  // chat turn even though chain disagreed.
+  // Seed canonical memory starter files.
   await seedStarterMemoryFiles({
     paths,
     network,
@@ -565,7 +434,6 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     operatorAddress,
     brainProvider: modelPick?.provider ?? null,
     brainModel: modelPick?.model ?? null,
-    subname: registeredSubname,
   })
 
   // v0.24.4: Phase E (Telegram bot setup) MUST run before Phase 11 (sandbox
@@ -589,7 +457,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
           configPath,
           // Synthetic partial cfg — caller writes the final cfg below. Pass
           // skipConfigWrite=true so telegram-step doesn't touch disk.
-          config: { plugins: [], subname: registeredSubname } as never,
+          config: { plugins: [] } as never,
           network,
           skipConfigWrite: true,
         })
@@ -620,7 +488,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
         }
       } catch (e) {
         note(
-          `Telegram step failed: ${(e as Error).message.slice(0, 200)}\nIdentity + iNFT + subname are safe. Re-run \`promus telegram setup\` later.`,
+          `Telegram step failed: ${(e as Error).message.slice(0, 200)}\nIdentity + iNFT are safe. Re-run \`promus telegram setup\` later.`,
           'non-fatal',
         )
       }
@@ -640,83 +508,6 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
       tokenId: mintedTokenId,
       onNotice: msg => note(msg, 'telegram handoff (non-fatal)'),
     })
-  }
-
-  // Phase 11: deploy harness into 0G Sandbox if user picked sandbox target.
-  // Runs AFTER Phase E so handoff envelope can ship TG secrets to the
-  // container. Sandbox boots with `listeners.telegram: active` first try.
-  let sandboxResult: SandboxProvisionResult | null = null
-  if (deployTarget === 'sandbox' && mintedTokenId !== null && contractAddress && modelPick) {
-    const sBox = spinner()
-    sBox.start('Deploying harness into 0G Sandbox (Galileo testnet)')
-    const boxCtl = new BootstrapProgressController({
-      spinner: sBox,
-      cliVersion: await resolveCliVersion(),
-      startedMsg: 'sandbox started, running bootstrap',
-    })
-    try {
-      sandboxResult = await runSandboxProvision({
-        operator,
-        agentPrivkey: agent.privkeyHex as Hex,
-        agentAddress: agent.address as Address,
-        iNFTRef: { contract: contractAddress, tokenId: mintedTokenId },
-        brain: { provider: modelPick.provider as Address, model: modelPick.model ?? '' },
-        iNFTNetwork: network,
-        name: requestedSubname || 'promus',
-        ref: process.env.PROMUS_BOOTSTRAP_REF ?? 'main',
-        subname: registeredSubname,
-        profileScopeKeyHex,
-        telegramSecrets: telegramHandoff,
-        onProgress: boxCtl.onProgress,
-        onStageEvent: boxCtl.onStageEvent,
-        onTick: boxCtl.onTick,
-      })
-      await updateWizardState(paths.dir, draft => {
-        draft.steps.sandboxId = sandboxResult!.sandboxId
-        draft.steps.sandboxEndpoint = sandboxResult!.endpoint
-      })
-      boxCtl.finalize(`sandbox ${sandboxResult.sandboxId} ready @ ${sandboxResult.endpoint}`, msg =>
-        log.step(msg),
-      )
-
-      // Publish agent:endpoint text record on the subname so the chat client
-      // can discover where to talk. Skipped if subname registration failed.
-      if (registeredSubname) {
-        const sEp = spinner()
-        sEp.start(`Publishing agent:endpoint on ${registeredSubname}.promus.0g`)
-        try {
-          await withSilencedConsole(async () => {
-            const sann = new SannClient({ privkeyHex: agent.privkeyHex as Hex })
-            const tx = await sann.setText(
-              subnameNode(registeredSubname!),
-              'agent:endpoint',
-              sandboxResult!.endpoint,
-            )
-            await sann.waitForReceipt(tx)
-          })
-          sEp.stop('agent:endpoint published')
-        } catch (e) {
-          sEp.stop(`agent:endpoint publish failed: ${(e as Error).message.slice(0, 120)}`)
-        }
-      }
-    } catch (e) {
-      boxCtl.fail(`sandbox deploy failed: ${(e as Error).message.slice(0, 200)}`, msg =>
-        log.error(msg),
-      )
-      note(
-        [
-          'iNFT minted, agent funded, keystore on 0G Storage, recoverable.',
-          'Re-run `promus deploy` after fixing the sandbox-side issue.',
-          `Likely cause: insufficient testnet 0G at ${operatorAddress}, or provider 504/upstream timeout.`,
-        ].join('\n'),
-        'sandbox-deploy aborted (recoverable)',
-      )
-    }
-  } else if (deployTarget === 'sandbox') {
-    note(
-      'sandbox target selected but iNFT mint or model pick was missing; skipping handoff.',
-      'sandbox deploy skipped',
-    )
   }
 
   // ─── Write final config ─────────────────────────────────────────────────
@@ -746,19 +537,10 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     tools: {},
     imports: { claudeCode: true },
     operator: operatorHint,
-    deployTarget: sandboxResult ? 'sandbox' : 'local',
-    sandbox: sandboxResult
-      ? {
-          id: sandboxResult.sandboxId,
-          endpoint: sandboxResult.endpoint,
-          providerAddress: sandboxResult.providerAddress,
-          snapshotName: sandboxResult.snapshotName,
-        }
-      : undefined,
+    deployTarget: 'local' as const,
   })
   await writeConfigTs(configPath, cfg, {
     header: '// Regenerated by `promus init`. Edit freely; type-safe.',
-    subname: registeredSubname,
   })
 
   await operator.close?.()
@@ -773,17 +555,13 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     `  network    ${network} (${NETWORK_RPC[network]})`,
     `  chain id   ${NETWORK_CHAIN_ID[network]}`,
     `  config     ${configPath}`,
-    `  keystore   on ${costs.lean ? 'IPFS' : '0G Storage'} (cached at ${paths.keystore})`,
+    `  keystore   on IPFS (cached at ${paths.keystore})`,
   ]
   if (mintedTokenId !== null && contractAddress) {
     lines.push(`  iNFT       #${mintedTokenId.toString()} at ${contractAddress}`)
     lines.push(`             ${explorerTokenUrl(network, contractAddress, mintedTokenId)}`)
   }
-  if (registeredSubname) lines.push(`  subname    ${registeredSubname}.promus.0g (mainnet)`)
-  if (modelPick) lines.push(`  brain      ${modelPick.model ?? '?'} (${modelPick.provider})`)
-  else if (useAnthropic)
-    lines.push(`  brain      ${process.env.ANTHROPIC_MODEL || 'claude-opus-4-8'} (Claude)`)
-  if (!skipLedger) lines.push(`  ledger     ${ledgerSize} 0G`)
+  if (modelPick) lines.push(`  brain      ${modelPick.model ?? modelPick.provider}`)
   if (telegramConfigured) {
     lines.push(`  bot        @${telegramConfigured.botUsername} (mode: ${telegramConfigured.mode})`)
   }
@@ -803,20 +581,13 @@ interface SeedStarterOpts {
   operatorAddress: Address
   brainProvider: string | null
   brainModel: string | null
-  /**
-   * Operator-chosen SANN label (e.g. "chou" for `chou.promus.0g`). Threaded
-   * into identity + persona so the agent introduces itself by name on the
-   * very first turn instead of the generic "I am Promus" template.
-   */
-  subname: string | null
 }
 
 /**
  * Seed `MEMORY.md`, `/agent/identity.md`, `/agent/persona.md`, and
  * `/user/profile.md` immediately after mint so the per-turn sync manager
  * has real content for the identity / persona / memory-index slots on the
- * first chat turn. Without this, those slots stay bootstrap-placeholder
- * forever (gap discovered during the Phase 6.7 stress test).
+ * first chat turn.
  */
 async function seedStarterMemoryFiles(opts: SeedStarterOpts): Promise<void> {
   const memDir = opts.paths.memoryDir
@@ -826,17 +597,8 @@ async function seedStarterMemoryFiles(opts: SeedStarterOpts): Promise<void> {
   await mkdir(userMem, { recursive: true })
 
   const now = new Date().toISOString().slice(0, 10)
-  const displayName = opts.subname ?? 'promus'
-  const fullName = opts.subname ? `${opts.subname}.promus.0g` : null
-  const identityTitle = opts.subname
-    ? `# ${opts.subname} identity (Promus)`
-    : '# Promus identity'
-  const subnameLine = fullName ? `- Subname: ${fullName}\n` : ''
-  const personaIntro = fullName
-    ? `I am ${displayName} (${fullName}), a sovereign agent running on the Promus harness on Arbitrum.`
-    : 'I am Promus, a sovereign on-chain agent on Arbitrum.'
-  const identity = `---\nname: identity\ndescription: Auto-written agent identity facts.\ntype: agent-identity\n---\n${identityTitle}\n\n- Name: ${displayName}\n${subnameLine}- iNFT: #${opts.tokenId.toString()} at ${opts.contractAddress} (${opts.network})\n- Agent EOA: ${opts.agentAddress}\n- Operator: ${opts.operatorAddress}\n- Minted: ${now}\n${opts.brainProvider ? `- Brain provider: ${opts.brainProvider}\n` : ''}${opts.brainModel ? `- Brain model: ${opts.brainModel}\n` : ''}`
-  const persona = `---\nname: persona\ndescription: Voice + behavior style.\ntype: agent-persona\n---\n# Persona\n\n${personaIntro} I anchor my state on chain every turn, decrypt my keystore via my operator wallet at session start, and reason on Claude. I am direct, concise, and factual. When asked who I am, I introduce myself as ${displayName}.\n`
+  const identity = `---\nname: identity\ndescription: Auto-written agent identity facts.\ntype: agent-identity\n---\n# Promus identity\n\n- Name: promus\n- iNFT: #${opts.tokenId.toString()} at ${opts.contractAddress} (${opts.network})\n- Agent EOA: ${opts.agentAddress}\n- Operator: ${opts.operatorAddress}\n- Minted: ${now}\n${opts.brainProvider ? `- Brain provider: ${opts.brainProvider}\n` : ''}${opts.brainModel ? `- Brain model: ${opts.brainModel}\n` : ''}`
+  const persona = `---\nname: persona\ndescription: Voice + behavior style.\ntype: agent-persona\n---\n# Persona\n\nI am Promus, a sovereign on-chain agent on Arbitrum. I anchor my state on chain every turn, decrypt my keystore via my operator wallet at session start, and reason with my configured AI provider. I am direct, concise, and factual.\n`
   const profile =
     '---\nname: profile\ndescription: User profile (operator-scoped, never anchored on chain).\ntype: user\n---\n# User profile\n\n(empty, fills as we chat)\n'
 
