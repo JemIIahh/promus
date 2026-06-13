@@ -415,7 +415,7 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
   //     re-derivation).
   //   - First sync after init can encrypt + anchor the PROFILE slot
   //     transparently — operator never needs to run `promus profile init`.
-  // requiredScopesForAgent now returns ['keystore', 'promus-profile-v1']
+  // requiredScopesForAgent now returns ['keystore', 'anima-profile-v1']
   // because seedStarterMemoryFiles just wrote user/profile.md.
   try {
     const sess = buildOperatorSession({ agent: agent.address as Address, keys: operatorKeys })

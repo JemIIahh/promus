@@ -101,7 +101,7 @@ describe('WalletConnectOperatorSigner', () => {
 
     const account = await s.account()
     await account.signTypedData({
-      domain: { name: 'Promus Keystore', version: '1' },
+      domain: { name: 'Anima Keystore', version: '1' },
       types: {
         AgentKeystore: [
           { name: 'agent', type: 'address' },
@@ -109,7 +109,7 @@ describe('WalletConnectOperatorSigner', () => {
         ],
       },
       primaryType: 'AgentKeystore',
-      message: { agent: fakeAddr, purpose: 'promus-keystore-v1' },
+      message: { agent: fakeAddr, purpose: 'anima-keystore-v1' },
     })
     expect(capturedPayloads.length).toBe(1)
     const sent = JSON.parse(capturedPayloads[0]!)
@@ -119,7 +119,7 @@ describe('WalletConnectOperatorSigner', () => {
     ])
     // primaryType + message preserved
     expect(sent.primaryType).toBe('AgentKeystore')
-    expect(sent.message.purpose).toBe('promus-keystore-v1')
+    expect(sent.message.purpose).toBe('anima-keystore-v1')
   })
 
   test('signTypedData omits absent domain fields from EIP712Domain (only name+version when those are all that is set)', async () => {
@@ -188,7 +188,7 @@ describe('WalletConnectOperatorSigner', () => {
     const legacy = (account as any).signTypedDataLegacyEmptyDomain
     expect(typeof legacy).toBe('function')
     await legacy({
-      domain: { name: 'Promus Keystore', version: '1' },
+      domain: { name: 'Anima Keystore', version: '1' },
       types: {
         AgentKeystore: [
           { name: 'agent', type: 'address' },
@@ -196,7 +196,7 @@ describe('WalletConnectOperatorSigner', () => {
         ],
       },
       primaryType: 'AgentKeystore',
-      message: { agent: fakeAddr, purpose: 'promus-keystore-v1' },
+      message: { agent: fakeAddr, purpose: 'anima-keystore-v1' },
     })
     expect(capturedPayloads.length).toBe(1)
     const sent = JSON.parse(capturedPayloads[0]!)

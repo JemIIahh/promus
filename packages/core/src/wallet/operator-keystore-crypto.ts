@@ -21,7 +21,7 @@ import type { OperatorSigner } from '../operator/signer'
  * for EIP-712. So the same operator account always regenerates the same key.
  *
  * Phishing protection: EIP-712 typed data shows the wallet UI a structured
- * "Promus Keystore" message (not an opaque hex blob), so a malicious site can't
+ * "Anima Keystore" message (not an opaque hex blob), so a malicious site can't
  * prompt the operator to sign this thinking it's a login.
  *
  * Format:
@@ -30,7 +30,13 @@ import type { OperatorSigner } from '../operator/signer'
  */
 export const OPERATOR_KEYSTORE_VERSION = 2 as const
 
-const KS_DOMAIN = { name: 'Promus Keystore', version: '1' } as const
+// DO NOT RENAME these constants. They are cryptographic domain-separation
+// parameters baked into the operator signature + HKDF that derive every
+// keystore/blob AES key. They are NEVER displayed (raw-privkey signs silently),
+// so the legacy `anima-*` / "Anima Keystore" strings carry no branding — they
+// are the key. Renaming them (e.g. anima->promus) silently breaks decryption of
+// every keystore + telegram/profile blob ever encrypted, with no migration.
+const KS_DOMAIN = { name: 'Anima Keystore', version: '1' } as const
 const KS_TYPES = {
   AgentKeystore: [
     { name: 'agent', type: 'address' },
@@ -38,8 +44,8 @@ const KS_TYPES = {
   ],
 } as const
 const KS_PRIMARY = 'AgentKeystore' as const
-const KS_PURPOSE = 'promus-keystore-v1'
-const HKDF_INFO_KEYSTORE = Buffer.from('promus-keystore-aead-v1', 'utf8')
+const KS_PURPOSE = 'anima-keystore-v1'
+const HKDF_INFO_KEYSTORE = Buffer.from('anima-keystore-aead-v1', 'utf8')
 
 /**
  * Scope strings used as the EIP-712 `purpose` field. New scopes get their own
@@ -48,9 +54,12 @@ const HKDF_INFO_KEYSTORE = Buffer.from('promus-keystore-aead-v1', 'utf8')
  * Phase 12 / Phase 13 needs them.
  */
 export const OPERATOR_BLOB_SCOPES = {
-  KEYSTORE: 'promus-keystore-v1',
-  TELEGRAM: 'promus-telegram-v1',
-  PROFILE: 'promus-profile-v1',
+  // DO NOT RENAME existing scopes — these strings ARE the per-scope key
+  // derivation; renaming breaks decryption of every blob encrypted under them.
+  // (BRAIN is new in this version, so it has no prior on-disk data to break.)
+  KEYSTORE: 'anima-keystore-v1',
+  TELEGRAM: 'anima-telegram-v1',
+  PROFILE: 'anima-profile-v1',
   BRAIN: 'promus-brain-v1',
 } as const
 export type OperatorBlobScope =
@@ -156,7 +165,9 @@ function isAesGcmAuthError(e: unknown): boolean {
 }
 
 function hkdfInfoForScope(scope: OperatorBlobScope): Buffer {
-  return Buffer.from(`promus-aead-${scope}`, 'utf8')
+  // DO NOT RENAME the `anima-aead-` prefix — it is the per-scope HKDF info that
+  // derives the AEAD key. Renaming breaks decryption of every existing blob.
+  return Buffer.from(`anima-aead-${scope}`, 'utf8')
 }
 
 async function deriveScopedKey(

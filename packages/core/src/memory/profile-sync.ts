@@ -20,7 +20,7 @@ import {
  *     encrypted with the AGENT key (derived from the agent's privkey).
  *     They transfer WITH the iNFT (TEE re-encrypt path).
  *   - slot 'profile' is encrypted with the OPERATOR-derived scoped key
- *     (HKDF over EIP-712 sig, scope `promus-profile-v1`). The agent privkey
+ *     (HKDF over EIP-712 sig, scope `anima-profile-v1`). The agent privkey
  *     alone CANNOT decrypt. Only the CURRENT operator can.
  *
  * Privacy invariant: profile slot purges (zeroed) on `iTransferFrom` so a

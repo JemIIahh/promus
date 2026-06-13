@@ -6,7 +6,7 @@
  *
  *   {
  *     version: 2,
- *     scope: 'promus-telegram-v1',
+ *     scope: 'anima-telegram-v1',
  *     blob: <base64(iv|tag|ciphertext)>,
  *   }
  *
