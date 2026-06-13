@@ -267,7 +267,7 @@ export class RealRuntime implements RuntimeAdapter {
     })
     const durationMs = Date.now() - startedAt
 
-    // Per-turn sync flush is BACKGROUND. Chain anchor on 0G mainnet takes
+    // Per-turn sync flush is BACKGROUND. Chain anchor on Arbitrum mainnet takes
     // 30-60s; awaiting here would block the /chat HTTP response past Bun
     // fetch's idle timeout. The TUI subscribes to the `sync-flush` SSE
     // event for the txHash. Same pattern as the a2a/market drains below.

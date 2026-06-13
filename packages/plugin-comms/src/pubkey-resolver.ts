@@ -40,7 +40,7 @@ export interface PubkeyResolverOpts {
   /**
    * PromusInbox address. When set, raw 0x recipients resolve trustlessly:
    * find a Message they sent (`from` is indexed) and recover their secp256k1
-   * pubkey from that tx — no name service required. The non-0G path.
+   * pubkey from that tx — no name service required. The non-name path.
    */
   inboxAddress?: Address
 }

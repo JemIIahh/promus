@@ -1,5 +1,5 @@
 /**
- * Mainnet-verified contract addresses for 0G Aristotle (chain 16661).
+ * Mainnet-verified contract addresses for Arbitrum (chain 16661).
  * All four core protocols below were probed live on May 1 2026 with successful
  * txs; see memory `phase-10-design-locked.md` for the cast verifications.
  */
@@ -10,7 +10,7 @@ import type { Address } from 'viem'
 /** Multicall3 universal address — same on every EVM chain that has it. */
 export const MULTICALL3: Address = '0xcA11bde05977b3631167028862bE2a173976CA11'
 
-/** JAINE protocol contracts (Uniswap V3 softfork on 0G). */
+/** JAINE protocol contracts (Uniswap V3 softfork on Arbitrum). */
 export interface JaineAddresses {
   factory: Address
   swapRouter: Address
@@ -32,7 +32,7 @@ export const JAINE_BY_NETWORK: Record<PromusNetwork, JaineAddresses | null> = {
     weth9: '0x1Cd0690fF9a693f5EF2dD976660a8dAFc81A109c',
   },
   '0g-testnet': null, // Not deployed; testnet uses different addresses (chain 16601 deployment)
-  'arbitrum-sepolia': null, // Jaine is a 0G DEX — no deployment on Arbitrum.
+  'arbitrum-sepolia': null, // Jaine is an Arbitrum DEX — not yet deployed.
   'robinhood-testnet': null,
 }
 
@@ -42,7 +42,7 @@ export const GIMO_BY_NETWORK: Record<PromusNetwork, GimoAddresses | null> = {
     stog: '0x7bbc63d01ca42491c3e084c941c3e86e55951404',
   },
   '0g-testnet': null,
-  'arbitrum-sepolia': null, // Gimo is a 0G DEX — no deployment on Arbitrum.
+  'arbitrum-sepolia': null, // Gimo is an Arbitrum staking protocol — not yet deployed.
   'robinhood-testnet': null,
 }
 
@@ -57,12 +57,12 @@ export const DEFAULT_DEADLINE_SECS = 600n
 export const DEFAULT_SLIPPAGE_BPS = 50
 
 /** Hard floor for Gimo stake; below this `pool.stake()` reverts with 0x41524be2. */
-export const MIN_STAKE_WEI = 10_000_000_000_000_000n // 0.01 0G
+export const MIN_STAKE_WEI = 10_000_000_000_000_000n // 0.01 ETH
 
 /** Gimo unstake cooldown observed across 8 user pairs: 63-74h, ~72h centroid. */
 export const GIMO_COOLDOWN_SECS = 72n * 60n * 60n
 
-/** Block-range chunk size for `eth_getLogs`. 50k chunks safe on 0G mainnet RPC. */
+/** Block-range chunk size for `eth_getLogs`. 50k chunks safe on Arbitrum RPC. */
 export const LOG_SCAN_CHUNK_BLOCKS = 50_000n
 
 /** keccak256("Transfer(address,address,uint256)") — ERC-20/721 Transfer topic0. */
@@ -85,7 +85,7 @@ export const ERC165_INTERFACES = {
 } as const
 
 /** Symbols the brain may say in lieu of "native" / address. */
-export const NATIVE_ALIASES = new Set(['0G', 'OG', 'native', '0g', 'og'])
+export const NATIVE_ALIASES = new Set(['ETH', 'eth', 'native', '0G', 'OG', '0g', 'og'])
 
 /** Gimo's `withdraw()` revert selector for cooldown-not-elapsed. */
 export const GIMO_COOLDOWN_REVERT_SELECTOR = '0xd6d9e665'

@@ -21,7 +21,7 @@ export interface OnchainRuntimeContext {
   brainProvider?: string | null
   brainModel?: string | null
   /** Optional: live compute ledger balance reader. */
-  brokerLedger?: { balance0G: () => Promise<number | null> }
+  brokerLedger?: { balanceETH: () => Promise<number | null> }
   /** Agent's `.promus.0g` subname when registered. Surfaces in account.info. */
   subname?: string | null
   /** Agent's uncompressed secp256k1 pubkey hex (no 0x04 prefix). Used for A2A. */

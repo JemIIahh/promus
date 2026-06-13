@@ -347,7 +347,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // fresh OGComputeBrain on the SAME provider/model with a custom system
   // prompt. Tools default to none for delegated work; the parent calls
   // delegate.task only when isolation matters.
-  // Brain backend: Claude when ANTHROPIC_API_KEY is set, else 0G Compute.
+  // Brain backend: Claude when ANTHROPIC_API_KEY is set, else Promus Brain.
   const useAnthropic = !!process.env.ANTHROPIC_API_KEY
   const delegateFactory: import('promus-core').DelegateBrainFactory = async ({
     systemPrompt,
@@ -803,7 +803,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       .catch(() => {})
   }
   const refreshBalances = () => {
-    // Compute-ledger balance is a 0G-only concept; the Anthropic brain bills
+    // Compute-ledger balance is brain-specific; the Anthropic brain bills
     // off-chain, so there's no on-chain ledger to display.
     if (brain instanceof OGComputeBrain) {
       brain
@@ -819,7 +819,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   permission.setPrompter(req => {
     return new Promise<PermissionDecision>(resolve => {
       // Value-moving onchain ops carry amount/recipient/token so we render a
-      // friendlier "send 0.05 0G to 0xC635...87Ec" instead of a raw command.
+      // friendlier "send 0.05 ETH to 0xC635...87Ec" instead of a raw command.
       const detail =
         req.amount !== undefined
           ? `${req.amount}${req.token ? ` ${req.token}` : ''}${req.recipient ? ` to ${req.recipient}` : ''}`
@@ -866,7 +866,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   bootSpinner.start(
     useAnthropic
       ? `Connecting to Claude (${config.brain?.model ?? 'claude-opus-4-8'})`
-      : `Connecting to 0G Compute (${shortAddr(config.brain.provider!)})`,
+      : `Connecting to brain (${shortAddr(config.brain.provider!)})`,
   )
   const persistConversations = config.brain?.persistConversations !== false
   const brainOpts = {
@@ -1011,7 +1011,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
   // Initial balances for the status bar (best-effort, never blocks boot).
   refreshBalances()
 
-  // Redirect noisy SDK chatter (0G storage progress, ethers RPC errors) to a
+  // Redirect noisy SDK chatter (IPFS storage progress, ethers RPC errors) to a
   // log file so it doesn't fall through opentui's alt-screen and pollute the
   // chat UI. Keep process.stdout intact - opentui itself needs to write there.
   const { createWriteStream } = await import('node:fs')
@@ -1357,7 +1357,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
           cached: turn.usage.cachedTokens,
         })
       }
-      // Per-turn auto-sync: upload changed memory + activity-log to 0G Storage,
+      // Per-turn auto-sync: upload changed memory + activity-log to IPFS,
       // anchor in iNFT. Fire-and-forget; chat doesn't wait. Errors surface
       // as a system row every turn — repetition is the signal that a real
       // upstream issue persists, not noise to suppress.
@@ -1424,7 +1424,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
       return true
     }
     if (cmd === '/sync') {
-      state.pushRow({ role: 'system', text: 'force-syncing memory + activity to 0G…' })
+      state.pushRow({ role: 'system', text: 'force-syncing memory + activity to IPFS…' })
       try {
         const res = await sync.flushAll()
         if (res.txHash) {
@@ -1488,7 +1488,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
         } else {
           const lines = jobs.map(
             j =>
-              `  job#${j.jobId} · ${j.role}${j.counterparty ? ` w/ ${shortAddr(j.counterparty)}` : ''} · ${j.amount0g} 0G · ${j.status}`,
+              `  job#${j.jobId} · ${j.role}${j.counterparty ? ` w/ ${shortAddr(j.counterparty)}` : ''} · ${j.amount0g} ETH · ${j.status}`,
           )
           state.pushRow({
             role: 'system',
@@ -1502,7 +1502,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     }
     if (cmd === '/help') {
       const builtins =
-        "  /sync                force memory + activity flush to 0G\n  /jobs                list active escrow jobs\n  /model               switch brain (run promus model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /exit                quit promus (drains 0G storage flush, releases process)\n  /help                this message"
+        "  /sync                force memory + activity flush to IPFS\n  /jobs                list active escrow jobs\n  /model               switch brain (run promus model after exiting)\n  /yolo                toggle approval prompts off/on for this session\n  /perms <mode>        set permission mode (off|prompt|strict); no arg shows current\n  /reset               clear this channel's conversation history\n  /exit                quit promus (drains IPFS storage flush, releases process)\n  /help                this message"
       const claudeBlock =
         commandIndex.size === 0
           ? ''
@@ -1628,7 +1628,7 @@ async function runModelPicker(
   configPath: string,
 ): Promise<PromusConfig | null> {
   const s = spinner()
-  s.start('Fetching live 0G Compute catalog')
+  s.start('Fetching live brain catalog')
   let services: Awaited<ReturnType<typeof OGComputeBrain.listServicesFor>> = []
   try {
     services = await OGComputeBrain.listServicesFor({
@@ -1720,12 +1720,12 @@ const PERMISSION_DESCRIBERS: Record<string, (a: PermArgs) => PermissionRequest |
   'fs.write': a => ({ kind: 'fs.write', path: _str(a.path), reason: 'fs.write request' }),
   'fs.patch': a => ({ kind: 'fs.patch', path: _str(a.path), reason: 'fs.patch request' }),
   // Phase 10: value-moving on-chain tools. Pre-fill amount/recipient/token
-  // so the modal renders "send 0.05 0G to 0xC635..." not a raw command.
+  // so the modal renders "send 0.05 ETH to 0xC635..." not a raw command.
   'chain.send': a => ({
     kind: 'chain.send',
     amount: _strOpt(a.amount) ?? '?',
     recipient: _strOpt(a.to) ?? '?',
-    token: _strOpt(a.token) ?? '0G',
+    token: _strOpt(a.token) ?? 'ETH',
     reason: 'native/ERC-20 transfer',
   }),
   'swap.execute': a => ({
@@ -1737,30 +1737,30 @@ const PERMISSION_DESCRIBERS: Record<string, (a: PermArgs) => PermissionRequest |
   'chain.wrap': a => ({
     kind: 'chain.send',
     amount: _strOpt(a.amount) ?? '?',
-    token: '0G→W0G',
-    reason: 'wrap native to W0G',
+    token: 'ETH→WETH',
+    reason: 'wrap native to WETH',
   }),
   'chain.unwrap': a => ({
     kind: 'chain.send',
     amount: _strOpt(a.amount) ?? '?',
-    token: 'W0G→0G',
-    reason: 'unwrap W0G to native',
+    token: 'WETH→ETH',
+    reason: 'unwrap WETH to native',
   }),
   'stake.stake': a => ({
     kind: 'chain.stake',
     amount: _strOpt(a.amount) ?? '',
-    token: '0G→stOG',
+    token: 'ETH→stOG',
     reason: 'Gimo stake',
   }),
   'stake.unstake': a => ({
     kind: 'chain.stake',
     amount: _strOpt(a.amountStog) ?? '',
-    token: 'stOG→0G (queued)',
+    token: 'stOG→ETH (queued)',
     reason: 'Gimo unstake',
   }),
   'stake.claim': () => ({
     kind: 'chain.stake',
-    token: 'claim queued 0G',
+    token: 'claim queued ETH',
     reason: 'Gimo claim',
   }),
   'chain.write': a => ({

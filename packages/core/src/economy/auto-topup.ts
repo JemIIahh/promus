@@ -2,7 +2,7 @@
  * v0.21.0 auto-topup manager.
  *
  * The agent funds its own bills out of its EOA. Currently this manager
- * only watches the COMPUTE provider envelope on 0G mainnet. When the
+ * only watches the COMPUTE provider envelope on Arbitrum. When the
  * envelope drops below `compute.lowThreshold`, the manager refills it
  * by:
  *
@@ -31,11 +31,11 @@ export interface AutoTopupOpts {
   pollIntervalMs?: number
   compute?: {
     /**
-     * If the per-provider envelope (in 0G) drops below this threshold, fire a
-     * topup. Default 0.5 0G.
+     * If the per-provider envelope (in ETH) drops below this threshold, fire a
+     * topup. Default 0.5 ETH.
      */
     lowThreshold?: number
-    /** Amount (in 0G) to deposit + transfer per topup. Default 1.0 0G. */
+    /** Amount (in ETH) to deposit + transfer per topup. Default 1.0 ETH. */
     topUpAmount?: number
     /** Max successful topups per provider per UTC day. Default 5. */
     maxPerDay?: number
@@ -44,14 +44,14 @@ export interface AutoTopupOpts {
   }
   wallet?: {
     /**
-     * If the agent EOA balance drops below this threshold (in 0G), emit a
+     * If the agent EOA balance drops below this threshold (in ETH), emit a
      * `wallet-low` event so the operator gets notified. Notification only,
-     * no action. Default 2.0 0G.
+     * no action. Default 2.0 ETH.
      */
     notifyThreshold?: number
     /**
      * Don't attempt a topup if doing so would leave the agent EOA with less
-     * than this 0G after the deposit (gas buffer). Default 0.1 0G.
+     * than this ETH after the deposit (gas buffer). Default 0.1 ETH.
      */
     minRetainedAfterTopup?: number
   }
@@ -61,7 +61,7 @@ const DEFAULT_OPTS = {
   enabled: true,
   pollIntervalMs: 5 * 60 * 1000,
   // lowThreshold raised from 0.5 → 1.7: per-inference cost on qwen3.6-plus
-  // locks ~1.6 0G in the provider sub-account before the call runs. 0.5
+  // locks ~1.6 ETH in the provider sub-account before the call runs. 0.5
   // left zero headroom and the brain failed mid-turn with "sub-account
   // short" before auto-topup ever fired. 1.7 keeps a thin margin above the
   // typical lock without firing aggressively when the envelope is in the
@@ -345,7 +345,7 @@ export class AutoTopupManager {
       this.#deps.onEvent({
         kind: 'topup-failed',
         ts,
-        message: `compute envelope low (${weiToOg(availableWei).toFixed(3)} 0G) but daily cap reached (${todayCount}/${this.#opts.maxPerDay})`,
+        message: `compute envelope low (${weiToOg(availableWei).toFixed(3)} ETH) but daily cap reached (${todayCount}/${this.#opts.maxPerDay})`,
         data: {
           provider: this.#opts.provider,
           envelope: 'compute',
@@ -373,7 +373,7 @@ export class AutoTopupManager {
       this.#deps.onEvent({
         kind: 'topup-failed',
         ts,
-        message: `compute envelope low (${weiToOg(availableWei).toFixed(3)} 0G) but agent wallet too thin (${weiToOg(walletWei).toFixed(3)} 0G); will retry in ${Math.round(this.#insufficientWalletCooldownMs / 60_000)} min`,
+        message: `compute envelope low (${weiToOg(availableWei).toFixed(3)} ETH) but agent wallet too thin (${weiToOg(walletWei).toFixed(3)} ETH); will retry in ${Math.round(this.#insufficientWalletCooldownMs / 60_000)} min`,
         data: {
           provider: this.#opts.provider,
           envelope: 'compute',
@@ -418,7 +418,7 @@ export class AutoTopupManager {
     this.#deps.onEvent({
       kind: 'topup-fired',
       ts,
-      message: `compute envelope topped up by ${this.#opts.topUpAmount} 0G (was ${weiToOg(availableWei).toFixed(3)} 0G)`,
+      message: `compute envelope topped up by ${this.#opts.topUpAmount} ETH (was ${weiToOg(availableWei).toFixed(3)} ETH)`,
       data: {
         provider: this.#opts.provider,
         envelope: 'compute',
@@ -442,7 +442,7 @@ export class AutoTopupManager {
       this.#deps.onEvent({
         kind: 'wallet-low',
         ts,
-        message: `agent wallet below ${this.#opts.notifyThreshold} 0G (current: ${weiToOg(walletWei).toFixed(3)} 0G)`,
+        message: `agent wallet below ${this.#opts.notifyThreshold} ETH (current: ${weiToOg(walletWei).toFixed(3)} ETH)`,
         data: {
           walletBalance: weiToOg(walletWei),
           notifyThreshold: this.#opts.notifyThreshold,

@@ -1,7 +1,7 @@
 /**
  * promus-plugin-comms
  *
- * A2A messaging via PromusInbox singleton on 0G Chain. Encrypts to recipient
+ * A2A messaging via PromusInbox singleton on Arbitrum. Encrypts to recipient
  * pubkey published via .0g text record; decrypts inbound via the agent's own
  * privkey; pushes envelope-decoded events to the brain queue. The plugin
  * registers 11 brain limbs and one gateway listener.
@@ -10,7 +10,7 @@
  *   - agentEoa, agentPrivkeyHex
  *   - publicClient, walletClient
  *   - sann (readText)
- *   - storage (put / get on 0G Storage)
+ *   - storage (put / get on IPFS)
  *   - inboxAddress (PromusInbox singleton)
  *   - startBlock (catch-up floor, e.g. iNFT mint block)
  *   - onDeliver, onOperatorNotice (gateway hooks)

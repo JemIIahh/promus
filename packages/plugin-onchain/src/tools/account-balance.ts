@@ -3,7 +3,7 @@
  *
  * Why this is separate from `account.info`: identity bundles want a small
  * payload; balance questions want every envelope expanded. EOA-only answers
- * under-count by ~10x because compute envelopes (locked in 0G provider
+ * under-count by ~10x because compute envelopes (locked in provider
  * sub-accounts) are usually larger than the EOA itself.
  */
 
@@ -57,13 +57,13 @@ export function makeAccountBalance(ctx: OnchainRuntimeContext): ToolDef<Args> {
         // ctx.publicClient is bound to config.network; explicitly create per-chain
         // clients so an agent on testnet still gets distinct mainnet vs testnet reads.
         const mainnetClient =
-          ctx.network === '0g-mainnet'
+          ctx.network === 'arbitrum-sepolia'
             ? ctx.publicClient
-            : createPublicClient({ transport: http(NETWORK_RPC['0g-mainnet']) })
+            : createPublicClient({ transport: http(NETWORK_RPC['arbitrum-sepolia']) })
         const testnetClient =
-          ctx.network === '0g-testnet'
+          ctx.network === 'arbitrum-sepolia'
             ? ctx.publicClient
-            : createPublicClient({ transport: http(NETWORK_RPC['0g-testnet']) })
+            : createPublicClient({ transport: http(NETWORK_RPC['arbitrum-sepolia']) })
 
         const [eoaMainnetWei, eoaTestnetWei, ledger, sandboxReserve] = await Promise.all([
           mainnetClient.getBalance({ address: ctx.agentEoa }).catch(() => 0n),

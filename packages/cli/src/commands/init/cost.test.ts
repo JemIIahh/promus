@@ -8,6 +8,8 @@ import {
 } from './cost'
 
 describe('estimateCosts (0G stack)', () => {
+  // NOTE: the 0G network path still exists in promus-core but the display
+  // strings have been migrated to ETH / Arbitrum branding.
   it('local target: zero sandbox fields', () => {
     const c = estimateCosts({
       ledgerSizeOg: 3,
@@ -95,7 +97,7 @@ describe('renderCostSummary (0G stack)', () => {
       network: '0g-mainnet',
     })
     const out = renderCostSummary(c)
-    expect(out).toContain('operator spend (0G mainnet)')
+    expect(out).toContain('operator spend (Arbitrum mainnet)')
     expect(out).toContain('mint + setApprovalForAll')
     expect(out).toContain('compute ledger deposit')
     expect(out).not.toContain('sandbox spend')
@@ -111,12 +113,11 @@ describe('renderCostSummary (0G stack)', () => {
       network: '0g-mainnet',
     })
     const out = renderCostSummary(c)
-    expect(out).toContain('sandbox spend (Galileo testnet 0G, free via faucet):')
+    expect(out).toContain('sandbox spend (Arbitrum testnet, free via faucet):')
     expect(out).toContain('initial provider deposit')
     expect(out).toContain('runtime burn')
-    expect(out).toContain('1 0G')
-    expect(out).toContain('0.09 0G/h')
-    expect(out).toContain('faucet.0g.ai')
+    expect(out).toContain('1 ETH')
+    expect(out).toContain('0.09 ETH/h')
     expect(out).toContain('auto-topup')
     expect(out).toContain('runway')
   })
@@ -129,7 +130,7 @@ describe('renderCostSummary (0G stack)', () => {
       network: '0g-mainnet',
     })
     const out = renderCostSummary(c)
-    // 1 0G / 0.09 0G/h = 11.11h
+    // 1 ETH / 0.09 ETH/h = 11.11h
     expect(out).toMatch(/~11\.[0-9]h runway/)
   })
 
@@ -141,14 +142,14 @@ describe('renderCostSummary (0G stack)', () => {
       network: '0g-mainnet',
     })
     const out = renderCostSummary(c)
-    // Testnet 0G is free — USD col should read ($0.00)
-    expect(out).toMatch(/initial provider deposit\s+1 0G\s+\(\$0\.00\)/)
-    expect(out).not.toMatch(/initial provider deposit\s+1 0G\s+\(\$0\.50\)/)
+    // Testnet ETH is free — USD col should read ($0.00)
+    expect(out).toMatch(/initial provider deposit\s+1 ETH\s+\(\$0\.00\)/)
+    expect(out).not.toMatch(/initial provider deposit\s+1 ETH\s+\(\$0\.50\)/)
   })
 })
 
 describe('renderCostSummary (lean stack)', () => {
-  it('ETH gas only: no 0G economy lines', () => {
+  it('ETH gas only: no economy lines', () => {
     const c = estimateCosts({
       ledgerSizeOg: 0,
       withSubname: false,

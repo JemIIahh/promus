@@ -206,7 +206,7 @@ function describePermissionCheck(call: { name: string; args: unknown }): Permiss
         kind: 'chain.send',
         amount: optStr(a.amount) ?? '?',
         recipient: optStr(a.to) ?? '?',
-        token: optStr(a.token) ?? '0G',
+        token: optStr(a.token) ?? 'ETH',
         reason: 'native/ERC-20 transfer',
       }
     case 'swap.execute':
@@ -220,32 +220,32 @@ function describePermissionCheck(call: { name: string; args: unknown }): Permiss
       return {
         kind: 'chain.send',
         amount: optStr(a.amount) ?? '?',
-        token: '0G→W0G',
-        reason: 'wrap native to W0G',
+        token: 'ETH→WETH',
+        reason: 'wrap native to WETH',
       }
     case 'chain.unwrap':
       return {
         kind: 'chain.send',
         amount: optStr(a.amount) ?? '?',
-        token: 'W0G→0G',
-        reason: 'unwrap W0G to native',
+        token: 'WETH→ETH',
+        reason: 'unwrap WETH to native',
       }
     case 'stake.stake':
       return {
         kind: 'chain.stake',
         amount: optStr(a.amount) ?? '',
-        token: '0G→stOG',
+        token: 'ETH→stETH',
         reason: 'Gimo stake',
       }
     case 'stake.unstake':
       return {
         kind: 'chain.stake',
         amount: optStr(a.amountStog) ?? '',
-        token: 'stOG→0G (queued)',
+        token: 'stETH→ETH (queued)',
         reason: 'Gimo unstake',
       }
     case 'stake.claim':
-      return { kind: 'chain.stake', token: 'claim queued 0G', reason: 'Gimo claim' }
+      return { kind: 'chain.stake', token: 'claim queued ETH', reason: 'Gimo claim' }
     case 'chain.write':
       return {
         kind: 'chain.write',
@@ -304,7 +304,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
   await mkdir(`${memoryDir}/agent`, { recursive: true })
   await mkdir(`${memoryDir}/user`, { recursive: true })
 
-  // Phase 11.5: rehydrate anchored memory + activity-log from 0G Storage
+  // Phase 11.5: rehydrate anchored memory + activity-log from IPFS
   // before the brain reads its frozen prefix. Per-slot best-effort; missing
   // or failed slots log a warning but never block boot. Local non-empty
   // files always win, protecting writes that haven't flushed to chain yet.
@@ -339,7 +339,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
   }
 
   // v0.22.0: lazy retry for boot-time restore failures. If any slot stayed
-  // 'failed' after the 3-attempt in-boot retry (transient 0G Storage indexer
+  // 'failed' after the 3-attempt in-boot retry (transient IPFS indexer
   // degradation), the next chat turn fires another `restoreMemoryFromChain`
   // call (single-flight). `restoreMemoryFromChain` is idempotent — already-
   // restored slots get `status: 'skipped', reason: 'local-wins'` and don't
@@ -429,7 +429,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
     }
   })
 
-  // Brain backend: use Claude when ANTHROPIC_API_KEY is present, else 0G Compute.
+  // Brain backend: use Claude when ANTHROPIC_API_KEY is present, else Promus Brain.
   const useAnthropic = !!process.env.ANTHROPIC_API_KEY
 
   // 3. Vision broker pool + viem clients
@@ -717,7 +717,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
     platform: process.platform,
     sandbox: {
       mode: 'docker' as const,
-      label: '0g-sandbox-galileo (TDX TEE)',
+      label: 'sandbox-galileo (TDX TEE)',
       innerOs: 'linux' as const,
       workspaceMount: workspaceRoot,
       scope: 'sandbox-deploy',
@@ -1076,7 +1076,7 @@ export async function buildPromusRuntime(opts: BuildRuntimeOpts): Promise<BuiltR
           chatId: input.chatId,
           length: response.length,
         })
-        // Fire-and-forget memory sync to 0G Storage. Mainnet finality can take
+        // Fire-and-forget memory sync to IPFS. Mainnet finality can take
         // minutes; awaiting it would block the dispatch lock and stack up
         // queued telegram messages behind a single in-flight turn. Surfacing
         // the resulting tx via the listener-event channel keeps observability

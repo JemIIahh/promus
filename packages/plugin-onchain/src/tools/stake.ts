@@ -2,8 +2,8 @@
  * Gimo staking limbs: stake.stake / stake.unstake / stake.claim / stake.position.
  *
  * Unstake is QUEUED, not instant. After ~72h the agent calls stake.claim
- * (or `chain.write` on pool.withdraw()) to receive the native 0G. For
- * instant exit the brain should use `swap.execute` to convert stOG→0G via
+ * (or `chain.write` on pool.withdraw()) to receive the native ETH. For
+ * instant exit the brain should use `swap.execute` to convert stOG→ETH via
  * JAINE.
  */
 
@@ -26,7 +26,7 @@ import {
 import type { OnchainRuntimeContext } from '../types'
 
 const StakeSchema = z.object({
-  amount: z.string().describe('Native 0G to stake (e.g. "0.05"). Min 0.01 0G.'),
+  amount: z.string().describe('Native ETH to stake (e.g. "0.05"). Min 0.01 ETH.'),
 })
 type StakeArgs = z.infer<typeof StakeSchema>
 
@@ -34,7 +34,7 @@ export function makeStakeStake(ctx: OnchainRuntimeContext): ToolDef<StakeArgs> {
   return {
     name: 'stake.stake',
     description:
-      'Stake native 0G into Gimo, mint stOG. Min 0.01 0G. stOG accrues value vs 0G via Gimo.getRate(). Use chain.balance to see your stOG holdings.',
+      'Stake native ETH into Gimo, mint stOG. Min 0.01 ETH. stOG accrues value vs ETH via Gimo.getRate(). Use chain.balance to see your stOG holdings.',
     searchHint: 'stake gimo lst stog mint earn yield',
     schema: StakeSchema,
     handler: async args => {
@@ -63,7 +63,7 @@ export function makeStakeStake(ctx: OnchainRuntimeContext): ToolDef<StakeArgs> {
         if (e instanceof StakeBelowMinError) {
           return {
             ok: false,
-            error: `Gimo minimum stake is ${formatEther(MIN_STAKE_WEI)} 0G; got ${args.amount}`,
+            error: `Gimo minimum stake is ${formatEther(MIN_STAKE_WEI)} ETH; got ${args.amount}`,
           }
         }
         return { ok: false, error: (e as Error).message.slice(0, 240) }
@@ -83,7 +83,7 @@ export function makeStakeUnstake(ctx: OnchainRuntimeContext): ToolDef<UnstakeArg
   return {
     name: 'stake.unstake',
     description:
-      'Queue a stOG → 0G withdrawal in Gimo. NOT instant: cooldown ~72h, then call stake.claim. For instant exit use swap.execute. Auto-approves stOG to the pool on first use.',
+      'Queue a stOG → ETH withdrawal in Gimo. NOT instant: cooldown ~72h, then call stake.claim. For instant exit use swap.execute. Auto-approves stOG to the pool on first use.',
     searchHint: 'unstake gimo stog withdraw queue',
     schema: UnstakeSchema,
     handler: async args => {
@@ -129,7 +129,7 @@ export function makeStakeUnstake(ctx: OnchainRuntimeContext): ToolDef<UnstakeArg
             queuedAt: result.queuedAt,
             estimatedClaimAt: result.estimatedClaimAt,
             cooldownSecs: Number(GIMO_COOLDOWN_SECS),
-            note: 'Queued. Call stake.claim after ~72h to withdraw native 0G.',
+            note: 'Queued. Call stake.claim after ~72h to withdraw native ETH.',
           },
         }
       } catch (e) {
@@ -146,7 +146,7 @@ export function makeStakeClaim(ctx: OnchainRuntimeContext): ToolDef<ClaimArgs> {
   return {
     name: 'stake.claim',
     description:
-      'Claim queued Gimo unstake to native 0G. Reverts with cooldown ETA if not yet elapsed.',
+      'Claim queued Gimo unstake to native ETH. Reverts with cooldown ETA if not yet elapsed.',
     searchHint: 'claim withdraw gimo cooldown queued',
     schema: ClaimSchema,
     handler: async () => {

@@ -9,8 +9,8 @@ import { formatEther } from 'viem'
 
 export { SANDBOX_BURN_RATE_OG_PER_HOUR, SANDBOX_DEFAULT_INITIAL_DEPOSIT_OG }
 
-/** 0G mainnet spot price used for USD estimates. Not authoritative, just a hint. */
-const OG_USD = 0.5
+/** ETH spot price used for USD estimates. Not authoritative, just a hint. */
+const ETH_USD = 3500
 
 export type DeployTarget = 'local' | 'sandbox'
 
@@ -26,9 +26,9 @@ export interface CostBreakdown {
   /** Galileo testnet burn rate per hour, in wei. */
   sandboxBurnRatePerHourTestnet: bigint
   deployTarget: DeployTarget
-  /** Native gas-token symbol for the chosen network ('ETH' or '0G'). */
+  /** Native gas-token symbol for the chosen network ('ETH'). */
   currency: string
-  /** Lean stack = Claude brain + IPFS memory + local runtime (no 0G economy). */
+  /** Lean stack = Claude brain + IPFS memory + local runtime. */
   lean: boolean
 }
 
@@ -44,11 +44,10 @@ export function estimateCosts(opts: {
   if (lean) {
     // Arbitrum-family: only real L2 gas, in ETH. Memory is IPFS (off-chain) and
     // the brain is Claude (off-chain API key), so there is no compute ledger or
-    // 0G storage cost, and no subname (the `.promus.0g` Space ID registry only
-    // exists on 0G). The operator pays the mint, then seeds a small ETH float to
-    // the agent EOA — the agent spends it on its own keystore-CID anchor and the
-    // per-turn memory-sync anchors. Both numbers are generous L2 buffers that
-    // stay well under a faucet-funded testnet wallet.
+    // storage cost, and no subname. The operator pays the mint, then seeds a
+    // small ETH float to the agent EOA — the agent spends it on its own
+    // keystore-CID anchor and the per-turn memory-sync anchors. Both numbers
+    // are generous L2 buffers that stay well under a faucet-funded testnet wallet.
     const mintAndApproveGas = 200_000_000_000_000n // ~0.0002 ETH (mint + setApprovalForAll; ~6x the real L2 cost)
     const agentFloat = 300_000_000_000_000n // ~0.0003 ETH — agent EOA gas for anchors + ~60 memory syncs
     const totalOperator = mintAndApproveGas + agentFloat
@@ -67,12 +66,12 @@ export function estimateCosts(opts: {
     }
   }
 
-  const mintAndApproveGas = 10_000_000_000_000_000n // ~0.01 0G (mint + setApprovalForAll bundle)
-  const agentFloat = 100_000_000_000_000_000n // 0.1 0G — infra float for the agent
+  const mintAndApproveGas = 10_000_000_000_000_000n // ~0.01 ETH (mint + setApprovalForAll bundle)
+  const agentFloat = 100_000_000_000_000_000n // 0.1 ETH — infra float for the agent
   const computeLedgerDeposit = BigInt(Math.round(opts.ledgerSizeOg * 1e18))
-  const storageUploadGas = 5_000_000_000_000_000n // ~0.005 0G (storage anchor tx)
+  const storageUploadGas = 5_000_000_000_000_000n // ~0.005 ETH (storage anchor tx)
   const subnameAndRecords = opts.withSubname
-    ? 30_000_000_000_000_000n // ~0.03 0G (claim + 2 text records, paid from agent float)
+    ? 30_000_000_000_000_000n // ~0.03 ETH (claim + 2 text records, paid from agent float)
     : 0n
   const totalOperator = mintAndApproveGas + agentFloat + computeLedgerDeposit + storageUploadGas
   const sandboxInitialDepositTestnet =
@@ -97,8 +96,8 @@ export function estimateCosts(opts: {
 }
 
 export function formatUsd(valueWei: bigint): string {
-  const og = Number(formatEther(valueWei))
-  return `$${(og * OG_USD).toFixed(2)}`
+  const eth = Number(formatEther(valueWei))
+  return `$${(eth * ETH_USD).toFixed(2)}`
 }
 
 function formatRunway(depositWei: bigint, burnPerHourWei: bigint): string {
@@ -129,7 +128,7 @@ export function renderCostSummary(c: CostBreakdown): string {
   }
 
   const lines = [
-    '  operator spend (0G mainnet):',
+    '  operator spend (Arbitrum mainnet):',
     line('mint + setApprovalForAll', c.mintAndApproveGas),
     line('storage upload (keystore)', c.storageUploadGas),
     line('agent infra float', c.agentFloat),
@@ -144,10 +143,10 @@ export function renderCostSummary(c: CostBreakdown): string {
     const runway = formatRunway(c.sandboxInitialDepositTestnet, c.sandboxBurnRatePerHourTestnet)
     lines.push(
       '',
-      '  sandbox spend (Galileo testnet 0G, free via faucet):',
-      `    ${'initial provider deposit'.padEnd(32)}${formatEther(c.sandboxInitialDepositTestnet).padStart(8)} 0G   ($0.00)`,
-      `    ${'runtime burn'.padEnd(32)}${formatEther(c.sandboxBurnRatePerHourTestnet).padStart(8)} 0G/h (${runway})`,
-      '    fund via       faucet.0g.ai/?token=A0GI → paste operator address',
+      '  sandbox spend (Arbitrum testnet, free via faucet):',
+      `    ${'initial provider deposit'.padEnd(32)}${formatEther(c.sandboxInitialDepositTestnet).padStart(8)} ETH   ($0.00)`,
+      `    ${'runtime burn'.padEnd(32)}${formatEther(c.sandboxBurnRatePerHourTestnet).padStart(8)} ETH/h (${runway})`,
+      '    fund via       faucet → paste operator address',
       '    auto-topup     agent EOA refills sandbox billing from compute ledger',
     )
   }

@@ -2,11 +2,11 @@
  * Gimo liquid-staking pool client. Verified on mainnet May 1 2026:
  *
  *   - stake(string referrer)   payable, mints stOG.  Selector 0x46f45b8d.
- *                              Min 0.01 0G; below reverts with 0x41524be2.
+ *                              Min 0.01 ETH; below reverts with 0x41524be2.
  *   - unstake(uint256 amount)  burns stOG, queues withdrawal. Selector 0x2e17de78.
  *   - withdraw()               claims queued. Selector 0x3ccfd60b. Reverts
  *                              with 0xd6d9e665 if cooldown not elapsed.
- *   - stOG.getRate()           1.281648 0G per stOG (1e18 fixed-point).
+ *   - stOG.getRate()           1.281648 ETH per stOG (1e18 fixed-point).
  */
 
 import { getGasPriceWithFloor } from 'promus-core'
@@ -26,7 +26,7 @@ import { waitForReceipt } from './wait-receipt'
 
 export class StakeBelowMinError extends Error {
   constructor(amount: bigint) {
-    super(`stake amount ${amount} is below Gimo's minimum (${MIN_STAKE_WEI} wei = 0.01 0G)`)
+    super(`stake amount ${amount} is below Gimo's minimum (${MIN_STAKE_WEI} wei = 0.01 ETH)`)
   }
 }
 

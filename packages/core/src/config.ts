@@ -158,7 +158,7 @@ export interface PromusConfig {
    * v0.11 (Apr 29 2026): vision tool routing. Multimodal limbs (vision.analyze,
    * browser.vision) call this provider on the same compute ledger; the brain
    * stays on `brain.provider`. Defaults to qwen3-vl-30b-a3b-instruct on
-   * mainnet (the only vision provider on 0G Compute today). Set `null` to
+   * mainnet (the only vision provider available). Set `null` to
    * disable; tools then return a clear "not configured" error.
    */
   vision?: {
@@ -195,7 +195,7 @@ export interface PromusConfig {
    *  - `local` (default): harness lives on this machine while `promus` chat is
    *    open. Listeners run only when CLI is open. Use for dev / always-on
    *    laptop / VPS / home server.
-   *  - `sandbox`: harness runs in a 0G Sandbox TDX TEE container. Persistent
+   *  - `sandbox`: harness runs in a Sandbox TDX TEE container. Persistent
    *    even when the operator laptop is closed. Set by `promus init --target
    *    sandbox` or `promus deploy`. Co-exists with `sandbox.id`/`endpoint` etc
    *    fields below.
@@ -203,7 +203,7 @@ export interface PromusConfig {
   deployTarget?: 'local' | 'sandbox'
   sandbox?: {
     /**
-     * Phase 11: 0G Sandbox container UUID returned by `POST /api/sandbox`.
+     * Phase 11: Sandbox container UUID returned by `POST /api/sandbox`.
      * Only set when `deployTarget === 'sandbox'`.
      */
     id?: string
@@ -333,8 +333,8 @@ export function networkFromChainId(id: number): PromusNetwork | null {
 }
 
 /**
- * Native gas-token symbol per network. The 0G chains pay gas in 0G; the
- * Arbitrum-family networks (Arbitrum Sepolia, Robinhood Orbit L2) pay in ETH.
+ * Native gas-token symbol per network. The Arbitrum-family networks
+ * (Arbitrum Sepolia, Robinhood Orbit L2) pay in ETH.
  */
 export const NETWORK_CURRENCY: Record<PromusNetwork, string> = {
   '0g-mainnet': '0G',
@@ -344,11 +344,11 @@ export const NETWORK_CURRENCY: Record<PromusNetwork, string> = {
 }
 
 /**
- * True only for the 0G-native chains, which carry the 0G Storage / Compute /
- * Sandbox economy (agent float, compute ledger, on-chain storage anchors, the
- * `.promus.0g` Space ID name service). On every other network promus runs the
- * lean stack: Claude brain (off-chain API key) + IPFS memory (off-chain) +
- * local runtime, so the only on-chain cost is real L2 gas.
+ * True only for the legacy 0G-native chains, which carry the 0G Storage /
+ * Compute / Sandbox economy (agent float, compute ledger, on-chain storage
+ * anchors, the `.promus.0g` Space ID name service). On every other network
+ * promus runs the lean stack: Claude brain (off-chain API key) + IPFS memory
+ * (off-chain) + local runtime, so the only on-chain cost is real L2 gas.
  */
 export function isOgNetwork(network: PromusNetwork): boolean {
   return network === '0g-mainnet' || network === '0g-testnet'
