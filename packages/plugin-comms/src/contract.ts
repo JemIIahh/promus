@@ -124,6 +124,27 @@ export class PromusInboxClient {
   }
 
   /**
+   * Whether `from` has ever sent a Message through this inbox. Used to make the
+   * one-time on-chain self-registration idempotent and to gate pubkey recovery.
+   */
+  async hasSentAny(from: Address): Promise<boolean> {
+    const run = (fromBlock: bigint | 'earliest') =>
+      this.publicClient.getLogs({
+        address: this.address,
+        event: PROMUS_INBOX_ABI[0],
+        args: { from },
+        fromBlock,
+        toBlock: 'latest',
+      })
+    try {
+      return (await run('earliest')).length > 0
+    } catch {
+      const latest = await this.publicClient.getBlockNumber()
+      return (await run(latest > 500_000n ? latest - 500_000n : 0n)).length > 0
+    }
+  }
+
+  /**
    * Subscribe live to Message events targeting `recipient`. Returns an
    * unwatch handle.
    */

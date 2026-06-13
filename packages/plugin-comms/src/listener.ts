@@ -1,3 +1,4 @@
+import { derivePubkeyHex } from 'promus-core'
 import type { Address, Hex, PublicClient } from 'viem'
 import { ContactStore } from './contacts'
 import type { PromusInboxClient, InboxMessageEvent } from './contract'
@@ -129,6 +130,10 @@ export class A2AListener {
     }
     await this.catchUp()
     this.subscribe()
+    // One-time on-chain self-registration: announce our pubkey via the inbox so
+    // peers can discover + encrypt to us with no name service (they recover the
+    // key from this tx). Idempotent + best-effort — never block the listener.
+    void this.ensureRegistered().catch(() => {})
     // v0.24.11: safety-net periodic catch-up. Live `watchContractEvent` has
     // been observed to silently drift in long-running daemons (May 16 2026)
     // — onLogs stops firing for new events even though the subscription
@@ -227,7 +232,24 @@ export class A2AListener {
     })
   }
 
+  /**
+   * One-time on-chain self-registration. Sends a single inbox message to self
+   * carrying our uncompressed pubkey; the tx's signature lets any peer recover
+   * our ECIES key (= EOA key) with no name service, and the payload carries the
+   * key directly too. Idempotent: skips if we've ever sent an inbox message.
+   * `handleEvent` ignores this self-message (step 0).
+   */
+  private async ensureRegistered(): Promise<void> {
+    if (await this.opts.inbox.hasSentAny(this.opts.agentEoa)) return
+    const pubkey = derivePubkeyHex(this.opts.agentPrivkey)
+    const zeroHash = `0x${'00'.repeat(32)}` as Hex
+    await this.opts.inbox.send(this.opts.agentEoa, pubkey, zeroHash)
+  }
+
   private async handleEvent(ev: InboxMessageEvent): Promise<void> {
+    // 0. ignore our own outbound (e.g. the one-time on-chain self-registration
+    //    message). An agent never processes messages it sent itself.
+    if (ev.from.toLowerCase() === this.opts.agentEoa.toLowerCase()) return
     // 1. blocked -> drop entirely, no decrypt, no history
     if (this.contacts.isBlocked(ev.from)) return
 
