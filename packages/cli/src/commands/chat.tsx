@@ -1630,7 +1630,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       mcpManager?.closeAll()
     } catch {}
     // Print session info AFTER renderer destroy so it appears on the normal terminal
-    console.log(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n`)
+    process.stderr.write(`\n  session: ${sessionId}  (resume with: promus chat --resume ${sessionId})\n\n`)
     // Best-effort: kill any background processes registered via shell.process.
     try {
       const { killAllProcesses } = require('promus-plugin-system') as {
@@ -1644,6 +1644,10 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       process.exit(0),
     )
   }
+  // Catch SIGINT (Ctrl+C) so session info is saved and displayed
+  process.once('SIGINT', () => {
+    handleExit()
+  })
 
   // Map Claude Code commands into SlashCommand shape so the slash
   // autocomplete popup lists them alongside the bundled registry.
