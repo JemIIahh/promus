@@ -148,6 +148,10 @@ export function createChatState(opts: CreateChatStateOpts) {
   let idCounter = 1
   const nextId = () => `row-${idCounter++}`
 
+  const loadRows = (saved: TurnRow[]) => {
+    setRows(saved)
+  }
+
   const pushRow = (row: Omit<TurnRow, 'id' | 'firstOfBlock'>) => {
     setRows(prev => {
       const last = prev[prev.length - 1] ?? null
@@ -188,6 +192,7 @@ export function createChatState(opts: CreateChatStateOpts) {
     setSlashIndex,
     bumpActiveJobs,
     pushRow,
+    loadRows,
     onStatusChange,
     identityLabel: opts.identityLabel,
     isLocalGateway: opts.isLocalGateway ?? false,

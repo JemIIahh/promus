@@ -791,6 +791,19 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
     currency: NETWORK_CURRENCY[config.network],
   })
 
+  // Resume: load saved chat rows from the session file into the TUI
+  if (opts?.resume) {
+    try {
+      const { readFileSync, existsSync } = require('node:fs')
+      if (existsSync(sessionFile)) {
+        const saved = JSON.parse(readFileSync(sessionFile, 'utf8'))
+        if (Array.isArray(saved.rows) && saved.rows.length > 0) {
+          state.loadRows(saved.rows)
+        }
+      }
+    } catch {}
+  }
+
   // Phase 12: now that state exists, point the telegram row sinks at it. The
   // dispatch slot stays null until brain.init resolves below.
   if (telegram) {
@@ -1621,6 +1634,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
         brainProvider: config.brain?.provider,
         brainModel: config.brain?.model,
         startedAt: new Date().toISOString(),
+        rows: state.rows(),
       }, null, 2))
     } catch {}
     try {
