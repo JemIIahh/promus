@@ -1,6 +1,6 @@
 {
   "name": "@promus/gateway",
-  "version": "0.24.19",
+  "version": "0.24.20",
   "type": "module",
   "description": "Promus gateway daemon: long-running brain runtime, listeners, tool registry, memory sync. Runs locally (laptop) or remotely (Arbitrum Sandbox TDX TEE).",
   "license": "MIT",

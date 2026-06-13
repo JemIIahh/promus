@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-comms",
-  "version": "0.24.19",
+  "version": "0.24.20",
   "type": "module",
   "description": "A2A messaging (PromusInbox) + ERC-8183 marketplace plugin for promus",
   "license": "MIT",

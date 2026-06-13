@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-onchain",
-  "version": "0.24.19",
+  "version": "0.24.20",
   "type": "module",
   "description": "On-chain wallet + chain ops plugin for promus (JAINE swap, Gimo LST, Multicall3 discovery)",
   "license": "MIT",
