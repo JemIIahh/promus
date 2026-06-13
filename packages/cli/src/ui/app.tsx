@@ -58,11 +58,15 @@ function formatUsage(usage: { total?: number; cached?: number } | null | undefin
   return cached ? `${totalK} t (${cachedK} cached)` : `${totalK} t`
 }
 
-function formatBalance(balance: number | null | undefined): string {
+function formatBalance(balance: number | null | undefined, currency = 'ETH'): string {
   if (balance == null) return ''
-  if (balance >= 100) return `${balance.toFixed(0)} 0G`
-  if (balance >= 1) return `${balance.toFixed(2)} 0G`
-  return `${balance.toFixed(3)} 0G`
+  if (balance >= 100) return `${balance.toFixed(0)} ${currency}`
+  if (balance >= 1) return `${balance.toFixed(2)} ${currency}`
+  // Small L2 ETH balances would round to "0.000" at 3 dp — show 4 so a funded
+  // wallet (~0.0003 ETH) reads as non-zero, and flag anything smaller explicitly.
+  if (balance >= 0.0001) return `${balance.toFixed(4)} ${currency}`
+  if (balance > 0) return `< 0.0001 ${currency}`
+  return `0 ${currency}`
 }
 
 function balanceColor(
@@ -620,7 +624,7 @@ export function ChatApp(props: AppProps) {
             {'wallet '}
           </text>
           <text fg={balanceColor(props.state.eoaBalance(), 0.005, 0.02)} flexShrink={0}>
-            {formatBalance(props.state.eoaBalance())}
+            {formatBalance(props.state.eoaBalance(), props.state.currency)}
           </text>
         </Show>
         <Show when={props.state.balance() != null}>
@@ -631,7 +635,7 @@ export function ChatApp(props: AppProps) {
             {'compute '}
           </text>
           <text fg={balanceColor(props.state.balance())} flexShrink={0}>
-            {formatBalance(props.state.balance())}
+            {formatBalance(props.state.balance(), props.state.currency)}
           </text>
         </Show>
         {/* v0.24.4: hide the sandbox-billing balance segment on local-gateway
@@ -648,7 +652,7 @@ export function ChatApp(props: AppProps) {
             {'sandbox '}
           </text>
           <text fg={balanceColor(props.state.sandboxBalance())} flexShrink={0}>
-            {formatBalance(props.state.sandboxBalance())}
+            {formatBalance(props.state.sandboxBalance(), props.state.currency)}
           </text>
         </Show>
         <Show when={props.state.activeJobCount() > 0}>

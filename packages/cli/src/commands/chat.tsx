@@ -17,6 +17,7 @@ import {
   LocalBackend,
   McpManager,
   MemorySyncManager,
+  NETWORK_CURRENCY,
   NETWORK_RPC,
   OGComputeBrain,
   AnthropicBrain,
@@ -757,6 +758,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean }): Promise<
     // definition local. Tag it so the statusbar hides the sandbox-billing
     // segment, matching the standalone-local-gateway path.
     isLocalGateway: true,
+    currency: NETWORK_CURRENCY[config.network],
   })
 
   // Phase 12: now that state exists, point the telegram row sinks at it. The

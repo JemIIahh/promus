@@ -53,6 +53,8 @@ interface CreateChatStateOpts {
   // Defaults to false so existing call sites that don't pass it (i.e. nothing
   // today, since both call sites set it explicitly) keep sandbox semantics.
   isLocalGateway?: boolean
+  /** Native gas-token symbol for the agent's network ('ETH' / '0G'). */
+  currency?: string
 }
 
 export function createChatState(opts: CreateChatStateOpts) {
@@ -189,6 +191,7 @@ export function createChatState(opts: CreateChatStateOpts) {
     onStatusChange,
     identityLabel: opts.identityLabel,
     isLocalGateway: opts.isLocalGateway ?? false,
+    currency: opts.currency ?? 'ETH',
   }
 }
 
