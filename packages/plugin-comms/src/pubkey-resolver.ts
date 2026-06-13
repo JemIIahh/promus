@@ -1,7 +1,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { type SannClient, derivePubkeyHex, subnameNode } from 'promus-core'
-import { type Address, type Hex, type PublicClient, getAddress } from 'viem'
+import { type SannClient, derivePubkeyHex, recoverPubkeyFromTx, subnameNode } from 'promus-core'
+import { type Address, type Hex, type PublicClient, getAddress, parseAbiItem } from 'viem'
+
+/** PromusInbox `Message` event — `from` is indexed, so logs filter by sender. */
+const MESSAGE_EVENT = parseAbiItem(
+  'event Message(address indexed from, address indexed to, bytes payload, bytes32 dataHash)',
+)
 
 /**
  * Resolve a recipient identifier (name or raw EOA) to its EOA address +
@@ -18,7 +23,7 @@ import { type Address, type Hex, type PublicClient, getAddress } from 'viem'
 export interface ResolvedRecipient {
   eoa: Address
   pubkey: Hex
-  source: 'subname-text-record' | 'cache'
+  source: 'subname-text-record' | 'recovered-from-tx' | 'cache'
   /** The canonical name if input was a name, else null. */
   name: string | null
 }
@@ -32,6 +37,12 @@ export interface PubkeyResolverOpts {
   cacheTtlMs?: number
   /** Pre-built SannClient (privkey-bound; used purely for reads here). */
   sann: Pick<SannClient, 'readText'>
+  /**
+   * PromusInbox address. When set, raw 0x recipients resolve trustlessly:
+   * find a Message they sent (`from` is indexed) and recover their secp256k1
+   * pubkey from that tx — no name service required. The non-0G path.
+   */
+  inboxAddress?: Address
 }
 
 interface CacheRow {
@@ -53,6 +64,7 @@ export class PubkeyResolver {
   private readonly cachePath: string
   private readonly ttlMs: number
   private readonly sann: Pick<SannClient, 'readText'>
+  private readonly inboxAddress?: Address
   private cache: CacheFile
 
   constructor(opts: PubkeyResolverOpts) {
@@ -60,6 +72,7 @@ export class PubkeyResolver {
     this.cachePath = join(opts.agentDir, 'comms', 'pubkey-cache.json')
     this.ttlMs = opts.cacheTtlMs ?? DEFAULT_TTL_MS
     this.sann = opts.sann
+    this.inboxAddress = opts.inboxAddress
     this.cache = this.loadCache()
   }
 
@@ -75,11 +88,62 @@ export class PubkeyResolver {
       return await this.resolveByName(trimmed)
     }
     if (trimmed.startsWith('0x') && trimmed.length === 42) {
-      throw new Error(
-        `recipient ${trimmed} given as raw EOA; resolve via .promus.0g name (pubkey lookup from chain not in MVP)`,
-      )
+      return await this.resolveByAddress(getAddress(trimmed) as Address)
     }
     throw new Error(`unrecognized recipient format: ${trimmed.slice(0, 80)}`)
+  }
+
+  /**
+   * Resolve a raw EOA to its ECIES pubkey with no name service. Find a message
+   * the address sent through PromusInbox (`from` is indexed) and recover the
+   * signer's secp256k1 pubkey from that message's transaction. A Promus agent's
+   * ECIES key IS its EOA keypair, so the recovered key is exactly what we
+   * encrypt to. Requires the peer to have sent ≥1 inbox message (agents self-
+   * register on startup); throws a clear error otherwise.
+   */
+  private async resolveByAddress(addr: Address): Promise<ResolvedRecipient> {
+    const key = addr.toLowerCase()
+    const cached = this.cache.byKey[key]
+    if (cached && Date.now() - cached.ts < this.ttlMs) {
+      return { ...cached, source: 'cache' }
+    }
+    if (!this.inboxAddress) {
+      throw new Error(
+        `cannot resolve raw address ${addr}: no PromusInbox configured for chain pubkey recovery`,
+      )
+    }
+    const txHash = await this.findInboxTxFrom(addr)
+    if (!txHash) {
+      throw new Error(
+        `${addr} has no PromusInbox activity on chain; the peer must come online (self-register) before it can be messaged`,
+      )
+    }
+    const pubkey = await recoverPubkeyFromTx(this.publicClient, txHash, addr)
+    const row: CacheRow = { eoa: addr, pubkey, name: null, ts: Date.now() }
+    this.cache.byKey[key] = row
+    this.persist()
+    return { ...row, source: 'recovered-from-tx' }
+  }
+
+  /** Newest tx hash of a Message this address sent via PromusInbox, or null. */
+  private async findInboxTxFrom(addr: Address): Promise<Hex | null> {
+    const run = (fromBlock: bigint | 'earliest') =>
+      this.publicClient.getLogs({
+        address: this.inboxAddress,
+        event: MESSAGE_EVENT,
+        args: { from: addr },
+        fromBlock,
+        toBlock: 'latest',
+      })
+    let logs: Awaited<ReturnType<typeof run>>
+    try {
+      logs = await run('earliest')
+    } catch {
+      // Some RPCs cap getLogs block ranges; retry over a recent window.
+      const latest = await this.publicClient.getBlockNumber()
+      logs = await run(latest > 500_000n ? latest - 500_000n : 0n)
+    }
+    return logs.at(-1)?.transactionHash ?? null
   }
 
   private async resolveByName(name: string): Promise<ResolvedRecipient> {

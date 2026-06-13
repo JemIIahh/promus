@@ -27,7 +27,7 @@ export {
   slotIndex,
 } from './intelligent-data'
 export { mintAgent, iNFTAgentId, type MintAgentOpts } from './mint'
-export { derivePubkeyHex } from './pubkey'
+export { derivePubkeyHex, recoverPubkeyFromTx } from './pubkey'
 export {
   persistKeystoreToStorage,
   reEncryptKeystoreForRecipient,

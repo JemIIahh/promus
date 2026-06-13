@@ -82,17 +82,19 @@ async function sendCore(deps: CommsDeps, to: string, plaintext: Uint8Array, forc
       `unrecognized recipient: ${to}. Use a .promus.0g name, 0x address, or contact label.`,
     )
   }
-  const lookupName = r.name?.endsWith('.0g')
-    ? r.name
-    : to.startsWith('0x')
-      ? null
-      : `${to}.promus.0g`
-  if (!lookupName) {
-    throw new Error(`raw 0x address ${to} has no published pubkey; reach via .promus.0g name`)
-  }
-  const resolved = await deps.resolver.resolve(lookupName).catch(() => null)
+  // `.0g` names carry their pubkey in a SANN text record; every other recipient
+  // (a raw 0x address, or a contact label that resolved to an address) resolves
+  // the pubkey trustlessly from the peer's on-chain inbox activity.
+  const pubkeyKey = r.name?.endsWith('.0g') ? r.name : r.addr
+  let resolveErr: unknown
+  const resolved = await deps.resolver.resolve(pubkeyKey).catch(e => {
+    resolveErr = e
+    return null
+  })
   if (!resolved) {
-    throw new Error(`recipient ${to} has no .promus.0g pubkey published; cannot encrypt`)
+    throw new Error(
+      `could not resolve a pubkey for ${to}: ${resolveErr instanceof Error ? resolveErr.message : 'no on-chain key found'}`,
+    )
   }
   const ciphertextHex = await eciesEncryptToHex(plaintext, resolved.pubkey)
   const ciphertextBytes = Buffer.from(ciphertextHex.slice(2), 'hex')
@@ -109,7 +111,7 @@ async function sendCore(deps: CommsDeps, to: string, plaintext: Uint8Array, forc
   const recipient = {
     eoa: resolved.eoa,
     pubkey: resolved.pubkey,
-    name: resolved.name ?? lookupName,
+    name: resolved.name ?? r.name ?? null,
   }
   return { txHash, recipient, dataHash: args.dataHash, inline: args.payload !== '0x' }
 }

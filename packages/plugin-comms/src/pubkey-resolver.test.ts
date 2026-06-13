@@ -3,7 +3,8 @@ import { existsSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { derivePubkeyHex } from 'promus-core'
-import type { Address, Hex, PublicClient } from 'viem'
+import { type Address, type Hex, type PublicClient, parseTransaction } from 'viem'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { PubkeyResolver } from './pubkey-resolver'
 
 const ALICE_PRIV = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d'
@@ -38,14 +39,50 @@ describe('PubkeyResolver: input format', () => {
     rmSync(dir, { recursive: true, force: true })
   })
 
-  it('rejects raw 0x EOA with directive', async () => {
+  it('raw 0x without a configured PromusInbox errors clearly', async () => {
     const dir = tempDir()
     const r = new PubkeyResolver({
       publicClient: {} as unknown as PublicClient,
       agentDir: dir,
       sann: fakeSann({}),
     })
-    await expect(r.resolve(`0x${'a'.repeat(40)}`)).rejects.toThrow(/use .promus.0g name|MVP/)
+    await expect(r.resolve(`0x${'a'.repeat(40)}`)).rejects.toThrow(/no PromusInbox configured/)
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it('resolves a raw 0x address via on-chain tx recovery (no name service)', async () => {
+    const priv = generatePrivateKey()
+    const account = privateKeyToAccount(priv)
+    const expectedPubkey = derivePubkeyHex(priv)
+    const signed = await account.signTransaction({
+      type: 'eip1559',
+      chainId: 421614,
+      nonce: 0,
+      to: `0x${'11'.repeat(20)}`,
+      value: 0n,
+      gas: 21_000n,
+      data: '0x',
+      maxFeePerGas: 1_000_000n,
+      maxPriorityFeePerGas: 1_000_000n,
+      accessList: [],
+    })
+    const parsed = parseTransaction(signed)
+    const mockClient = {
+      // PromusInbox Message log from the peer → its tx hash → recover the key.
+      getLogs: async () => [{ transactionHash: '0xfeed' }],
+      getTransaction: async () => ({ ...parsed, input: parsed.data ?? '0x' }),
+      getBlockNumber: async () => 1_000n,
+    } as unknown as PublicClient
+    const dir = tempDir()
+    const r = new PubkeyResolver({
+      publicClient: mockClient,
+      agentDir: dir,
+      sann: fakeSann({}),
+      inboxAddress: `0x${'22'.repeat(20)}`,
+    })
+    const out = await r.resolve(account.address)
+    expect(out.pubkey.toLowerCase()).toBe(expectedPubkey.toLowerCase())
+    expect(out.source).toBe('recovered-from-tx')
     rmSync(dir, { recursive: true, force: true })
   })
 

@@ -114,6 +114,7 @@ const plugin: NativePlugin = {
       publicClient: comms.publicClient,
       agentDir: ctx.agentDir,
       sann: comms.sann,
+      inboxAddress: comms.inboxAddress,
     })
 
     const listener = new A2AListener({

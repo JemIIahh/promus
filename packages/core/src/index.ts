@@ -266,6 +266,7 @@ export {
   iNFTAgentId,
   type MintAgentOpts,
   derivePubkeyHex,
+  recoverPubkeyFromTx,
   persistKeystoreToStorage,
   reEncryptKeystoreForRecipient,
   restoreKeystoreFromStorage,
