@@ -1,8 +1,8 @@
 {
   "name": "@promus/gateway",
-  "version": "0.24.17",
+  "version": "0.24.18",
   "type": "module",
-  "description": "Promus gateway daemon: long-running brain runtime, listeners, tool registry, memory sync. Runs locally (laptop) or remotely (0G Sandbox TDX TEE).",
+  "description": "Promus gateway daemon: long-running brain runtime, listeners, tool registry, memory sync. Runs locally (laptop) or remotely (Arbitrum Sandbox TDX TEE).",
   "license": "MIT",
   "homepage": "https://github.com/JemIIahh/promus",
   "repository": {
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "promus", "agent", "ai", "gateway", "daemon", "sandbox", "tee", "0g-sandbox"],
+  "keywords": ["arbitrum", "promus", "agent", "ai", "gateway", "daemon", "sandbox", "tee"],
   "publishConfig": {
     "access": "public"
   },

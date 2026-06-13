@@ -14,11 +14,11 @@
         "@changesets/cli": "^2.27.10",
         "@opentui/core": "^0.1.97",
         "@opentui/solid": "^0.1.97",
+        "@promus/core": "workspace:*",
+        "@promus/plugin-telegram": "workspace:*",
         "@types/bun": "^1.1.14",
         "@types/node": "^22.10.2",
         "ethers": "^6.13.0",
-        "promus-core": "workspace:*",
-        "promus-plugin-telegram": "workspace:*",
         "solid-js": "^1.9.12",
         "typescript": "^5.7.2",
         "viem": "^2.21.55",
@@ -56,23 +56,22 @@
       },
     },
     "packages/cli": {
-      "name": "promus",
+      "name": "@promus/cli",
       "version": "0.24.17",
       "bin": {
         "promus": "./bin/promus",
-        "anima": "./bin/promus",
       },
       "dependencies": {
         "@clack/prompts": "^0.8.2",
         "@opentui/core": "^0.1.97",
         "@opentui/solid": "^0.1.97",
+        "@promus/core": "workspace:*",
+        "@promus/gateway": "workspace:*",
+        "@promus/plugin-comms": "workspace:*",
+        "@promus/plugin-onchain": "workspace:*",
+        "@promus/plugin-system": "workspace:*",
+        "@promus/plugin-telegram": "workspace:*",
         "picocolors": "^1.1.1",
-        "promus-core": "workspace:*",
-        "promus-gateway": "workspace:*",
-        "promus-plugin-comms": "workspace:*",
-        "promus-plugin-onchain": "workspace:*",
-        "promus-plugin-system": "workspace:*",
-        "promus-plugin-telegram": "workspace:*",
         "qrcode-terminal": "^0.12.0",
         "solid-js": "^1.9.12",
         "viem": "^2.21.55",
@@ -82,7 +81,7 @@
       },
     },
     "packages/core": {
-      "name": "promus-core",
+      "name": "@promus/core",
       "version": "0.24.17",
       "dependencies": {
         "@0gfoundation/0g-ts-sdk": "1.2.6",
@@ -102,56 +101,56 @@
       },
     },
     "packages/gateway": {
-      "name": "promus-gateway",
+      "name": "@promus/gateway",
       "version": "0.24.17",
       "bin": {
-        "anima-gateway": "./bin/anima-gateway",
-        "anima-gateway-local": "./bin/anima-gateway-local",
+        "promus-gateway": "./bin/promus-gateway",
+        "promus-gateway-local": "./bin/promus-gateway-local",
       },
       "dependencies": {
-        "promus-core": "workspace:*",
-        "promus-plugin-comms": "workspace:*",
-        "promus-plugin-onchain": "workspace:*",
-        "promus-plugin-system": "workspace:*",
-        "promus-plugin-telegram": "workspace:*",
+        "@promus/core": "workspace:*",
+        "@promus/plugin-comms": "workspace:*",
+        "@promus/plugin-onchain": "workspace:*",
+        "@promus/plugin-system": "workspace:*",
+        "@promus/plugin-telegram": "workspace:*",
         "viem": "^2.21.55",
         "zod": "^3.24.1",
       },
     },
     "packages/plugin-comms": {
-      "name": "promus-plugin-comms",
+      "name": "@promus/plugin-comms",
       "version": "0.24.17",
       "dependencies": {
+        "@promus/core": "workspace:*",
         "eth-crypto": "^4.0.0",
-        "promus-core": "workspace:*",
         "viem": "^2.21.55",
         "zod": "^3.23.8",
       },
     },
     "packages/plugin-onchain": {
-      "name": "promus-plugin-onchain",
+      "name": "@promus/plugin-onchain",
       "version": "0.24.17",
       "dependencies": {
-        "promus-core": "workspace:*",
+        "@promus/core": "workspace:*",
         "viem": "^2.21.55",
         "zod": "^3.23.8",
       },
     },
     "packages/plugin-system": {
-      "name": "promus-plugin-system",
+      "name": "@promus/plugin-system",
       "version": "0.24.17",
       "dependencies": {
+        "@promus/core": "workspace:*",
         "agent-browser": "^0.26.0",
-        "promus-core": "workspace:*",
         "zod": "^3.24.1",
       },
     },
     "packages/plugin-telegram": {
-      "name": "promus-plugin-telegram",
+      "name": "@promus/plugin-telegram",
       "version": "0.24.17",
       "dependencies": {
+        "@promus/core": "workspace:*",
         "grammy": "^1.42.0",
-        "promus-core": "workspace:*",
         "zod": "^3.23.8",
       },
     },
@@ -589,6 +588,20 @@
     "@pnpm/network.ca-file": ["@pnpm/network.ca-file@1.0.2", "", { "dependencies": { "graceful-fs": "4.2.10" } }, "sha512-YcPQ8a0jwYU9bTdJDpXjMi7Brhkr1mXsXrUJvjqM2mQDgkRiz8jFaQGOdaLxgjtUfQgZhKy/O3cG/YwmgKaxLA=="],
 
     "@pnpm/npm-conf": ["@pnpm/npm-conf@3.0.3", "", { "dependencies": { "@pnpm/config.env-replace": "^1.1.0", "@pnpm/network.ca-file": "^1.0.1", "config-chain": "^1.1.11" } }, "sha512-//0sR/cow/s4ICQaYoAobOl4aU8cjU6x/V24V7XkKotb9+O+3zySIYp146vpaobYHnxa4pZX8NkV54Z5AwbDKA=="],
+
+    "@promus/cli": ["@promus/cli@workspace:packages/cli"],
+
+    "@promus/core": ["@promus/core@workspace:packages/core"],
+
+    "@promus/gateway": ["@promus/gateway@workspace:packages/gateway"],
+
+    "@promus/plugin-comms": ["@promus/plugin-comms@workspace:packages/plugin-comms"],
+
+    "@promus/plugin-onchain": ["@promus/plugin-onchain@workspace:packages/plugin-onchain"],
+
+    "@promus/plugin-system": ["@promus/plugin-system@workspace:packages/plugin-system"],
+
+    "@promus/plugin-telegram": ["@promus/plugin-telegram@workspace:packages/plugin-telegram"],
 
     "@rainbow-me/rainbowkit": ["@rainbow-me/rainbowkit@2.2.11", "", { "dependencies": { "@vanilla-extract/css": "1.20.1", "@vanilla-extract/dynamic": "2.1.5", "@vanilla-extract/sprinkles": "1.6.5", "clsx": "2.1.1", "cuer": "0.0.3", "react-remove-scroll": "2.7.2", "ua-parser-js": "^2.0.9" }, "peerDependencies": { "@tanstack/react-query": ">=5.0.0", "react": ">=18", "react-dom": ">=18", "viem": "2.x", "wagmi": "^2.9.0" } }, "sha512-FHPsRHMBpuHHhuyKktAR13O9agmsUUunDnVEP4hG1dSZ2JojXLUSWyLG28VbGIJakHYylkNguiLFnqM/BM8ERA=="],
 
@@ -1823,20 +1836,6 @@
     "process-warning": ["process-warning@5.0.0", "", {}, "sha512-a39t9ApHNx2L4+HBnQKqxxHNs1r7KF+Intd8Q/g1bUh6q0WIp9voPXJ/x0j+ZL45KF1pJd9+q2jLIRMfvEshkA=="],
 
     "prompts": ["prompts@2.4.2", "", { "dependencies": { "kleur": "^3.0.3", "sisteransi": "^1.0.5" } }, "sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q=="],
-
-    "promus": ["promus@workspace:packages/cli"],
-
-    "promus-core": ["promus-core@workspace:packages/core"],
-
-    "promus-gateway": ["promus-gateway@workspace:packages/gateway"],
-
-    "promus-plugin-comms": ["promus-plugin-comms@workspace:packages/plugin-comms"],
-
-    "promus-plugin-onchain": ["promus-plugin-onchain@workspace:packages/plugin-onchain"],
-
-    "promus-plugin-system": ["promus-plugin-system@workspace:packages/plugin-system"],
-
-    "promus-plugin-telegram": ["promus-plugin-telegram@workspace:packages/plugin-telegram"],
 
     "promus-web": ["promus-web@workspace:apps/web"],
 

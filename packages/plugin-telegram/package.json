@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-telegram",
-  "version": "0.24.17",
+  "version": "0.24.18",
   "type": "module",
   "description": "Telegram gateway plugin for promus — long-poll bot, debounced dispatch, reactions, allowlist",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "promus", "agent", "telegram", "grammy", "gateway", "plugin"],
+  "keywords": ["arbitrum", "promus", "agent", "telegram", "grammy", "gateway", "plugin"],
   "publishConfig": {
     "access": "public"
   },

@@ -1,6 +1,6 @@
 {
-  "name": "promus",
-  "version": "0.24.17",
+  "name": "promus-monorepo",
+  "version": "0.24.18",
   "private": true,
   "type": "module",
   "description": "Sovereign AI agents on Arbitrum — identity, memory, brain, and wallet as an on-chain entity",

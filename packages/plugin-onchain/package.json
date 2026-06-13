@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-onchain",
-  "version": "0.24.17",
+  "version": "0.24.18",
   "type": "module",
   "description": "On-chain wallet + chain ops plugin for promus (JAINE swap, Gimo LST, Multicall3 discovery)",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "promus", "agent", "wallet", "defi", "swap", "jaine", "gimo", "plugin"],
+  "keywords": ["arbitrum", "promus", "agent", "wallet", "defi", "swap", "jaine", "gimo", "plugin"],
   "publishConfig": {
     "access": "public"
   },

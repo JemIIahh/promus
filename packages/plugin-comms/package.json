@@ -1,6 +1,6 @@
 {
   "name": "@promus/plugin-comms",
-  "version": "0.24.17",
+  "version": "0.24.18",
   "type": "module",
   "description": "A2A messaging (PromusInbox) + ERC-8183 marketplace plugin for promus",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["0g", "promus", "agent", "a2a", "ecies", "marketplace", "erc-8183", "plugin"],
+  "keywords": ["arbitrum", "promus", "agent", "a2a", "ecies", "marketplace", "erc-8183", "plugin"],
   "publishConfig": {
     "access": "public"
   },
