@@ -16,7 +16,7 @@ import {
   encodeFunctionData,
   getAddress,
 } from 'viem'
-import { type PromusNetwork, nativeSymbol } from 'promus-core'
+import { type PromusNetwork, nativeSymbol } from '@promus/core'
 import jaineTokenList from '../data/tokens.json' with { type: 'json' }
 import { ERC20_ABI, MULTICALL3_ABI } from './abis'
 import { MULTICALL3, NATIVE_ALIASES } from './constants'
