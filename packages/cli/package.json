@@ -22,7 +22,6 @@
   },
   "files": ["src", "bin", "README.md"],
   "bin": {
-    "promus": "./bin/promus",
     "promus": "./bin/promus"
   },
   "main": "./src/index.ts",
