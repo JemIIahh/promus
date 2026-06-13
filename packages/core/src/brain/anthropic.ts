@@ -60,7 +60,12 @@ export class AnthropicBrain implements Brain {
     if (opts.history && opts.history.length > 0) {
       this.histories.set(DEFAULT_CHANNEL_KEY, [...opts.history])
     }
-    this.model = opts.model ?? process.env.ANTHROPIC_MODEL ?? DEFAULT_ANTHROPIC_MODEL
+    // Use `||` (not `??`) and trim so an empty/whitespace model string — which
+    // is what `config.brain.model` and an unset `ANTHROPIC_MODEL=` both produce —
+    // falls through to the default instead of being sent to the API verbatim
+    // (the API rejects an empty model with "String should have at least 1 character").
+    this.model =
+      opts.model?.trim() || process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL
     this.renderedPrefix = renderFrozenPrefix(opts.prefix)
     this.userContextText = renderUserContext(opts.prefix)
   }
