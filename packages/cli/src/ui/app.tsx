@@ -476,7 +476,7 @@ export function ChatApp(props: AppProps) {
       })
       return
     }
-    if (evt.sequence && !evt.ctrl && !evt.meta && !evt.option && evt.sequence.length === 1) {
+    if (evt.sequence && !evt.ctrl && !evt.meta && !evt.option) {
       const ch = evt.sequence
       props.state.setInput(prev => {
         const next = prev + ch

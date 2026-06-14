@@ -1,6 +1,6 @@
 {
   "name": "@promus/cli",
-  "version": "0.24.26",
+  "version": "0.24.27",
   "type": "module",
   "description": "Promus CLI: sovereign agent gateway on Arbitrum. Runs `promus init` to mint an iNFT and bring up your agent",
   "license": "MIT",
