@@ -1,9 +1,20 @@
+import { existsSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 
-/** Resolve `~/.promus` at call time so tests can override via PROMUS_ROOT or HOME. */
+/**
+ * Resolve the agent root directory.
+ *
+ * Priority:
+ *   1. PROMUS_ROOT env var (explicit override)
+ *   2. Cwd — if it contains a promus.config.ts, use it (project-local agent)
+ *   3. Legacy fallback: ~/.promus
+ */
 function promusRoot(): string {
-  return process.env.PROMUS_ROOT ?? join(homedir(), '.promus')
+  if (process.env.PROMUS_ROOT) return process.env.PROMUS_ROOT
+  const cwd = process.cwd()
+  if (existsSync(join(cwd, 'promus.config.ts'))) return cwd
+  return join(homedir(), '.promus')
 }
 
 export interface AgentPaths {

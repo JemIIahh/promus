@@ -48,7 +48,20 @@ import { pickOperatorSigner } from './init/operator-picker'
 import { initialWizardState, updateWizardState, writeWizardState } from './init/wizard-state'
 
 export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promise<void> {
-  const configPath = agentPaths.config
+  const globalConfig = agentPaths.config
+  const localConfig = join(process.cwd(), 'promus.config.ts')
+  // Use local config if it exists, else global, else create in cwd
+  const configPath = existsSync(localConfig)
+    ? localConfig
+    : existsSync(globalConfig)
+      ? globalConfig
+      : localConfig
+
+  // When init creates a config in cwd, set PROMUS_ROOT so agent data
+  // (keystore, sessions, etc.) also lives in cwd.
+  if (configPath === localConfig && !process.env.PROMUS_ROOT) {
+    process.env.PROMUS_ROOT = process.cwd()
+  }
 
   intro('promus init')
 

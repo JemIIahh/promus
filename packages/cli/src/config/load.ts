@@ -13,6 +13,15 @@ import { type PromusConfig, agentPaths } from '@promus/core'
 export async function findAndLoadConfig(
   startDir: string = process.cwd(),
 ): Promise<{ config: PromusConfig; path: string } | null> {
+  // 1. Check cwd first (project-local config)
+  const localCandidate = resolve(startDir, 'promus.config.ts')
+  if (existsSync(localCandidate)) {
+    const mod = (await import(localCandidate)) as { default: PromusConfig }
+    if (!mod.default) throw new Error(`promus.config.ts at ${localCandidate} has no default export`)
+    return { config: mod.default, path: localCandidate }
+  }
+
+  // 2. Fall back to global ~/.promus/config.ts
   const canonical = agentPaths.config
   if (existsSync(canonical)) {
     const mod = (await import(canonical)) as { default: PromusConfig }
@@ -20,6 +29,7 @@ export async function findAndLoadConfig(
     return { config: mod.default, path: canonical }
   }
 
+  // 3. Walk upward from cwd (legacy v0.5.0 pattern)
   let dir = resolve(startDir)
   while (true) {
     const candidate = resolve(dir, 'promus.config.ts')

@@ -4,6 +4,20 @@
  */
 
 const argv = process.argv.slice(2)
+
+// --root <dir>  override PROMUS_ROOT so each agent gets its own config + data.
+// Must be parsed before any subcommand to affect agentPaths / config loading.
+const rootIdx = argv.indexOf('--root')
+if (rootIdx >= 0) {
+  const root = argv[rootIdx + 1]
+  if (!root) {
+    console.error('promus --root requires a directory path')
+    process.exit(1)
+  }
+  process.env.PROMUS_ROOT = root
+  argv.splice(rootIdx, 2) // remove --root <dir> from argv
+}
+
 // First arg starting with `--` means the user invoked the default subcommand
 // (chat) with flags, e.g. `promus --yolo`. Treat it as if `chat` were implicit.
 // Exception: `--help` and `--version` are top-level commands, not chat flags.
@@ -22,6 +36,10 @@ async function main(): Promise<void> {
       return
     }
     case 'init': {
+      // `promus init .` → init in current directory
+      if (argv.includes('.')) {
+        process.env.PROMUS_ROOT = process.cwd()
+      }
       if (argv.includes('--resume')) {
         const { findAndLoadConfig } = await import('./config/load')
         const loaded = await findAndLoadConfig()
@@ -329,6 +347,10 @@ function printHelp(): void {
   console.log(
     [
       'promus: sovereign agent harness CLI',
+      '',
+      'Global flags:',
+      '  --root <dir>    use a separate agent root (config, keystore, sessions)',
+      '                  enables running multiple agents on the same machine',
       '',
       'Commands:',
       '  promus init                bootstrap a new agent identity + keystore',
