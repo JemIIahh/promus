@@ -1622,6 +1622,8 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
   // returns. Anchor: a never-resolving promise after render(); handleExit is
   // the only escape via process.exit.
   const handleExit = (): void => {
+    // Disable bracketed paste mode
+    process.stdout.write('\x1b[?2004l')
     // Save session metadata for resume support
     try {
       const { mkdirSync, writeFileSync } = require('node:fs')
@@ -1676,6 +1678,9 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
       argHint: c.argumentHint,
     }
   })
+
+  // Enable bracketed paste mode so Ctrl+V / Cmd+V pastes text into the TUI
+  process.stdout.write('\x1b[?2004h')
 
   await render(
     () => (

@@ -341,6 +341,10 @@ export function ChatApp(props: AppProps) {
     })
   })
 
+  // Input history for up/down arrow recall
+  const inputHistory: string[] = []
+  let inputHistoryIdx = -1
+
   // Recompute the slash autocomplete matches whenever input starts with `/`.
   // Cleared on submit/exit/non-slash input. Pulls registry + caller-supplied
   // extras (Claude Code commands).
@@ -439,6 +443,33 @@ export function ChatApp(props: AppProps) {
         return
       }
     }
+    // Input history: up/down cycle through past user messages when the
+    // slash menu is NOT open. History lives in component scope (inputHistory).
+    if (evt.name === 'up' && props.state.slashMatches().length === 0) {
+      if (inputHistory.length > 0) {
+        const next = inputHistoryIdx === -1
+          ? inputHistory.length - 1
+          : Math.max(0, inputHistoryIdx - 1)
+        inputHistoryIdx = next
+        const val = inputHistory[next]
+        if (val !== undefined) props.state.setInput(val)
+      }
+      return
+    }
+    if (evt.name === 'down' && props.state.slashMatches().length === 0) {
+      if (inputHistoryIdx >= 0) {
+        const next = inputHistoryIdx + 1
+        if (next >= inputHistory.length) {
+          inputHistoryIdx = -1
+          props.state.setInput('')
+        } else {
+          inputHistoryIdx = next
+          const val = inputHistory[next]
+          if (val !== undefined) props.state.setInput(val)
+        }
+      }
+      return
+    }
     if (evt.name === 'return') {
       const text = props.state.input().trim()
       if (!text) return
@@ -461,6 +492,10 @@ export function ChatApp(props: AppProps) {
         toSubmit = `/${sole.name}`
       }
       props.state.pushRow({ role: 'user', text: toSubmit })
+      if (toSubmit && inputHistory[inputHistory.length - 1] !== toSubmit) {
+        inputHistory.push(toSubmit)
+      }
+      inputHistoryIdx = -1
       props.state.setInput('')
       props.state.setSlashMatches([])
       props.state.setSlashIndex(0)
