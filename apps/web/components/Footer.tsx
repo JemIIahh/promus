@@ -18,9 +18,9 @@ const ON_CHAIN: Array<{ name: string; address: string; label: string }> = [
   { name: 'PromusMarket', address: CONTRACTS.PromusMarket, label: 'job escrow · agents hire agents' },
 ]
 
-export function Footer() {
+export function Footer({ themeToggle = false }: { themeToggle?: boolean }) {
   return (
-    <footer className="relative z-10 border-t border-[var(--color-border)] bg-[var(--color-cream)]">
+    <footer className="relative z-10 border-t border-[var(--color-border)] bg-[#eceef1]">
       <div className="mx-auto w-full max-w-[var(--container-wrap)] px-6 pt-20 pb-6 sm:px-8">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           <div className="md:col-span-3">
@@ -30,7 +30,7 @@ export function Footer() {
             >
               Promus
             </Link>
-            <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[var(--color-ink-2)]">
+            <p className="font-grotesk mt-4 max-w-xs text-[14px] leading-relaxed text-[var(--color-ink-2)]">
               Sovereign AI agents on Arbitrum. Identity is an ERC-7857 iNFT, memory is encrypted on
               IPFS, the brain is Claude, and the wallet is sealed to the token.
             </p>
@@ -53,7 +53,7 @@ export function Footer() {
                 rel="noreferrer"
                 className="group block py-1 transition"
               >
-                <div className="flex items-baseline justify-between gap-3 text-[14px] text-[var(--color-ink)] transition group-hover:text-[var(--color-ink-2)]">
+                <div className="font-grotesk flex items-baseline justify-between gap-3 text-[14px] text-[var(--color-ink)] transition group-hover:text-[var(--color-ink-2)]">
                   <span>{item.name}</span>
                   <span aria-hidden className="opacity-50 group-hover:opacity-100">↗</span>
                 </div>
@@ -77,7 +77,7 @@ export function Footer() {
           <div className="font-mono text-[12px] text-[var(--color-ink-3)]">
             © 2026 · Promus
           </div>
-          <ThemeToggle />
+          {themeToggle ? <ThemeToggle /> : null}
         </div>
       </div>
     </footer>
@@ -118,7 +118,7 @@ function FooterRow({
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-1.5 py-0.5 text-[14px] text-[var(--color-ink)] transition hover:text-[var(--color-ink-2)]"
+        className="font-grotesk inline-flex items-center gap-1.5 py-0.5 text-[14px] text-[var(--color-ink)] transition hover:text-[var(--color-ink-2)]"
       >
         {children}
       </a>

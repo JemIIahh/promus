@@ -7,7 +7,7 @@ export function Section4() {
   return (
     <section
       id="section-closing"
-      className="relative flex min-h-screen items-center bg-[var(--color-cream)] py-[var(--section-py)]"
+      className="relative flex min-h-screen items-center bg-[#e7e8ec] py-[var(--section-py)]"
     >
       <div className="mx-auto w-full max-w-[var(--container-wrap)] px-6 sm:px-8">
         <ClosingCta />

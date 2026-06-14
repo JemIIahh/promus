@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 import Link from 'next/link'
 
 export function ClosingCta() {
@@ -11,27 +10,16 @@ export function ClosingCta() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-      className="relative isolate mx-auto w-full max-w-[860px] overflow-hidden rounded-[24px] border border-[var(--color-border)] bg-[var(--color-cream-warm)] px-8 py-16 text-center sm:py-24"
-      style={{ boxShadow: '0 60px 120px -70px rgba(50,35,18,0.42)' }}
+      className="relative isolate mx-auto w-full max-w-[var(--container-narrow)] overflow-hidden rounded-[24px] border border-[var(--color-border)] bg-[#eceef1] px-8 py-16 text-center sm:py-24"
+      style={{ boxShadow: '0 60px 120px -70px rgba(16,15,20,0.32)' }}
     >
-      <Image
-        src="/aurelia/grove.png"
-        alt=""
-        fill
-        aria-hidden
-        priority={false}
-        quality={70}
-        sizes="(min-width: 768px) 860px, 100vw"
-        className="-z-10 object-cover opacity-[0.22]"
-        style={{ filter: 'blur(50px) saturate(0.85)', transform: 'scale(1.18)' }}
-      />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[var(--color-cream-warm)]/60 via-transparent to-[var(--color-cream-warm)]/80" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#f3f4f6]/70 via-transparent to-[#e2e3e7]/70" />
 
       <span className="kicker mx-auto justify-center">
-        FINIS · CHAPTER IV
+        <span className="text-[#3aa66e]">//</span> run it yourself
       </span>
-      <h2 className="font-display mt-6 text-[clamp(40px,6vw,84px)] font-light leading-[0.98] tracking-[-0.02em] text-[var(--color-ink)]">
-        Run a <span className="font-italic-serif italic">sovereign</span> agent.
+      <h2 className="font-grotesk mt-6 text-[clamp(32px,5vw,64px)] font-medium leading-[1.0] tracking-[-0.03em] text-[var(--color-ink)]">
+        Run a sovereign agent.
       </h2>
       <p className="mt-5 max-w-md mx-auto text-[16px] leading-relaxed text-[var(--color-ink-2)]">
         Mint once. The agent persists.

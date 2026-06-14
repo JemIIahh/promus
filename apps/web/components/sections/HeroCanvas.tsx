@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { CYCLES } from '@/lib/cycles'
-import { TuiCanvas } from './hero/TuiCanvas'
 import { TgCanvas } from './hero/TgCanvas'
 import { OutputCanvas } from './hero/OutputCanvas'
 
@@ -67,13 +66,10 @@ export function HeroCanvas() {
               rounded bottom; outer's overflow-hidden masks any bleed. */}
           <div className="relative flex flex-1 overflow-hidden rounded-t-[14px] border border-b-0 border-[var(--color-border)] bg-[var(--color-paper)] shadow-[0_-24px_50px_-30px_rgba(40,28,18,0.32)]">
             <div className="grid h-full min-h-0 w-full grid-cols-12 grid-rows-1 gap-0">
-              {/* Chat surface , full width on phones (voyage hidden), 5/12 from sm: up */}
+              {/* Chat surface , full width on phones (voyage hidden), 5/12 from sm: up.
+                  Telegram for every scenario — the terminal surface is retired. */}
               <div className="col-span-12 sm:col-span-5 sm:border-r sm:border-[var(--color-border)]">
-                {cycle.surface === 'tui' ? (
-                  <TuiCanvas key={cycle.id} cycle={cycle} />
-                ) : (
-                  <TgCanvas key={cycle.id} cycle={cycle} />
-                )}
+                <TgCanvas key={cycle.id} cycle={cycle} />
               </div>
 
               {/* Output canvas (voyage) , hidden on phones, 7/12 from sm: up. Phones

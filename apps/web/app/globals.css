@@ -26,6 +26,7 @@
   --font-mono: var(--font-geist-mono);
   --font-pixel: var(--font-geist-mono);
   --font-wordmark: var(--font-cal-sans);
+  --font-grotesk: var(--font-geist);
 
   --container-narrow: 880px;
   --container-wrap: 1180px;
@@ -172,6 +173,27 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Landing scope — pins EVERY theme token to its light value, immune to .dark
+   and @media(prefers-color-scheme:dark). Applied to <main> in page.tsx so the
+   marketing landing stays light-grey + dark-ink in any OS theme; cascades into
+   Navbar, Footer, Section4, ClosingCta in one place. */
+.landing-light {
+  --color-cream: #f9f8f6;
+  --color-cream-deep: #f2f1ee;
+  --color-cream-warm: #f0e8d6;
+  --color-paper: #fbfbf9;
+  --color-ink: #100f09;
+  --color-ink-2: #525251;
+  --color-ink-3: #8b8b88;
+  --color-border: rgba(16, 15, 9, 0.09);
+  --color-border-strong: rgba(16, 15, 9, 0.2);
+  --rgb-cream: 249 248 246;
+  --rgb-ink: 16 15 9;
+  --rgb-shadow: 60 50 30;
+  --rgb-shadow-strong: 16 15 9;
+  color-scheme: light;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -238,6 +260,9 @@ html.dark {
   font-weight: 400;
   letter-spacing: -0.02em;
 }
+@utility font-grotesk {
+  font-family: var(--font-grotesk), 'Geist', system-ui, sans-serif;
+}
 
 @utility kicker {
   font-family: var(--font-mono), 'Geist Mono', ui-monospace, monospace;
@@ -269,4 +294,31 @@ html.dark {
     transition-duration: 0.001s !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* hue spin for the MotionScreen WebGL fallback gradient */
+@keyframes hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* blinking block caret for the auto-writing / click-to-start prompts */
+@keyframes term-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+@utility term-cursor {
+  display: inline-block;
+  width: 0.45em;
+  height: 0.92em;
+  background: currentColor;
+  vertical-align: -0.08em;
+  animation: term-blink 1s step-end infinite;
 }

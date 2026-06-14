@@ -4,7 +4,7 @@ import { THEME_STORAGE_KEY } from '@/components/theme/constants'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { ThemeScript } from '@/components/theme/ThemeScript'
 import type { Metadata, Viewport } from 'next'
-import { Fraunces, Geist_Mono, Instrument_Serif, Outfit } from 'next/font/google'
+import { Fraunces, Geist, Geist_Mono, Instrument_Serif, Outfit } from 'next/font/google'
 import { cookies } from 'next/headers'
 import localFont from 'next/font/local'
 import { Providers } from './providers'
@@ -35,6 +35,13 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-geist-mono',
+})
+
+// Neutral grotesque for the Locomotive-style landing typography.
+const geist = Geist({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist',
 })
 
 const calSans = localFont({
@@ -112,7 +119,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en"
-      className={`${themeClass} ${fraunces.variable} ${instrumentSerif.variable} ${outfit.variable} ${geistMono.variable} ${calSans.variable}`}
+      className={`${themeClass} ${fraunces.variable} ${instrumentSerif.variable} ${outfit.variable} ${geist.variable} ${geistMono.variable} ${calSans.variable}`}
       data-theme-ssr={cookieTheme || 'unset'}
       suppressHydrationWarning
     >

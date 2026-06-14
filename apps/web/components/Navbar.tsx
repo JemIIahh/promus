@@ -11,10 +11,7 @@ import {
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const NAV_ITEMS = [
-  { label: 'Architecture', href: '#section-layers' },
-  { label: 'Docs', href: '/docs' },
-]
+const NAV_ITEMS = [{ label: 'Docs', href: '/docs' }]
 
 const PILL_WIDTH = 1180
 // Hero canvas wrap is `max-w-[1544px] sm:px-8`, so the painting content width
@@ -165,7 +162,7 @@ export function Navbar() {
           strip never feels like a separate layer. At md+ the wrapper is
           transparent and the desktop pill chrome takes over. */}
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-[var(--nav-section-bg,var(--color-cream))] pt-5 transition-colors duration-300 ease-out sm:pt-6 md:bg-transparent"
+        className="landing-light pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-[var(--nav-section-bg,var(--color-cream))] pt-5 transition-colors duration-300 ease-out sm:pt-6 md:bg-transparent"
         style={{ ['--nav-section-bg' as string]: sectionBg }}
       >
         <motion.nav
@@ -297,7 +294,7 @@ function PrimaryCta() {
       href="https://github.com/JemIIahh/promus"
       target="_blank"
       rel="noreferrer"
-      className="group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--color-ink)] px-3 py-1.5 text-[12.5px] font-medium tracking-tight text-[var(--color-cream)] shadow-[0_10px_24px_-14px_rgba(16,15,9,0.6)] transition-transform hover:-translate-y-[1px] active:translate-y-0 md:px-5 md:py-2.5 md:text-[13.5px]"
+      className="font-grotesk group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--color-ink)] px-3 py-1.5 text-[12.5px] font-medium tracking-tight text-[var(--color-cream)] shadow-[0_10px_24px_-14px_rgba(16,15,9,0.6)] transition-transform hover:-translate-y-[1px] active:translate-y-0 md:px-5 md:py-2.5 md:text-[13.5px]"
     >
       <span className="md:hidden">GitHub</span>
       <span className="hidden md:inline">View on GitHub</span>
@@ -314,7 +311,7 @@ function PrimaryCta() {
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   const isAnchor = href.startsWith('#')
   const className =
-    'relative text-[14px] font-medium tracking-[-0.005em] text-[var(--color-ink)] transition-colors duration-200 hover:text-[var(--color-ink-2)]'
+    'font-grotesk relative text-[14px] font-medium tracking-[-0.005em] text-[var(--color-ink)] transition-colors duration-200 hover:text-[var(--color-ink-2)]'
   if (isAnchor) {
     const id = href.slice(1)
     return (
@@ -382,7 +379,7 @@ function MobileMenuOverlay({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="primary menu"
-      className="fixed inset-0 z-[60] flex flex-col bg-[var(--color-cream)] md:hidden"
+      className="landing-light fixed inset-0 z-[60] flex flex-col bg-[#f9f8f6] md:hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -435,7 +432,7 @@ function MenuLink({
 }) {
   const isAnchor = href.startsWith('#')
   const className =
-    'font-display block text-[clamp(40px,11vw,64px)] font-light leading-[1.05] tracking-[-0.02em] text-[var(--color-ink)] transition-opacity hover:opacity-70'
+    'font-grotesk block text-[clamp(40px,11vw,64px)] font-medium leading-[1.05] tracking-[-0.03em] text-[var(--color-ink)] transition-opacity hover:opacity-70'
   const initial = { y: 14, opacity: 0 }
   const animate = { y: 0, opacity: 1 }
   const transition = {

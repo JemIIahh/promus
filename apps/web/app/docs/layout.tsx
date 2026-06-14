@@ -18,7 +18,7 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
           <div className="min-w-0">{children}</div>
         </div>
       </div>
-      <Footer />
+      <Footer themeToggle />
     </main>
   )
 }
