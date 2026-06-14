@@ -1,4 +1,4 @@
-import { useKeyboard, useTerminalDimensions } from '@opentui/solid'
+import { useKeyboard, usePaste, useTerminalDimensions } from '@opentui/solid'
 import { type SlashCommand, suggestForPrefix } from '@promus/core'
 import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
 import { summarizeApprovalSubject } from './approval-summary'
@@ -478,11 +478,20 @@ export function ChatApp(props: AppProps) {
     }
     if (evt.sequence && !evt.ctrl && !evt.meta && !evt.option) {
       const ch = evt.sequence
-      if (ch.length > 1) {
-        props.state.pushRow({ role: 'system', text: `pasted ${ch.length} chars` })
-      }
       props.state.setInput(prev => {
         const next = prev + ch
+        refreshSlashMatches(next)
+        return next
+      })
+    }
+  })
+
+  usePaste(evt => {
+    const text = new TextDecoder().decode(evt.bytes)
+    if (text) {
+      props.state.pushRow({ role: 'system', text: `pasted ${text.length} chars` })
+      props.state.setInput(prev => {
+        const next = prev + text
         refreshSlashMatches(next)
         return next
       })
