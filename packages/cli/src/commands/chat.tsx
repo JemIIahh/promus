@@ -298,7 +298,16 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
 
   await operator.close?.()
 
-  if (!config.brain.provider) {
+  // The model picker fetches the 0G Compute provider catalog from an on-chain
+  // contract that only exists on 0G chains. With Claude (ANTHROPIC_API_KEY set)
+  // the model comes from config.brain.model / AnthropicBrain's default, so the
+  // picker is unnecessary — and on Arbitrum the 0G serving-broker doesn't know
+  // chainId 421614, falls back to a 0G-testnet contract address, and the read
+  // returns empty ("could not decode result data"); the picker then returns
+  // null and process.exit(1) would drop the user straight back to the shell.
+  // Only run the picker for the 0G Compute brain.
+  const usingAnthropic = !!process.env.ANTHROPIC_API_KEY
+  if (!usingAnthropic && !config.brain.provider) {
     const updated = await runModelPicker(config, agentPrivkey, configPath)
     if (!updated) process.exit(1)
     config = updated
