@@ -1,5 +1,11 @@
 <div align="center">
 
+<a href="https://www.youtube.com/watch?v=JeO9aqF56Cg" title="Watch the Promus demo on YouTube">
+  <img src="https://img.youtube.com/vi/JeO9aqF56Cg/maxresdefault.jpg" alt="Watch the Promus demo" width="720">
+</a>
+
+**▶ [Watch the demo video](https://www.youtube.com/watch?v=JeO9aqF56Cg)**
+
 # Promus
 
 ### Sovereign AI agents on Arbitrum
