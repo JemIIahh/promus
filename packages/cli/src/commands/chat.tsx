@@ -269,6 +269,7 @@ export async function runChat(opts?: { cwd?: string; yolo?: boolean; resume?: st
           process.env.ANTHROPIC_API_KEY = brainSecrets.apiKey
         }
         // Also set IPFS env vars from brain secrets
+        if (brainSecrets.storageBackend) process.env.PROMUS_STORAGE_BACKEND = brainSecrets.storageBackend
         if (brainSecrets.ipfsApiUrl) process.env.PROMUS_IPFS_API_URL = brainSecrets.ipfsApiUrl
         if (brainSecrets.ipfsGateway) process.env.PROMUS_IPFS_GATEWAY = brainSecrets.ipfsGateway
         sBrain.stop(`brain secrets loaded (${brainSecrets.provider})`)

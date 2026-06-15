@@ -132,9 +132,10 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
     message: 'Storage backend?',
     options: [
       { value: 'ipfs' as const, label: 'IPFS (Kubo local node)' },
+      { value: 'local' as const, label: 'Local disk (~/.promus/storage)' },
     ],
     initialValue: 'ipfs' as const,
-  })) as 'ipfs' | symbol
+  })) as 'ipfs' | 'local' | symbol
   if (isCancel(storageBackend)) {
     cancel('Aborted.')
     return
@@ -335,8 +336,9 @@ export async function runInit(opts?: { cwd?: string; resume?: boolean }): Promis
         provider: brainProvider,
         apiKey: apiKeyPrompt,
         model: modelPick.model ?? undefined,
-        ipfsApiUrl,
-        ipfsGateway,
+        storageBackend,
+        ipfsApiUrl: storageBackend === 'ipfs' ? ipfsApiUrl : undefined,
+        ipfsGateway: storageBackend === 'ipfs' ? ipfsGateway : undefined,
       },
       precomputedKey: brainKeyBuf,
     })

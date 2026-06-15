@@ -40,6 +40,7 @@ export interface BrainSecretsPlaintext {
   provider: 'anthropic' | 'openai' | 'google'
   apiKey: string
   model?: string
+  storageBackend?: 'ipfs' | 'local'
   ipfsApiUrl?: string
   ipfsGateway?: string
   ipfsApiToken?: string
