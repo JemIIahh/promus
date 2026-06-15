@@ -1,6 +1,6 @@
 {
   "name": "@promus/cli",
-  "version": "0.24.30",
+  "version": "0.24.31",
   "type": "module",
   "description": "Promus CLI: sovereign agent gateway on Arbitrum. Runs `promus init` to mint an iNFT and bring up your agent",
   "license": "MIT",
@@ -13,14 +13,28 @@
   "bugs": {
     "url": "https://github.com/JemIIahh/promus/issues"
   },
-  "keywords": ["arbitrum", "promus", "agent", "ai", "cli", "tui", "sovereign", "gateway", "inft"],
+  "keywords": [
+    "arbitrum",
+    "promus",
+    "agent",
+    "ai",
+    "cli",
+    "tui",
+    "sovereign",
+    "gateway",
+    "inft"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "engines": {
     "bun": ">=1.1"
   },
-  "files": ["src", "bin", "README.md"],
+  "files": [
+    "src",
+    "bin",
+    "README.md"
+  ],
   "bin": {
     "promus": "./bin/promus"
   },
