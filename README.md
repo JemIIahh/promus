@@ -27,7 +27,7 @@
 
 Promus is a CLI-hosted agent runtime where the agent's **identity, memory, reasoning, wallet, and economic life are an on-chain entity**. Run `promus init` once: it mints the agent as an ERC-7857 iNFT on Arbitrum, seals a wallet to the token, and persists its encrypted memory off-machine on IPFS. **Close the laptop, the agent survives. Transfer the iNFT, the agent migrates** — memory and wallet intact.
 
-> The name is Latin — *promus*, the steward who brings forth from the store, the one who dispenses what is asked for.
+> The name is Latin — *promus*, most commonly a noun meaning "steward" or "butler." It is often used by modern companies to symbolize management and reliability: one who brings forth from the store and dispenses what is asked for.
 
 ## See it in action
 
